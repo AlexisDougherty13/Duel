@@ -41,7 +41,7 @@ def main():
                         player1.moveRight
         
         screen.fill((255, 255, 255))
-        
+        #screen.fill((25, 254, 235)) Joshua is canceled
         screen.blit(get_image(player1.get_sprite()), (player1.get_xpos(), player1.get_ypos())) #(width, height)
     
         
