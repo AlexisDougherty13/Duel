@@ -1,7 +1,7 @@
 import time
 
 #change these
-shift_size = 50
+shift_size = 0.6
 hit_box_width = 102
 hit_box_height = 140
 
@@ -15,6 +15,8 @@ class Player:
         self._sword_height = sword_height
         self._is_ghost = is_ghost
         self._sprite = sprite
+
+
         
     def getXPos(self):
         return self._x_pos
@@ -52,13 +54,15 @@ class Player:
             self._is_ghost = False
         else:
             self._is_ghost = True
+
+
         
     def getSprite(self):
         return self._sprite
         
     def setSprite(self, sprite):
         self._sprite = sprite  
-        print("New: ", self._sprite)
+        #print("New: ", self._sprite)
         
     #def insert_sting_middle(self, str, word):
         #return str[:2] + word + str[2:]
@@ -69,23 +73,23 @@ class Player:
             #self._sprite = self.insert_string_middle(self._sprite, "R")
             #print(self._sprite)
        
-    def moveLeft(self):
+    def moveLeft(self, time):
         global shift_size
-        if(self._direction_facing == 0):
-            self._x_pos = self._x_pos - shift_size
-        else:
+        self._x_pos = self._x_pos - shift_size
+        if time>=0.25:
             self._direction_facing = 0
-            #self.reverseImage()
             self._sprite = "FillerSpriteR.png"
+        #self.reverseImage()
+            
         
-    def moveRight(self):
+    def moveRight(self, time):
         global shift_size
-        if(self._direction_facing == 1):
-            self._x_pos = self._x_pos + shift_size
-        else:
+        self._x_pos = self._x_pos + shift_size
+        if time>=0.25:
             self._direction_facing = 1
-            #reverseImage()
-            self._sprite = "FillerSprite.png"
+            self._sprite = "FillerSpriteL.png"
+        #reverseImage()
+            
            
     # 0 means no sword, 3 is high, 2 is med, 1 is low sword
     def raiseSword(self):
