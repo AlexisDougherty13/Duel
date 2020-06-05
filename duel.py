@@ -45,16 +45,27 @@ def sword_positioning1(player1):
         
 
 def main():
-
 	#JZ Player 1 Vars
 	p1ml = False
 	p1mr = False
 	p1mu = False
+	#Player 2 Vars (Testing)
+	p2ml = False
+	p2mr = False
+	p2mu = False
 	setmovebool1 = True #these two vars help in determining if player 1's sword should be up or down
 	setmovebool1b = True
+	#Player 2
+	setmovebool2 = True
+	setmovebool2b = True
 	moving1time = 0
-	setjumpbool = True
+	moving2time = 0
+	setjump1bool = True
 	jumping1time = 0
+	#Player 2 jumping vars
+	setjump2bool = True
+	jumping2time = 0
+	selected_player = 1 #The other option is 2, for player 2
 	print("starting")
 
 
@@ -64,103 +75,157 @@ def main():
 	pygame.init()
 	screen = pygame.display.set_mode((screen_width,screen_height))
 
-	player1 = player.Player(500, 300, 1, 2, False, 'FillerSpriteMed.png')
+	player1 = player.Player(400, 300, 1, 2, False, 'FillerSpriteMed.png')
+	player2 = player.Player(600, 300, 1, 2, False, 'FillerSpriteMed.png')
 	game = True
 	while game:
 		pressed = pygame.key.get_pressed()
 		alt_held = pressed[pygame.K_LALT] or pressed[pygame.K_RALT]
 
+
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				game = False
 			if event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_q:  #WARNING: Do not hit q and switch players while pressing any other button or while current player is jumping. Will create buggy behavior.
+					if selected_player == 1:
+						selected_player = 2
+					elif selected_player == 2:
+						selected_player = 1
 				if event.key == pygame.K_a:
-					p1ml=True
+					if selected_player == 1:
+						p1ml=True
+					elif selected_player == 2:
+						p2ml=True
 				if event.key == pygame.K_d:
-					p1mr=True
+					if selected_player == 1:
+						p1mr=True
+					elif selected_player == 2:
+						p2mr=True
 				if event.key == pygame.K_SPACE:
-					p1mu=True
+					if selected_player == 1:
+						p1mu=True
+					elif selected_player == 2:
+						p2mu=True
 				if event.key == pygame.K_s:
-					if(player1.sword_height > 1):
-						player1.lower_sword
-					if(player1.sword_height == 1 and player1.direction_facing == 1):
-						player1.sprite = "FillerSpriteLow.png"
-					if(player1.sword_height == 2 and player1.direction_facing == 1):
-						player1.sprite = "FillerSpriteMed.png"
-					if(player1.sword_height == 3 and player1.direction_facing == 1):
-						player1.sprite = "FillerSpriteHigh.png"
-					if(player1.sword_height == 1 and player1.direction_facing == 0):
-						player1.sprite = "FillerSpriteLowR.png"
-					if(player1.sword_height == 2 and player1.direction_facing == 0):
-						player1.sprite = "FillerSpriteMedR.png"
-					if(player1.sword_height == 3 and player1.direction_facing == 0):
-						player1.sprite = "FillerSpriteHighR.png"
+					if selected_player == 1:
+						if player1.sword_height > 1:
+							player1.lower_sword
+						sword_positioning1(player1)
+					elif selected_player == 2:
+						if player2.sword_height > 1:
+							player2.lower_sword
+						sword_positioning1(player2)
+
 				if event.key == pygame.K_w:
-					if(player1.sword_height > 0):
-						player1.raise_sword
-					if(player1.sword_height == 1 and player1.direction_facing == 1):
-						player1.sprite = "FillerSpriteLow.png"
-					if(player1.sword_height == 2 and player1.direction_facing == 1):
-						player1.sprite = "FillerSpriteMed.png"
-					if(player1.sword_height == 3 and player1.direction_facing == 1):
-						player1.sprite = "FillerSpriteHigh.png"
-					if(player1.sword_height == 1 and player1.direction_facing == 0):
-						player1.sprite = "FillerSpriteLowR.png"
-					if(player1.sword_height == 2 and player1.direction_facing == 0):
-						player1.sprite = "FillerSpriteMedR.png"
-					if(player1.sword_height == 3 and player1.direction_facing == 0):
-						player1.sprite = "FillerSpriteHighR.png"
+					if selected_player == 1:
+						if player1.sword_height > 0:
+							player1.raise_sword
+						sword_positioning1(player1)
+					elif selected_player == 2:
+						if player2.sword_height > 0:
+							player2.raise_sword
+						sword_positioning1(player2)
 			if event.type == pygame.KEYUP:
 				if event.key == pygame.K_a:
-					p1ml=False
+					if selected_player == 1:
+						p1ml=False
+					elif selected_player == 2:
+						p2ml=False
 				if event.key == pygame.K_d:
-					p1mr=False
+					if selected_player == 1:
+						p1mr=False
+					elif selected_player == 2:
+						p2mr=False
 				if event.key == pygame.K_SPACE:
-					p1mu=False
+					if selected_player == 1:
+						p1mu=False
+					elif selected_player == 2:
+						p2mu=False
 			
 
 		#NON EVENT BASED ACTIONS
-		if not p1mr and not p1ml:
-			if setmovebool1:
-				moving1time = time.time()
-				setmovebool1 = False
-			elif (time.time() - moving1time) >= 0.25:
-				setmovebool1 = True
-				sword_positioning1(player1)		
-		else:
-			if setmovebool1b:
-				moving1time = time.time()
-				setmovebool1b = False
-			elif (time.time() - moving1time) >= 0.25:
-				setmovebool1b = True
+		#Player 1 Sprite/Movement
+		if selected_player == 1:
+			if not p1mr and not p1ml:
+				if setmovebool1:
+					moving1time = time.time()
+					setmovebool1 = False
+				elif (time.time() - moving1time) >= 0.25:
+					setmovebool1 = True
+					sword_positioning1(player1)
+			else:
+				if setmovebool1b:
+					moving1time = time.time()
+					setmovebool1b = False
+				elif (time.time() - moving1time) >= 0.25:
+					setmovebool1b = True
+					if p1ml:
+						player1.sprite = "FillerSpriteL.png"
+					if p1mr:
+						player1.sprite = "FillerSpriteR.png"
 				if p1ml:
-					player1.sprite = "FillerSpriteL.png"
-				if p1ml:
-					player1.sprite = "FillerSpriteR.png"
-			if p1ml:
-				player1.moveLeft(time.time() - moving1time)
-			if p1mr:
-				player1.moveRight(time.time() - moving1time)
-		if p1mu and player1.y_pos == 300:
-			#switch to jump sprite, sword shouldnt be up
-			if setjumpbool:
-				jumping1time = time.time()
-				setjumpbool = False
-		if not setjumpbool:
-			print("jumptime")
-			player1.setYPos(player1.getYPos()-0.9)
-			if (time.time() - jumping1time) >= 0.5:
-				setjumpbool = True
-		if player1.getYPos() < 300:
-			player1.setYPos(player1.getYPos()+0.4)
-			if player1.getYPos() >300:
-				player1.setYPos(300)
+					player1.moveLeft(time.time() - moving1time)
+				if p1mr:
+					player1.moveRight(time.time() - moving1time)
+			if p1mu and player1.y_pos == 300:
+				#switch to jump sprite, sword shouldnt be up
+				if setjump1bool:
+					jumping1time = time.time()
+					setjump1bool = False
+			if not setjump1bool:
+				print("jumptime")
+				player1.setYPos(player1.getYPos()-0.9)
+				if (time.time() - jumping1time) >= 0.5:
+					setjump1bool = True
+			if player1.getYPos() < 300:
+				player1.setYPos(player1.getYPos()+0.4)
+				if player1.getYPos() >300:
+					player1.setYPos(300)
+
+		#Player 2 Sprite Drawing/Movement
+		elif selected_player == 2:  #We can start compressing some of these conditionals into separate functions for readability.
+			if not p2mr and not p2ml:
+				if setmovebool2:
+					moving2time = time.time()
+					setmovebool2 = False
+				elif (time.time() - moving2time) >= 0.25:
+					setmovebool2 = True
+					sword_positioning1(player2)
+			else:
+				if setmovebool2b:
+					moving2time = time.time()
+					setmovebool2b = False
+				elif (time.time() - moving2time) >= 0.25:
+					setmovebool2b = True
+					if p2ml:
+						player2.sprite = "FillerSpriteL.png"
+					if p2mr:
+						player2.sprite = "FillerSpriteR.png"
+				if p2ml:
+					player2.moveLeft(time.time() - moving2time)
+				if p2mr:
+					player2.moveRight(time.time() - moving2time)
+			if p2mu and player2.y_pos == 300:
+				# switch to jump sprite, sword shouldnt be up
+				if setjump2bool:
+					jumping2time = time.time()
+					setjump2bool = False
+			if not setjump2bool:
+				print("jumptime")
+				player2.setYPos(player2.getYPos() - 0.9)
+				if (time.time() - jumping2time) >= 0.5:
+					setjump2bool = True
+			if player2.getYPos() < 300:
+				player2.setYPos(player2.getYPos() + 0.4)
+				if player2.getYPos() > 300:
+					player2.setYPos(300)
 
 
 		screen.fill((255, 255, 255))
 
 		screen.blit(get_image(player1.sprite), (player1.getXPos(), player1.getYPos())) #(width, height)
-
+		screen.blit(get_image(player2.sprite), (player2.getXPos(), player2.getYPos()))
 
 		pygame.display.flip()
 	
