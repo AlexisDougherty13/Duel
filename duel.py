@@ -3,6 +3,7 @@ import pygame
 import os
 import time
 
+
 #Joshua's Magical TODO list 
 # 1. Add player movement timer, when player isnt moving for .2 secs his sword should be up - DONE, could use some tweaking to make movement less shit
 # 2. Add gravity / jumping. Player should never be below y=ground - DONE, could use some tweaking to make jumps more realistic, player shouldnt be holding sword while airborne
@@ -19,15 +20,14 @@ import time
 # CONGRATS, NOW WE HAVE SOMETHING TO SHOW FOR OUR MIDTERM :D
 # 12.Fix bugs and make game look good
 
-_image_library = {}
-def get_image(path):
-        global _image_library
-        image = _image_library.get(path)
-        if image == None:
+
+def get_image(path, _image_library):
+        if path not in _image_library:
                 canonicalized_path = path.replace('/', os.sep).replace('\\', os.sep)
-                image = pygame.image.load(canonicalized_path)
+                image = pygame.image.load(canonicalized_path).convert_alpha()
                 _image_library[path] = image
-        return image
+        return _image_library[path]
+
 
 def sword_positioning1(player1):
 	if(player1.sword_height == 1 and player1.direction_facing == 1):
@@ -42,29 +42,34 @@ def sword_positioning1(player1):
 		player1.sprite = "FillerSpriteMedR.png"
 	if(player1.sword_height == 3 and player1.direction_facing == 0):
 		player1.sprite = "FillerSpriteHighR.png"
-        
+
+
 
 def main():
+	#Initialize texture pack to handle loading, storing, and retrieving textures.
+	texture_pack = dict()
+
 	#JZ Player 1 Vars
 	p1ml = False
 	p1mr = False
 	p1mu = False
-	#Player 2 Vars (Testing)
-	p2ml = False
-	p2mr = False
-	p2mu = False
 	setmovebool1 = True #these two vars help in determining if player 1's sword should be up or down
 	setmovebool1b = True
-	#Player 2
-	setmovebool2 = True
-	setmovebool2b = True
 	moving1time = 0
 	moving2time = 0
 	setjump1bool = True
 	jumping1time = 0
-	#Player 2 jumping vars
+
+	#Player 2 Variables (Test Version)
+	p2ml = False
+	p2mr = False
+	p2mu = False
+	setmovebool2 = True
+	setmovebool2b = True
 	setjump2bool = True
 	jumping2time = 0
+
+	#Player selection variable.
 	selected_player = 1 #The other option is 2, for player 2
 	print("starting")
 
@@ -78,6 +83,7 @@ def main():
 	player1 = player.Player(400, 300, 1, 2, False, 'FillerSpriteMed.png')
 	player2 = player.Player(600, 300, 1, 2, False, 'FillerSpriteMed.png')
 	game = True
+
 	while game:
 		pressed = pygame.key.get_pressed()
 		alt_held = pressed[pygame.K_LALT] or pressed[pygame.K_RALT]
@@ -224,8 +230,8 @@ def main():
 
 		screen.fill((255, 255, 255))
 
-		screen.blit(get_image(player1.sprite), (player1.getXPos(), player1.getYPos())) #(width, height)
-		screen.blit(get_image(player2.sprite), (player2.getXPos(), player2.getYPos()))
+		screen.blit(get_image(player1.sprite, texture_pack), (player1.getXPos(), player1.getYPos())) #(width, height)
+		screen.blit(get_image(player2.sprite, texture_pack), (player2.getXPos(), player2.getYPos()))
 
 		pygame.display.flip()
 	

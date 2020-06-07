@@ -103,7 +103,7 @@ class Player:
     def duck(self):
         global hit_box_height
         hit_box_height /= 2
-        
+
     def standUp(self):
         global hit_box_height
         hit_box_height *= 2
