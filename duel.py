@@ -6,11 +6,11 @@ import time
 #Joshua's Magical TODO list 
 # 1. Add player movement timer, when player isnt moving for .2 secs his sword should be up - DONE, could use some tweaking to make movement less shit
 # 2. Add gravity / jumping. Player should never be below y=ground - DONE, could use some tweaking to make jumps more realistic, player shouldnt be holding sword while airborne
+# 4. Add sword image functionality
+# 6. Create our buddy player two to test with
 
 # 3. Add hitbox values for the player at all times.
-# 4. Add sword image functionality
 # 5. Add sword hitboxes
-# 6. Create our buddy player two to test with
 # 7. Do stuff with sword hitboxes. People can die. OMG, now we have a somewhat competent looking game
 # 8. Dead guy respawns as ghost. Ghost kills person => person becomes ghost, ghost becomes person.
 # 9. Add some sort of background and goal points at either side of the map, so we can test screen movement
@@ -29,20 +29,59 @@ def get_image(path):
                 _image_library[path] = image
         return image
 
-def sword_positioning1(player1):
-	if(player1.sword_height == 1 and player1.direction_facing == 1):
-		player1.sprite = "FillerSpriteLow.png"
-	if(player1.sword_height == 2 and player1.direction_facing == 1):
-		player1.sprite = "FillerSpriteMed.png"
-	if(player1.sword_height == 3 and player1.direction_facing == 1):
-		player1.sprite = "FillerSpriteHigh.png"
-	if(player1.sword_height == 1 and player1.direction_facing == 0):
-		player1.sprite = "FillerSpriteLowR.png"
-	if(player1.sword_height == 2 and player1.direction_facing == 0):
-		player1.sprite = "FillerSpriteMedR.png"
-	if(player1.sword_height == 3 and player1.direction_facing == 0):
-		player1.sprite = "FillerSpriteHighR.png"
+def sword_positioning1(player):
+	if(player.sword_height == 1 and player.direction_facing == 1):
+		player.sprite = "FillerSpriteLow.png"
+	if(player.sword_height == 2 and player.direction_facing == 1):
+		player.sprite = "FillerSpriteMed.png"
+	if(player.sword_height == 3 and player.direction_facing == 1):
+		player.sprite = "FillerSpriteHigh.png"
+	if(player.sword_height == 1 and player.direction_facing == 0):
+		player.sprite = "FillerSpriteLowR.png"
+	if(player.sword_height == 2 and player.direction_facing == 0):
+		player.sprite = "FillerSpriteMedR.png"
+	if(player.sword_height == 3 and player.direction_facing == 0):
+		player.sprite = "FillerSpriteHighR.png"
         
+def determineHitBoxes(player): #THIS FUNCTION IS INCOMPLETE AND NOT IN USE
+	#Should return a list of [minX, maxX, minY, maxY, minSwordX, maxSwordX, minSwordY, maxSwordY]
+	returnList = []
+	returnList.append(player.getXPos())
+	returnList.append(player.getXPos() + 148)
+	returnList.append(player.getYPos())
+	returnList.append(player.getYPos() + 111)
+	#SWORD STUFF. -1 if sword is down. need to adjust for height of sword
+	returnList.append(-1)
+	returnList.append(-1)
+	returnList.append(-1)
+	returnList.append(-1)
+
+
+	return returnList
+
+def hitBoxComparison(p1, p2): #THIS FUNCTION IS INCOMPLETE AND NOT IN USE
+	#[minX, maxX, minY, maxY, minSwordX, maxSwordX, minSwordY, maxSwordY]
+
+	#if swords are touching
+		#disarm?
+		#clash?
+	if clashDetection(p1[4], p1[5], p1[6], p1[7], p2[4], p2[5], p2[6], p2[7]):
+		print("Clash")
+	#if p1 is in p2 sword
+	if clashDetection(p1[0], p1[1], p1[2], p1[3], p2[4], p2[5], p2[6], p2[7]):
+		print("Player 1 had an ouchie")
+	#if p2 is in p1 sword
+	if clashDetection(p2[0], p2[1], p2[2], p2[3], p1[4], p1[5], p1[6], p1[7]):
+		print("Player 2 had an ouchie")
+
+
+def clashDetection(xMin1, xMax1, yMin1, yMax1, xMin2, xMax2, yMin2, yMax2): #THIS FUNCTION IS INCOMPLETE AND NOT IN USE
+	for x in range(xMin2, xMax2):
+		for y in range(yMin2, yMax2):
+			if (x > xMin1 and x < xMax1 and y > yMin1 and y < yMax1):
+				return True
+	return False
+
 
 def main():
 	#JZ Player 1 Vars
@@ -58,8 +97,10 @@ def main():
 	#Player 2
 	setmovebool2 = True
 	setmovebool2b = True
+
 	moving1time = 0
 	moving2time = 0
+
 	setjump1bool = True
 	jumping1time = 0
 	#Player 2 jumping vars
