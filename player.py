@@ -1,7 +1,6 @@
 import time
 
 #change these
-shift_size = 0.6
 hit_box_width = 102
 hit_box_height = 140
 
@@ -74,8 +73,7 @@ class Player:
             #print(self._sprite)
        
     def moveLeft(self, time):
-        global shift_size
-        self._x_pos = self._x_pos - shift_size
+        self._x_pos -= 3.0
         if time>=0.25:
             self._direction_facing = 0
             self._sprite = "FillerSpriteR.png"
@@ -83,8 +81,7 @@ class Player:
             
         
     def moveRight(self, time):
-        global shift_size
-        self._x_pos = self._x_pos + shift_size
+        self._x_pos += 3.0
         if time>=0.25:
             self._direction_facing = 1
             self._sprite = "FillerSpriteL.png"
