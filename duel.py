@@ -3,6 +3,7 @@ import pygame
 import os
 import time
 
+#GRACE TESTING- trying to figure out how to use github
 
 #Joshua's Magical TODO list 
 # 1. Add player movement timer, when player isnt moving for .2 secs his sword should be up - DONE, could use some tweaking to make movement less shit
