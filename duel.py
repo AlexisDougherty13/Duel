@@ -59,8 +59,12 @@ def sword_positioning1(player1):
 
 def main():
 	#Initialize texture pack to handle loading, storing, and retrieving textures.
-	texture_pack = dict()
-
+    imagesDictionary = dict()
+    #texture_pack = {"stand_l": "", "stand_r": "", "sword_high_l": "skeletonHighL.png", 
+    #"sword_high_r": "skeletonHighR.png", "sword_med_l": "skeletonMedL.png", "sword_med_r": "skeletonMedR.png", "sword_low_l": "skeletonLowR.png", "sword_low_r": "skeletonLowR.png", 
+    #"duck_l": "", "duck_r": "", 
+    #"jump_l": "", "jump_r": "", "thrust_high_l": "", "thrust_high_r": "", 
+    #"thrust_med_l": "", "thrust_med_r": "", "thrust_low_l": "", "thrust_low_r": ""}
 
 	#JZ Player 1 Vars
 	p1ml = False
@@ -92,8 +96,8 @@ def main():
 	pygame.init()
 	screen = pygame.display.set_mode(window_size, 0, 32)
 
-	player1 = player.Player(400, 300, 1, 2, False, 'FillerSpriteMed.png')
-	player2 = player.Player(600, 300, 1, 2, False, 'FillerSpriteMed.png')
+	player1 = player.Player(400, 300, 1, 2, False, True, 'FillerSpriteMed.png')
+	player2 = player.Player(600, 300, 1, 2, False, False, 'FillerSpriteMed.png')
 	game = True
 
 	while game:
@@ -242,8 +246,7 @@ def main():
 				player2.setYPos(player2.getYPos() + 0.4)
 				if player2.getYPos() > 300:
 					player2.setYPos(300)
-
-
+					
 		screen.fill((255, 255, 255))
 		screen.blit(get_image("UF_Background.png", texture_pack), (0,0))
 		screen.blit(get_image(player1.sprite, texture_pack), (player1.getXPos(), player1.getYPos())) #(width, height)
