@@ -42,17 +42,17 @@ def get_image(path, _image_library):
 
 def sword_positioning1(player):
 	if(player.sword_height == 1 and player.direction_facing == 1):
-		player.sprite = "FillerSpriteLow.png"
+		player.sprite = player.image_dict["sword_low_r"]
 	if(player.sword_height == 2 and player.direction_facing == 1):
-		player.sprite = "FillerSpriteMed.png"
+		player.sprite = player.image_dict["sword_med_r"]
 	if(player.sword_height == 3 and player.direction_facing == 1):
-		player.sprite = "FillerSpriteHigh.png"
+		player.sprite = player.image_dict["sword_high_r"]
 	if(player.sword_height == 1 and player.direction_facing == 0):
-		player.sprite = "FillerSpriteLowR.png"
+		player.sprite = player.image_dict["sword_low_l"]
 	if(player.sword_height == 2 and player.direction_facing == 0):
-		player.sprite = "FillerSpriteMedR.png"
+		player.sprite = player.image_dict["sword_med_l"]
 	if(player.sword_height == 3 and player.direction_facing == 0):
-		player.sprite = "FillerSpriteHighR.png"
+		player.sprite = player.image_dict["sword_high_l"]
 
 def determineHitBoxes(player): #THIS FUNCTION IS INCOMPLETE AND NOT IN USE
 	#Should return a list of [minX, maxX, minY, maxY, minSwordX, maxSwordX, minSwordY, maxSwordY]
@@ -93,15 +93,20 @@ def clashDetection(xMin1, xMax1, yMin1, yMax1, xMin2, xMax2, yMin2, yMax2): #THI
 			if (x > xMin1 and x < xMax1 and y > yMin1 and y < yMax1):
 				return True
 	return False
+    
+def setSkins(characterType):
+    imagesDictionary = dict()
+    if(characterType == "Montoya"):
+        imagesDictionary = {"stand_l": "FillerSpriteL.png", "stand_r": "FillerSpriteR.png", "sword_high_l": "MontoyaHighL.png", "sword_high_r": "MontoyaHighR.png", "sword_med_l": "MontoyaMedL.png", "sword_med_r": "MontoyaMedR.png", "sword_low_l": "MontoyaLowL.png", "sword_low_r": "MontoyaLowR.png", "duck_l": "FillerSpriteL.png", "duck_r": "FillerSpriteR.png", "jump_l": "FillerSpriteL.png", "jump_r": "FillerSpriteR.png", "thrust_high_l": "FillerSpriteL.png", "thrust_high_r": "FillerSpriteR.png", "thrust_med_l": "FillerSpriteL.png", "thrust_med_r": "FillerSpriteR.png", "thrust_low_l": "FillerSpriteL.png", "thrust_low_r": "FillerSpriteR.png"}
+        return imagesDictionary
+    else:
+        # set a default skin
+        imagesDictionary = {"stand_l": "FillerSpriteL.png", "stand_r": "FillerSpriteR.png", "sword_high_l": "MontoyaHighL.png", "sword_high_r": "MontoyaHighR.png", "sword_med_l": "MontoyaMedL.png", "sword_med_r": "MontoyaMedR.png", "sword_low_l": "MontoyaLowL.png", "sword_low_r": "MontoyaLowR.png", "duck_l": "FillerSpriteL.png", "duck_r": "FillerSpriteR.png", "jump_l": "FillerSpriteL.png", "jump_r": "FillerSpriteR.png", "thrust_high_l": "FillerSpriteL.png", "thrust_high_r": "FillerSpriteR.png", "thrust_med_l": "FillerSpriteL.png", "thrust_med_r": "FillerSpriteR.png", "thrust_low_l": "FillerSpriteL.png", "thrust_low_r": "FillerSpriteR.png"}
+        return imagesDictionary
 
 def main():
+	texture_pack = dict()
 	#Initialize texture pack to handle loading, storing, and retrieving textures.
-    imagesDictionary = dict()
-    #texture_pack = {"stand_l": "", "stand_r": "", "sword_high_l": "skeletonHighL.png",
-    #"sword_high_r": "skeletonHighR.png", "sword_med_l": "skeletonMedL.png", "sword_med_r": "skeletonMedR.png", "sword_low_l": "skeletonLowR.png", "sword_low_r": "skeletonLowR.png",
-    #"duck_l": "", "duck_r": "",
-    #"jump_l": "", "jump_r": "", "thrust_high_l": "", "thrust_high_r": "",
-    #"thrust_med_l": "", "thrust_med_r": "", "thrust_low_l": "", "thrust_low_r": ""}
 
 	#JZ Player 1 Vars
 	p1ml = False
@@ -132,9 +137,10 @@ def main():
 
 	pygame.init()
 	screen = pygame.display.set_mode(window_size, 0, 32)
+    
 
-	player1 = player.Player(400, 300, 1, 2, False, True, 'FillerSpriteMed.png')
-	player2 = player.Player(600, 300, 1, 2, False, False, 'FillerSpriteMed.png')
+	player1 = player.Player(400, 300, 1, 2, False, True, 'MontoyaMedR.png', setSkins("Montoya"))
+	player2 = player.Player(600, 300, 1, 2, False, False, 'MontoyaMedL.png', setSkins("Montoya"))
 	game = True
 
 	while game:
@@ -224,9 +230,9 @@ def main():
 				elif (time.time() - moving1time) >= 0.25:
 					setmovebool1b = True
 					if p1ml:
-						player1.sprite = "FillerSpriteL.png"
+						player1.sprite = player1.image_dict["stand_l"]
 					if p1mr:
-						player1.sprite = "FillerSpriteR.png"
+						player1.sprite = player1.image_dict["stand_r"]
 				if p1ml:
 					player1.moveLeft(time.time() - moving1time)
 				if p1mr:
@@ -262,9 +268,9 @@ def main():
 				elif (time.time() - moving2time) >= 0.25:
 					setmovebool2b = True
 					if p2ml:
-						player2.sprite = "FillerSpriteL.png"
+						player2.sprite = player2.image_dict["stand_l"]
 					if p2mr:
-						player2.sprite = "FillerSpriteR.png"
+						player2.sprite = player2.image_dict["stand_r"]
 				if p2ml:
 					player2.moveLeft(time.time() - moving2time)
 				if p2mr:
