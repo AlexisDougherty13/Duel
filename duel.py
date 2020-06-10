@@ -34,25 +34,25 @@ import time
 
 
 def get_image(path, _image_library):
-        if path not in _image_library:
-                canonicalized_path = path.replace('/', os.sep).replace('\\', os.sep)
-                image = pygame.image.load(canonicalized_path).convert_alpha()
-                _image_library[path] = image
-        return _image_library[path]
+		if path not in _image_library:
+				canonicalized_path = path.replace('/', os.sep).replace('\\', os.sep)
+				image = pygame.image.load(canonicalized_path).convert_alpha()
+				_image_library[path] = image
+		return _image_library[path]
 
 def sword_positioning1(player):
 	if(player.sword_height == 1 and player.direction_facing == 1):
-		player.sprite = "FillerSpriteLow.png"
+		player.sprite = "skeletonLowR.png"
 	if(player.sword_height == 2 and player.direction_facing == 1):
-		player.sprite = "FillerSpriteMed.png"
+		player.sprite = "skeletonMedR.png"
 	if(player.sword_height == 3 and player.direction_facing == 1):
-		player.sprite = "FillerSpriteHigh.png"
+		player.sprite = "skeletonHighR.png"
 	if(player.sword_height == 1 and player.direction_facing == 0):
-		player.sprite = "FillerSpriteLowR.png"
+		player.sprite = "skeletonLowR.png"
 	if(player.sword_height == 2 and player.direction_facing == 0):
-		player.sprite = "FillerSpriteMedR.png"
+		player.sprite = "skeletonMedR.png"
 	if(player.sword_height == 3 and player.direction_facing == 0):
-		player.sprite = "FillerSpriteHighR.png"
+		player.sprite = "skeletonHighR.png"
 
 def determineHitBoxes(player): #THIS FUNCTION IS INCOMPLETE AND NOT IN USE
 	#Should return a list of [minX, maxX, minY, maxY, minSwordX, maxSwordX, minSwordY, maxSwordY]
@@ -96,12 +96,17 @@ def clashDetection(xMin1, xMax1, yMin1, yMax1, xMin2, xMax2, yMin2, yMax2): #THI
 
 def main():
 	#Initialize texture pack to handle loading, storing, and retrieving textures.
-    imagesDictionary = dict()
-    #texture_pack = {"stand_l": "", "stand_r": "", "sword_high_l": "skeletonHighL.png",
-    #"sword_high_r": "skeletonHighR.png", "sword_med_l": "skeletonMedL.png", "sword_med_r": "skeletonMedR.png", "sword_low_l": "skeletonLowR.png", "sword_low_r": "skeletonLowR.png",
-    #"duck_l": "", "duck_r": "",
-    #"jump_l": "", "jump_r": "", "thrust_high_l": "", "thrust_high_r": "",
-    #"thrust_med_l": "", "thrust_med_r": "", "thrust_low_l": "", "thrust_low_r": ""}
+	imagesDictionary = dict()
+	#texture_pack = {"stand_l": "", "stand_r": "", "sword_high_l": "skeletonHighL.png",
+	#"sword_high_r": "skeletonHighR.png", "sword_med_l": "skeletonMedL.png", "sword_med_r": "skeletonMedR.png", "sword_low_l": "skeletonLowR.png", "sword_low_r": "skeletonLowR.png",
+	#"duck_l": "", "duck_r": "",
+	#"jump_l": "", "jump_r": "", "thrust_high_l": "", "thrust_high_r": "",
+	#"thrust_med_l": "", "thrust_med_r": "", "thrust_low_l": "", "thrust_low_r": ""}
+
+	#Stores rectangles for collision
+	entities = []
+	floor_rect = pygame.Rect(100, 200, 200, 100)
+	entities.append(floor_rect)
 
 	#JZ Player 1 Vars
 	p1ml = False
@@ -111,8 +116,8 @@ def main():
 	setmovebool1b = True
 	moving1time = 0
 	moving2time = 0
-	setjump1bool = True
-	jumping1time = 0
+	player1_momentum = 0
+	collide = False
 
 	#Player 2 Variables (Test Version)
 	p2ml = False
@@ -133,16 +138,17 @@ def main():
 	pygame.init()
 	screen = pygame.display.set_mode(window_size, 0, 32)
 
-	player1 = player.Player(400, 300, 1, 2, False, True, 'FillerSpriteMed.png')
+	player1 = player.Player(400, 300, 1, 2, False, True, 'skeletonMedR.png')
 	player2 = player.Player(600, 300, 1, 2, False, False, 'FillerSpriteMed.png')
 	game = True
 
 	while game:
 		#Delta time is implemented to help make sure that player's models will move at the same speed regardless of monitor refresh rate and processor speed.
 		#Could use further optimizing and troubleshooting.
+		screen.fill((255,255,255))
 		clock.tick(120)
-		pressed = pygame.key.get_pressed()
-		alt_held = pressed[pygame.K_LALT] or pressed[pygame.K_RALT]
+		x_shift = 0
+		y_shift = 0
 
 
 		for event in pygame.event.get():
@@ -167,7 +173,7 @@ def main():
 						p2mr=True
 				if event.key == pygame.K_SPACE:
 					if selected_player == 1:
-						p1mu=True
+						player1_momentum = -5
 					elif selected_player == 2:
 						p2mu=True
 				if event.key == pygame.K_s:
@@ -207,44 +213,30 @@ def main():
 						p2mu=False
 
 
+
+
+
+
 		#NON EVENT BASED ACTIONS
 		#Player 1 Sprite/Movement
 		if selected_player == 1:
-			if not p1mr and not p1ml:
-				if setmovebool1:
-					moving1time = time.time()
-					setmovebool1 = False
-				elif (time.time() - moving1time) >= 0.25:
-					setmovebool1 = True
-					sword_positioning1(player1)
-			else:
-				if setmovebool1b:
-					moving1time = time.time()
-					setmovebool1b = False
-				elif (time.time() - moving1time) >= 0.25:
-					setmovebool1b = True
-					if p1ml:
-						player1.sprite = "FillerSpriteL.png"
-					if p1mr:
-						player1.sprite = "FillerSpriteR.png"
-				if p1ml:
-					player1.moveLeft(time.time() - moving1time)
-				if p1mr:
-					player1.moveRight(time.time() - moving1time)
-			if p1mu and player1.y_pos == 300:
-				#switch to jump sprite, sword shouldnt be up
-				if setjump1bool:
-					jumping1time = time.time()
-					setjump1bool = False
-			if not setjump1bool:
-				print("jumptime")
-				player1.setYPos(player1.getYPos()- 1.0)
-				if (time.time() - jumping1time) >= 0.5:
-					setjump1bool = True
-			if player1.getYPos() < 300:
-				player1.setYPos(player1.getYPos()+ 0.4)
-				if player1.getYPos() >300:
-					player1.setYPos(300)
+			if p1ml:
+				x_shift += -3
+			if p1mr:
+				x_shift += 3
+
+			y_shift = player1_momentum
+			player1_momentum += 0.2
+			if player1_momentum > 3:
+				player1_momentum = 3
+
+			collision_type = player1.move(x_shift, y_shift, entities)
+
+			if collision_type["bottom"]:
+				player1_momentum = 0
+
+
+
 
 		#Player 2 Sprite Drawing/Movement
 		elif selected_player == 2:  #We can start compressing some of these conditionals into separate functions for readability.
@@ -284,12 +276,14 @@ def main():
 				if player2.getYPos() > 300:
 					player2.setYPos(300)
 
-		screen.fill((255, 255, 255))
-		screen.blit(get_image("UF_Background.png", texture_pack), (0,0))
-		screen.blit(get_image(player1.sprite, texture_pack), (player1.getXPos(), player1.getYPos())) #(width, height)
-		screen.blit(get_image(player2.sprite, texture_pack), (player2.getXPos(), player2.getYPos()))
 
-		pygame.display.flip()
+		screen.fill((255, 255, 255))
+		screen.blit(get_image("UF_Background.png", imagesDictionary), (0,0))
+		pygame.draw.rect(screen, (255,0,0), entities[0])
+		screen.blit(get_image(player1.sprite, imagesDictionary), (player1.player_rect.x, player1.player_rect.y)) #(width, height)
+		screen.blit(get_image(player2.sprite, imagesDictionary), (player2.getXPos(), player2.getYPos()))
+
+		pygame.display.update()
 
 main()
 
