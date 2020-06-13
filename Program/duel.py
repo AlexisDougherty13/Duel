@@ -43,17 +43,17 @@ def get_image(path, _image_library):
 def sword_positioning1(player):
 	if(player.sword_height == 1 and player.direction_facing == 1):
 
-		player.sprite = player.image_dict["sword_low_r"]
+		player.sprite = player.image_dict["../Resources/Images/sword_low_r"]
 	if(player.sword_height == 2 and player.direction_facing == 1):
-		player.sprite = player.image_dict["sword_med_r"]
+		player.sprite = player.image_dict["../Resources/Images/sword_med_r"]
 	if(player.sword_height == 3 and player.direction_facing == 1):
-		player.sprite = player.image_dict["sword_high_r"]
+		player.sprite = player.image_dict["../Resources/Images/sword_high_r"]
 	if(player.sword_height == 1 and player.direction_facing == 0):
-		player.sprite = player.image_dict["sword_low_l"]
+		player.sprite = player.image_dict["../Resources/Images/sword_low_l"]
 	if(player.sword_height == 2 and player.direction_facing == 0):
-		player.sprite = player.image_dict["sword_med_l"]
+		player.sprite = player.image_dict["../Resources/Images/sword_med_l"]
 	if(player.sword_height == 3 and player.direction_facing == 0):
-		player.sprite = player.image_dict["sword_high_l"]
+		player.sprite = player.image_dict["../Resources/Images/sword_high_l"]
 
 def determineHitBoxes(player): #THIS FUNCTION IS INCOMPLETE AND NOT IN USE
 	#Should return a list of [minX, maxX, minY, maxY, minSwordX, maxSwordX, minSwordY, maxSwordY]
@@ -96,14 +96,14 @@ def clashDetection(xMin1, xMax1, yMin1, yMax1, xMin2, xMax2, yMin2, yMax2): #THI
 	return False
     
 def setSkins(characterType):
-    imagesDictionary = dict()
-    if(characterType == "Montoya"):
-        imagesDictionary = {"stand_l": "MontoyaRunL.png", "stand_r": "MontoyaRunR.png", "sword_high_l": "MontoyaHighL.png", "sword_high_r": "MontoyaHighR.png", "sword_med_l": "MontoyaMedL.png", "sword_med_r": "MontoyaMedR.png", "sword_low_l": "MontoyaLowL.png", "sword_low_r": "MontoyaLowR.png", "duck_l": "FillerSpriteL.png", "duck_r": "FillerSpriteR.png", "jump_l": "FillerSpriteL.png", "jump_r": "FillerSpriteR.png", "thrust_high_l": "FillerSpriteL.png", "thrust_high_r": "FillerSpriteR.png", "thrust_med_l": "FillerSpriteL.png", "thrust_med_r": "FillerSpriteR.png", "thrust_low_l": "FillerSpriteL.png", "thrust_low_r": "FillerSpriteR.png"}
-        return imagesDictionary
-    else:
-        # set a default skin
-        imagesDictionary = {"stand_l": "MontoyaRunL.png", "stand_r": "MontoyaRunR.png", "sword_high_l": "MontoyaHighL.png", "sword_high_r": "MontoyaHighR.png", "sword_med_l": "MontoyaMedL.png", "sword_med_r": "MontoyaMedR.png", "sword_low_l": "MontoyaLowL.png", "sword_low_r": "MontoyaLowR.png", "duck_l": "FillerSpriteL.png", "duck_r": "FillerSpriteR.png", "jump_l": "FillerSpriteL.png", "jump_r": "FillerSpriteR.png", "thrust_high_l": "FillerSpriteL.png", "thrust_high_r": "FillerSpriteR.png", "thrust_med_l": "FillerSpriteL.png", "thrust_med_r": "FillerSpriteR.png", "thrust_low_l": "FillerSpriteL.png", "thrust_low_r": "FillerSpriteR.png"}
-        return imagesDictionary
+	imagesDictionary = dict()
+	if(characterType == "Montoya"):
+		imagesDictionary = {"../Resources/Images/stand_l": "../Resources/Images/MontoyaRunL.png", "../Resources/Images/stand_r": "../Resources/Images/MontoyaRunR.png", "../Resources/Images/sword_high_l": "../Resources/Images/MontoyaHighL.png", "../Resources/Images/sword_high_r": "../Resources/Images/MontoyaHighR.png", "../Resources/Images/sword_med_l": "../Resources/Images/MontoyaMedL.png", "../Resources/Images/sword_med_r": "../Resources/Images/MontoyaMedR.png", "../Resources/Images/sword_low_l": "../Resources/Images/MontoyaLowL.png", "../Resources/Images/sword_low_r": "../Resources/Images/MontoyaLowR.png", "../Resources/Images/duck_l": "../Resources/Images/FillerSpriteL.png", "../Resources/Images/duck_r": "../Resources/Images/FillerSpriteR.png", "../Resources/Images/jump_l": "../Resources/Images/FillerSpriteL.png", "../Resources/Images/jump_r": "../Resources/Images/FillerSpriteR.png", "../Resources/Images/thrust_high_l": "../Resources/Images/FillerSpriteL.png", "../Resources/Images/thrust_high_r": "../Resources/Images/FillerSpriteR.png", "../Resources/Images/thrust_med_l": "../Resources/Images/FillerSpriteL.png", "../Resources/Images/thrust_med_r": "../Resources/Images/FillerSpriteR.png", "../Resources/Images/thrust_low_l": "../Resources/Images/FillerSpriteL.png", "../Resources/Images/thrust_low_r": "../Resources/Images/FillerSpriteR.png"}
+		return imagesDictionary
+	else:
+		# set a default skin
+		imagesDictionary = {"../Resources/Images/stand_l": "../Resources/Images/MontoyaRunL.png", "../Resources/Images/stand_r": "../Resources/Images/MontoyaRunR.png", "../Resources/Images/sword_high_l": "../Resources/Images/MontoyaHighL.png", "../Resources/Images/sword_high_r": "../Resources/Images/MontoyaHighR.png", "../Resources/Images/sword_med_l": "../Resources/Images/MontoyaMedL.png", "../Resources/Images/sword_med_r": "../Resources/Images/MontoyaMedR.png", "../Resources/Images/sword_low_l": "../Resources/Images/MontoyaLowL.png", "../Resources/Images/sword_low_r": "../Resources/Images/MontoyaLowR.png", "../Resources/Images/duck_l": "../Resources/Images/FillerSpriteL.png", "../Resources/Images/duck_r": "../Resources/Images/FillerSpriteR.png", "../Resources/Images/jump_l": "../Resources/Images/FillerSpriteL.png", "../Resources/Images/jump_r": "../Resources/Images/FillerSpriteR.png", "../Resources/Images/thrust_high_l": "../Resources/Images/FillerSpriteL.png", "../Resources/Images/thrust_high_r": "../Resources/Images/FillerSpriteR.png", "../Resources/Images/thrust_med_l": "../Resources/Images/FillerSpriteL.png", "../Resources/Images/thrust_med_r": "../Resources/Images/FillerSpriteR.png", "../Resources/Images/thrust_low_l": "../Resources/Images/FillerSpriteL.png", "../Resources/Images/thrust_low_r": "../Resources/Images/FillerSpriteR.png"}
+		return imagesDictionary
 
 def main():
 	texture_pack = dict()
@@ -120,8 +120,10 @@ def main():
 	entities = []
 	floor_rect = pygame.Rect(-100, 400, 1100, 200)
 	entities.append(floor_rect)
-	block_rect = pygame.Rect(100, 200, 100, 100)
+	block_rect = pygame.Rect(100, 300, 100, 100)
 	entities.append(block_rect)
+	block2_rect = pygame.Rect(800, 300, 100, 100)
+	entities.append(block2_rect)
 
 
 	#JZ Player 1 Vars
@@ -155,8 +157,8 @@ def main():
     
 
 
-	player1 = player.Player(400, 300, 1, 2, False, True, 'MontoyaMedR.png', setSkins("Montoya"))
-	player2 = player.Player(600, 300, 1, 2, False, False, 'MontoyaMedL.png', setSkins("Montoya"))
+	player1 = player.Player(400, 100, 1, 2, False, True, '../Resources/Images/MontoyaMedR.png', setSkins("Montoya"))
+	player2 = player.Player(600, 300, 1, 2, False, False, '../Resources/Images/MontoyaMedL.png', setSkins("Montoya"))
 
 	game = True
 
@@ -294,9 +296,10 @@ def main():
 
 
 		screen.fill((255, 255, 255))
-		screen.blit(get_image("UF_Background.png", imagesDictionary), (0,0))
+		screen.blit(get_image("../Resources/Images/UF_Background.png", imagesDictionary), (0,0))
 		pygame.draw.rect(screen, (255,0,0), entities[0])
-		pygame.draw.rect(screen, (255,0,0), entities[1])
+		pygame.draw.rect(screen, (255,0,255), entities[1])
+		pygame.draw.rect(screen, (255,0,255), entities[2])
 		screen.blit(get_image(player1.sprite, imagesDictionary), (player1.player_rect.x, player1.player_rect.y)) #(width, height)
 		#screen.blit(get_image(player2.sprite, imagesDictionary), (player2.getXPos(), player2.getYPos()))
 
