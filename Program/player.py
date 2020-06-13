@@ -31,7 +31,7 @@ class Player:
         self._is_ghost = is_ghost
         self._is_locked_on = is_locked_on
         self._sprite = sprite
-        self.player_rect = pygame.Rect(x_pos,y_pos,80, 111)
+        self.player_rect = pygame.Rect(x_pos, y_pos, 61, 140)
         self._image_dict = image_dict
     def getXPos(self):
         return self._x_pos
@@ -85,6 +85,12 @@ class Player:
     def setSprite(self, sprite):
 
         self._sprite = sprite
+
+    def getImageDict(self):
+        return self._image_dict
+
+    def setImageDict(self, image_dict):
+        self._image_dict = image_dict
 
     def move(self, x_shift, y_shift, entities):
         collisions = {"top": False, "bottom": False, "left": False, "right": False}
