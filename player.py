@@ -2,7 +2,7 @@
 .. module:: Player
 .. synopsis: module for a player object
 """
-
+import pygame
 import time
 
 #change these
@@ -30,7 +30,8 @@ class Player:
         self._is_ghost = is_ghost
         self._is_locked_on = is_locked_on
         self._sprite = sprite
-        
+        self.player_rect = pygame.Rect(x_pos,y_pos,80, 111)
+
     def getXPos(self):
         return self._x_pos
         
@@ -81,7 +82,40 @@ class Player:
         return self._sprite
         
     def setSprite(self, sprite):
-        self._sprite = sprite  
+        self._sprite = sprite
+
+    def move(self, x_shift, y_shift, entities):
+        collisions = {"top": False, "bottom": False, "left": False, "right": False}
+        self.player_rect.x += x_shift
+        collision_list = self.test_collision(entities)
+        for objects in collision_list:
+            if x_shift > 0: #Moving right
+                self.player_rect.right = objects.left
+                collisions["right"] = True
+            elif x_shift < 0: #Moving left
+                self.player_rect.left = objects.right
+                collisions["left"] = True
+        #Lock player to look at other player when standing still or moving short time.
+        #Flip player if they have been moving a certain amount of time.
+        self.player_rect.y += y_shift
+        collision_list = self.test_collision(entities)
+        for objects in collision_list:
+            if y_shift < 0: #Moving up
+                self.player_rect.top = objects.bottom
+                collisions["top"] = True
+            elif y_shift > 0: #Moving down
+                self.player_rect.bottom = objects.top
+                collisions["bottom"] = True
+
+        return collisions
+
+
+    def test_collision(self, entities):
+        collision_list = []
+        for objects in entities:
+            if self.player_rect.colliderect(objects):
+                collision_list.append(objects)
+        return collision_list
        
     def moveLeft(self, time):
         self._x_pos -= 3.0
@@ -94,7 +128,7 @@ class Player:
         if time>=0.25:
             self._direction_facing = 1
             self._sprite = "FillerSpriteL.png"
-           
+
     # 0 means no sword, 3 is high, 2 is med, 1 is low sword
     def raiseSword(self):
         if(self._sword_height >= 1 and self._sword_height < 3):
