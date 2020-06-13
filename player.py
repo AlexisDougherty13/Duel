@@ -20,9 +20,10 @@ class Player:
        :param is_ghost: True if the player has respawned as a ghost and False if the player is not currently a ghost
        :param is_locked_on: True if camera is following this player, False otherwise
        :param sprite: the image name for the player's current motion
+       :param image_dict: a dictionary of image file names for each motion
     """
 
-    def __init__(self, x_pos, y_pos, direction_facing, sword_height, is_ghost, is_locked_on, sprite):
+    def __init__(self, x_pos, y_pos, direction_facing, sword_height, is_ghost, is_locked_on, sprite, image_dict):
         self._x_pos = x_pos
         self._y_pos = y_pos
         self._direction_facing = direction_facing
@@ -31,7 +32,7 @@ class Player:
         self._is_locked_on = is_locked_on
         self._sprite = sprite
         self.player_rect = pygame.Rect(x_pos,y_pos,80, 111)
-
+        self._image_dict = image_dict
     def getXPos(self):
         return self._x_pos
         
@@ -82,6 +83,7 @@ class Player:
         return self._sprite
         
     def setSprite(self, sprite):
+
         self._sprite = sprite
 
     def move(self, x_shift, y_shift, entities):
@@ -121,14 +123,15 @@ class Player:
         self._x_pos -= 3.0
         if time>=0.25:
             self._direction_facing = 0
-            self._sprite = "FillerSpriteR.png"   
+            self._sprite = self._image_dict["stand_l"]   
         
     def moveRight(self, time):
         self._x_pos += 3.0
         if time>=0.25:
             self._direction_facing = 1
-            self._sprite = "FillerSpriteL.png"
 
+            self._sprite = self._image_dict["stand_l"]  
+           
     # 0 means no sword, 3 is high, 2 is med, 1 is low sword
     def raiseSword(self):
         if(self._sword_height >= 1 and self._sword_height < 3):
@@ -153,6 +156,7 @@ class Player:
     is_ghost = property(getIsGhost, setIsGhost)
     is_locked_on = property(getIsLockedOn, setIsLockedOn)
     sprite = property(getSprite, setSprite)
+    image_dict = property(getImageDict, setImageDict)
     
     move_left = property(moveLeft)
     move_right = property(moveRight)
