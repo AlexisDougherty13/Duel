@@ -20,9 +20,10 @@ class Player:
        :param is_ghost: True if the player has respawned as a ghost and False if the player is not currently a ghost
        :param is_locked_on: True if camera is following this player, False otherwise
        :param sprite: the image name for the player's current motion
+       :param image_dict: a dictionary of image file names for each motion
     """
 
-    def __init__(self, x_pos, y_pos, direction_facing, sword_height, is_ghost, is_locked_on, sprite):
+    def __init__(self, x_pos, y_pos, direction_facing, sword_height, is_ghost, is_locked_on, sprite, image_dict):
         self._x_pos = x_pos
         self._y_pos = y_pos
         self._direction_facing = direction_facing
@@ -31,7 +32,7 @@ class Player:
         self._is_locked_on = is_locked_on
         self._sprite = sprite
         self.player_rect = pygame.Rect(x_pos,y_pos,80, 111)
-        
+        self._image_dict = image_dict
     def getXPos(self):
         return self._x_pos
         
@@ -82,6 +83,7 @@ class Player:
         return self._sprite
         
     def setSprite(self, sprite):
+
         self._sprite = sprite
 
     def move(self, x_shift, y_shift, entities):
@@ -90,22 +92,21 @@ class Player:
         collision_list = self.test_collision(entities)
         for objects in collision_list:
             if x_shift > 0: #Moving right
-                self.player_rect.right = objects.left - 3
+                self.player_rect.right = objects.left
                 collisions["right"] = True
             elif x_shift < 0: #Moving left
-                self.player_rect.left = objects.right + 3
+                self.player_rect.left = objects.right
                 collisions["left"] = True
         #Lock player to look at other player when standing still or moving short time.
         #Flip player if they have been moving a certain amount of time.
-        collision_list = self.test_collision(entities)
         self.player_rect.y += y_shift
-        print(self.player_rect.y)
+        collision_list = self.test_collision(entities)
         for objects in collision_list:
             if y_shift < 0: #Moving up
-                self.player_rect.top = objects.bottom + 3
+                self.player_rect.top = objects.bottom
                 collisions["top"] = True
             elif y_shift > 0: #Moving down
-                self.player_rect.bottom = objects.top - 3
+                self.player_rect.bottom = objects.top
                 collisions["bottom"] = True
 
         return collisions
@@ -114,7 +115,7 @@ class Player:
     def test_collision(self, entities):
         collision_list = []
         for objects in entities:
-            if self._player_rect.colliderect(objects):
+            if self.player_rect.colliderect(objects):
                 collision_list.append(objects)
         return collision_list
        
@@ -122,14 +123,15 @@ class Player:
         self._x_pos -= 3.0
         if time>=0.25:
             self._direction_facing = 0
-            self._sprite = "FillerSpriteR.png"   
+            self._sprite = self._image_dict["stand_l"]   
         
     def moveRight(self, time):
         self._x_pos += 3.0
         if time>=0.25:
             self._direction_facing = 1
-            self._sprite = "FillerSpriteL.png"
 
+            self._sprite = self._image_dict["stand_l"]  
+           
     # 0 means no sword, 3 is high, 2 is med, 1 is low sword
     def raiseSword(self):
         if(self._sword_height >= 1 and self._sword_height < 3):
@@ -154,6 +156,7 @@ class Player:
     is_ghost = property(getIsGhost, setIsGhost)
     is_locked_on = property(getIsLockedOn, setIsLockedOn)
     sprite = property(getSprite, setSprite)
+    image_dict = property(getImageDict, setImageDict)
     
     move_left = property(moveLeft)
     move_right = property(moveRight)
@@ -161,3 +164,4 @@ class Player:
     lower_sword = property(lowerSword)
     duck = property(duck)
     standUp = property(standUp)
+
