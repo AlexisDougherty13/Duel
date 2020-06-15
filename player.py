@@ -2,7 +2,7 @@
 .. module:: Player
 .. synopsis: module for a player object
 """
-import pygame
+from pygame import Rect
 import time
 
 #change these
@@ -10,6 +10,7 @@ hit_box_width = 102
 hit_box_height = 140
 
 # 102x203
+
 
 class Player:
     """Class representing individual players' avatar, their attributes, and movement
@@ -22,7 +23,6 @@ class Player:
        :param sprite: the image name for the player's current motion
        :param image_dict: a dictionary of image file names for each motion
     """
-
     def __init__(self, x_pos, y_pos, direction_facing, sword_height, is_ghost, is_locked_on, sprite, image_dict):
         self._x_pos = x_pos
         self._y_pos = y_pos
@@ -31,8 +31,11 @@ class Player:
         self._is_ghost = is_ghost
         self._is_locked_on = is_locked_on
         self._sprite = sprite
-        self.player_rect = pygame.Rect(x_pos, y_pos, 61, 140)
+        self.player_rect = Rect(x_pos, y_pos, 61, 140)
         self._image_dict = image_dict
+        self._is_on_wall = ""
+        self._is_on_ground = False
+
     def getXPos(self):
         return self._x_pos
 
@@ -44,6 +47,18 @@ class Player:
 
     def setYPos(self, new_y_pos):
         self._y_pos = new_y_pos
+
+    def getOnGround(self):
+        return self._is_on_ground
+
+    def setOnGround(self, new_is_on_ground):
+        self._is_on_ground = new_is_on_ground
+
+    def getOnWall(self):
+        return self._is_on_wall
+
+    def setOnWall(self, new_is_on_wall):
+        self._is_on_ground = new_is_on_wall
 
     def getDirectionFacing(self):
         return self._direction_facing
@@ -65,7 +80,7 @@ class Player:
         return self._is_ghost
 
     def setIsGhost(self):
-        if(self._is_ghost):
+        if self._is_ghost:
             self._is_ghost = False
         else:
             self._is_ghost = True
@@ -74,7 +89,7 @@ class Player:
         return self._is_locked_on
 
     def setIsLockedOn(self):
-        if(self._is_locked_on):
+        if self._is_locked_on:
             self._is_locked_on = False
         else:
             self._is_locked_on = True
@@ -92,20 +107,24 @@ class Player:
     def setImageDict(self, image_dict):
         self._image_dict = image_dict
 
-    def move(self, x_shift, y_shift, entities):
-        collisions = {"top": False, "bottom": False, "left": False, "right": False}
-        self.player_rect.x += x_shift
-        collision_list = self.test_collision(entities)
+    def move(self, x_shift, y_shift, entities): #TODO Check for being stabbed in this method
+        collisions = {"top": False, "bottom": False, "left": False, "right": False} #List of directions that have collisions
+        self.player_rect.x += x_shift                                               #Move the player by given amount on the X cordinate
+        collision_list = self.test_collision(entities)                              #Test all entities on the map for collision with player
+        self._is_on_wall = ""
+        self._is_on_ground = False
         for objects in collision_list:
             if x_shift > 0: #Moving right
                 self.player_rect.right = objects.left
                 collisions["right"] = True
+                self._is_on_wall = "right"
             elif x_shift < 0: #Moving left
                 self.player_rect.left = objects.right
                 collisions["left"] = True
+                self._is_on_wall = "left"
         #Lock player to look at other player when standing still or moving short time.
         #Flip player if they have been moving a certain amount of time.
-        self.player_rect.y += y_shift
+        self.player_rect.y += y_shift                                               #Move the player by given amount on the X cordinate
         collision_list = self.test_collision(entities)
         for objects in collision_list:
             if y_shift < 0: #Moving up
@@ -114,6 +133,7 @@ class Player:
             elif y_shift > 0: #Moving down
                 self.player_rect.bottom = objects.top
                 collisions["bottom"] = True
+                self._is_on_ground = True
 
         return collisions
 
@@ -157,16 +177,17 @@ class Player:
 
     x_pos = property(getXPos, setXPos)
     y_pos = property(getYPos, setYPos)
+    is_on_ground = property(getOnGround, setOnGround)
+    is_on_wall = property(getOnWall, setOnWall) #is one of 3 strings "left" , "right" , "" empty string means not on wall
     direction_facing = property(getDirectionFacing, switchDirection)
     sword_height = property(getSwordHeight, setSwordHeight)
     is_ghost = property(getIsGhost, setIsGhost)
     is_locked_on = property(getIsLockedOn, setIsLockedOn)
     sprite = property(getSprite, setSprite)
     image_dict = property(getImageDict, setImageDict)
-
     move_left = property(moveLeft)
     move_right = property(moveRight)
     raise_sword = property(raiseSword)
     lower_sword = property(lowerSword)
     duck = property(duck)
-    standUp = property(standUp)
+    stand_up = property(standUp)
