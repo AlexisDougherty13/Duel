@@ -3,7 +3,7 @@ import gameEngine
 
 
 def main():
-    gameEngine.mainMenu(window.startScreen)
+    gameEngine.mainMenu(window.startScreen())
 
 
 if __name__ == '__main__':

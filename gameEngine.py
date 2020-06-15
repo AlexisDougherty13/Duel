@@ -69,7 +69,6 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
         clock.tick(120)
 
         for event in pygame.event.get():
-
             # What to do on quit
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -122,9 +121,9 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
         elif p1_meta_info["right"]:
             p1_x_shift += 3
         if p1_meta_info["up"] and player1.is_on_ground:#TODO: make better Gravity
-            player1_y_vel =6
+            player1_y_vel =-10
         elif not player1.is_on_ground: #TODO: make better Gravity
-            player1_y_vel += (-player1_y_vel/3) -1
+            player1_y_vel = (player1_y_vel/6) +1
 
         p1_y_shift = player1_y_vel
         collisions = player1.move(p1_x_shift, p1_y_shift, entities)

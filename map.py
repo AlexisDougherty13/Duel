@@ -3,10 +3,10 @@
 .. synopsis: module for a map object
 """
 from pygame import Rect
-import abc
+from abc import ABC, abstractmethod
 
 
-class Map(metaclass=abc.ABCMeta):
+class Map(ABC):
     """Class representing a General Map's attributes, this is applied to all maps, this is an abstract class
            :param x_length: the player's x-coordinate
            :param y_length: the player's y-coordinate
@@ -19,59 +19,64 @@ class Map(metaclass=abc.ABCMeta):
            :param floor_height: a set height for the floor
         """
 
-    def __init__(self, new_x_length, new_y_length, p1_init_x_pos, p1_init_y_pos, p2_init_x_pos, p2_init_y_pos, background, assets_dict):
-        self.x_length = new_x_length
-        self.y_length = new_y_length
-        self.p1_init_x_pos = p1_init_x_pos
-        self.p1_init_y_pos = p1_init_y_pos
-        self.p2_init_x_pos = p2_init_x_pos
-        self.p2_init_y_pos = p2_init_y_pos
-        self.background = background
-        self.assets_dict = assets_dict
-        self.collidable_entities = []
+    def __init__(self, x_length, y_length, p1_init_x_pos, p1_init_y_pos, p2_init_x_pos, p2_init_y_pos, background, assets_dict):
+        self._x_length = x_length
+        self._y_length = y_length
+        self._p1_init_pos = {
+            "X": p1_init_x_pos,
+            "Y": p1_init_y_pos
+        }
+        self._p2_init_pos = {
+            "X": p2_init_x_pos,
+            "Y": p2_init_y_pos
+        }
+        self._background = background
+        self._assets_dict = assets_dict
+        self._collidable_entities = []
 
-    @abc.abstractmethod
+    # abstract method
+    ##@abstractmethod
     def setCollidableEntities(self):
         pass
 
     def getCollidableEntities(self):
-        return self.collidable_entities
+        return self._collidable_entities
 
     def getXLength(self):
-        return self.x_length
+        return self._x_length
 
     def setXLength(self, length):
-        self.x_length = length
+        self._x_length = length
 
     def getYLength(self):
-        return self.y_length
+        return self._y_length
 
     def setYLength(self, length):
-        self.y_length = length
+        self._y_length = length
 
     def getP1InitialPosition(self):
-        return self.p1_init_pos
+        return self._p1_init_pos
 
     def setP1InitialPosition(self, x_pos, y_pos):
-        self.p1_init_pos = {
+        self._p1_init_pos = {
             "X": x_pos,
             "Y": y_pos
             }
 
     def getP2InitialPosition(self):
-        return self.p2_init_pos
+        return self._p2_init_pos
 
     def setP2InitialPosition(self, x_pos, y_pos):
-        self.p1_init_pos = {
+        self._p1_init_pos = {
             "X": x_pos,
             "Y": y_pos
         }
 
     def getBackground(self):
-        return self.background
+        return self._background
 
     def setBackground(self, new_background):
-        self.background = new_background
+        self._background = new_background
 
     #collidable_entities = property(getCollidableEntities, setCollidableEntities)
     x_length = property(getXLength, setXLength)

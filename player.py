@@ -33,8 +33,8 @@ class Player:
         self._sprite = sprite
         self.player_rect = Rect(x_pos, y_pos, 61, 140)
         self._image_dict = image_dict
-        self.is_on_wall = ""
-        self.is_on_ground = False
+        self._is_on_wall = ""
+        self._is_on_ground = False
 
     def getXPos(self):
         return self._x_pos
@@ -49,16 +49,16 @@ class Player:
         self._y_pos = new_y_pos
 
     def getOnGround(self):
-        return self.is_on_ground
+        return self._is_on_ground
 
     def setOnGround(self, new_is_on_ground):
-        self.is_on_ground = new_is_on_ground
+        self._is_on_ground = new_is_on_ground
 
     def getOnWall(self):
-        return self.is_on_wall
+        return self._is_on_wall
 
     def setOnWall(self, new_is_on_wall):
-        self.is_on_ground = new_is_on_wall
+        self._is_on_ground = new_is_on_wall
 
     def getDirectionFacing(self):
         return self._direction_facing
@@ -111,17 +111,17 @@ class Player:
         collisions = {"top": False, "bottom": False, "left": False, "right": False} #List of directions that have collisions
         self.player_rect.x += x_shift                                               #Move the player by given amount on the X cordinate
         collision_list = self.test_collision(entities)                              #Test all entities on the map for collision with player
-        self.is_on_wall = ""
-        self.is_on_ground = False
+        self._is_on_wall = ""
+        self._is_on_ground = False
         for objects in collision_list:
             if x_shift > 0: #Moving right
                 self.player_rect.right = objects.left
                 collisions["right"] = True
-                self.is_on_wall = "right"
+                self._is_on_wall = "right"
             elif x_shift < 0: #Moving left
                 self.player_rect.left = objects.right
                 collisions["left"] = True
-                self.is_on_wall = "left"
+                self._is_on_wall = "left"
         #Lock player to look at other player when standing still or moving short time.
         #Flip player if they have been moving a certain amount of time.
         self.player_rect.y += y_shift                                               #Move the player by given amount on the X cordinate
@@ -133,7 +133,7 @@ class Player:
             elif y_shift > 0: #Moving down
                 self.player_rect.bottom = objects.top
                 collisions["bottom"] = True
-                self.is_on_ground = True
+                self._is_on_ground = True
 
         return collisions
 
