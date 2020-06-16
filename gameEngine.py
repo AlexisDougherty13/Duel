@@ -43,7 +43,6 @@ def adjustPlayer(player, aspect, value):
     elif player == 2:
         p2_meta_info[aspect] = value
 
-
 # :param Requires a Screen Objects (Created in the main passed to main menu),
 #  an int map_selection to determine what map to put on,
 # and 2 string skin_selection to determine what skins the players choose
@@ -117,6 +116,13 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
         # NON EVENT BASED ACTIONS
         # Player 1 Sprite/Movement
 
+
+        if p1_meta_info["sword_movement"] != 0:
+            player1.setSwordHeight(player1.getSwordHeight() + p1_meta_info["sword_movement"])
+            player1.sword_positioning1()
+            p1_meta_info["sword_movement"] = 0
+
+
         p1_x_shift = 0
         if p1_meta_info["left"]:
             p1_x_shift += -3
@@ -145,6 +151,12 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
             player1_y_vel = 0
 
         # Player 2 Sprite/Movement
+
+        if p2_meta_info["sword_movement"] != 0:
+            player2.setSwordHeight(player1.getSwordHeight() + p2_meta_info["sword_movement"])
+            player2.sword_positioning1()
+            p2_meta_info["sword_movement"] = 0
+
         p2_x_shift = 0
         if p2_meta_info["left"]:
             p2_x_shift += -3

@@ -5,7 +5,7 @@ import os
 def render(screen, player1, player2, current_map):
     imagesDictionary = dict()
     screen.fill((255, 255, 255))
-    screen.blit(getImage("Resources/Images/UF_Background.png", imagesDictionary), (0, 0))
+    #screen.blit(getImage("Resources/Images/UF_Background.png", imagesDictionary), (0, 0))
     entities = current_map.getCollidableEntities()
     pygame.draw.rect(screen, (255, 0, 0), entities[0])
     pygame.draw.rect(screen, (255, 0, 255), entities[1])

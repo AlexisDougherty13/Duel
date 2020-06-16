@@ -83,7 +83,8 @@ class Player:
         return self._sword_height
 
     def setSwordHeight(self, new_pos):
-        self._sword_height = new_pos
+        if new_pos > 0 and new_pos < 4:
+            self._sword_height = new_pos
 
     def getIsGhost(self):
         return self._is_ghost
@@ -183,6 +184,20 @@ class Player:
     def standUp(self):
         global hit_box_height
         hit_box_height *= 2
+
+    def sword_positioning1(self): #update to image dictionary later
+        if(self._sword_height == 1 and self._direction_facing == 1):
+            self._sprite = "Resources/Images/MontoyaLowR.png"
+        if(self._sword_height == 2 and self._direction_facing == 1):
+            self._sprite = "Resources/Images/MontoyaMedR.png"
+        if(self._sword_height == 3 and self._direction_facing == 1):
+            self._sprite = "Resources/Images/MontoyaHighR.png"
+        if(self._sword_height == 1 and self._direction_facing == 0):
+            self._sprite = "Resources/Images/MontoyaLowL.png"
+        if(self._sword_height == 2 and self._direction_facing == 0):
+            self._sprite = "Resources/Images/MontoyaMedL.png"
+        if(self._sword_height == 3 and self._direction_facing == 0):
+            self._sprite = "Resources/Images/MontoyaHighL.png"
 
     x_pos = property(getXPos, setXPos)
     y_pos = property(getYPos, setYPos)
