@@ -9,6 +9,8 @@ import pygame
 from playerSkinsList import getSkin
 import gameFrame
 from time import time
+from camera import Camera #MEEE
+
 
 # temp data, should not be here for long....
 # Player 1 meta info, store inputs and send to the player object
@@ -52,6 +54,8 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
     current_map = mapSelectionList.selectMap(map_selection)  # returns a child of the map class
 
     entities = current_map.getCollidableEntities()
+	
+    camera = Camera(current_map.x_length, current_map.y_length) # MEEE initializes camera with level's width and height
 
     player1 = Player(300, 100, 1, 2, False, True, 'Resources/Images/MontoyaMedR.png',
                      getSkin(skin_selection1))  # Initializes player1
@@ -172,4 +176,4 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
         if collisions["bottom"]:
             player2_y_vel = 0
 
-        gameFrame.render(screen, player1, player2, current_map)
+        gameFrame.render(screen, player1, player2, current_map, camera) #MEEEE

@@ -1,11 +1,14 @@
 import pygame
 import os
+from camera import Camera #MEEE
 
 
-def render(screen, player1, player2, current_map):
+def render(screen, player1, player2, current_map, camera): # MEEE
+    
+
     imagesDictionary = dict()
     screen.fill((255, 255, 255))
-    screen.blit(getImage("Resources/Images/UF_Background.png", imagesDictionary), (0, 0))
+    #screen.blit(getImage("Resources/Images/UF_Background.png", imagesDictionary), (0, 0))
     entities = current_map.getCollidableEntities()
     pygame.draw.rect(screen, (255, 0, 0), entities[0])
     pygame.draw.rect(screen, (255, 0, 255), entities[1])

@@ -8,8 +8,8 @@ from abc import ABC, abstractmethod
 
 class Map(ABC):
     """Class representing a General Map's attributes, this is applied to all maps, this is an abstract class
-           :param x_length: the player's x-coordinate
-           :param y_length: the player's y-coordinate
+           :param x_length: the level's width
+           :param y_length: the level's height
            :param p1_init_x_pos: the player's x-coordinate
            :param p1_init_y_pos: the player's y-coordinate
            :param p2_init_x_pos: the player's x-coordinate
