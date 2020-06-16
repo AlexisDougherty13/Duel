@@ -11,7 +11,6 @@ hit_box_height = 140
 
 # 102x203
 
-
 class Player:
     """Class representing individual players' avatar, their attributes, and movement
        :param x_pos: the player's x-coordinate
@@ -24,8 +23,8 @@ class Player:
        :param image_dict: a dictionary of image file names for each motion
     """
     def __init__(self, x_pos, y_pos, direction_facing, sword_height, is_ghost, is_locked_on, sprite, image_dict):
-        self._x_pos = x_pos
-        self._y_pos = y_pos
+        self._x_pos = x_pos #we should not be saving this as varaibles if it is in a rectangle
+        self._y_pos = y_pos #we also should keep the rectangle for hitbox and image seperate.
         self._direction_facing = direction_facing
         self._sword_height = sword_height
         self._is_ghost = is_ghost
@@ -35,30 +34,37 @@ class Player:
         self._image_dict = image_dict
         self._is_on_wall = ""
         self._is_on_ground = False
+        self._air_time = 0
 
     def getXPos(self):
         return self._x_pos
 
-    def setXPos(self, new_x_pos):
-        self._x_pos = new_x_pos
+    def setXPos(self, x_pos):
+        self._x_pos = x_pos
 
     def getYPos(self):
         return self._y_pos
 
-    def setYPos(self, new_y_pos):
-        self._y_pos = new_y_pos
+    def setYPos(self, y_pos):
+        self._y_pos = y_pos
 
     def getOnGround(self):
         return self._is_on_ground
 
-    def setOnGround(self, new_is_on_ground):
-        self._is_on_ground = new_is_on_ground
+    def setOnGround(self, is_on_ground):
+        self._is_on_ground = is_on_ground
 
     def getOnWall(self):
         return self._is_on_wall
 
-    def setOnWall(self, new_is_on_wall):
-        self._is_on_ground = new_is_on_wall
+    def setOnWall(self, is_on_wall):
+        self._is_on_ground = is_on_wall
+
+    def setAirTime(self, air_time):
+        self._air_time = air_time
+
+    def getAirTime(self):
+        return self._air_time
 
     def getDirectionFacing(self):
         return self._direction_facing
@@ -112,7 +118,6 @@ class Player:
         self.player_rect.x += x_shift                                               #Move the player by given amount on the X cordinate
         collision_list = self.test_collision(entities)                              #Test all entities on the map for collision with player
         self._is_on_wall = ""
-        self._is_on_ground = False
         for objects in collision_list:
             if x_shift > 0: #Moving right
                 self.player_rect.right = objects.left
@@ -178,6 +183,7 @@ class Player:
     x_pos = property(getXPos, setXPos)
     y_pos = property(getYPos, setYPos)
     is_on_ground = property(getOnGround, setOnGround)
+    air_time = property(getAirTime, setAirTime)
     is_on_wall = property(getOnWall, setOnWall) #is one of 3 strings "left" , "right" , "" empty string means not on wall
     direction_facing = property(getDirectionFacing, switchDirection)
     sword_height = property(getSwordHeight, setSwordHeight)
