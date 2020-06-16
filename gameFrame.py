@@ -12,7 +12,8 @@ def render(screen, player1, player2, current_map):
     pygame.draw.rect(screen, (255, 0, 255), entities[2])
     screen.blit(getImage(player1.sprite, imagesDictionary),
                 (player1.player_rect.x, player1.player_rect.y))  # (width, height)
-    # screen.blit(get_image(player2.sprite, imagesDictionary), (player2.getXPos(), player2.getYPos()))
+    screen.blit(getImage(player2.sprite, imagesDictionary),
+                (player2.player_rect.x, player2.player_rect.y))
 
     pygame.display.update()
     return 5

@@ -8,6 +8,7 @@ from player import Player
 import pygame
 from playerSkinsList import getSkin
 import gameFrame
+from time import time
 
 # temp data, should not be here for long....
 # Player 1 meta info, store inputs and send to the player object
@@ -52,9 +53,9 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
 
     entities = current_map.getCollidableEntities()
 
-    player1 = Player(400, 100, 1, 2, False, True, 'Resources/Images/MontoyaMedR.png',
+    player1 = Player(300, 100, 1, 2, False, True, 'Resources/Images/MontoyaMedR.png',
                      getSkin(skin_selection1))  # Initializes player1
-    player2 = Player(600, 300, 1, 2, False, False, 'Resources/Images/MontoyaMedL.png',
+    player2 = Player(400, 100, 1, 2, False, False, 'Resources/Images/MontoyaMedL.png',
                      getSkin(skin_selection2))  # Initializes player2
     clock = pygame.time.Clock()
     print("starting")
@@ -87,15 +88,15 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                 elif event.key == pygame.K_w:
                     adjustPlayer(1, "sword_movement", 1)
                 if event.key == pygame.K_KP4:
-                    adjustPlayer(1, "left", True)
+                    adjustPlayer(2, "left", True)
                 elif event.key == pygame.K_KP6:
-                    adjustPlayer(1, "right", True)
+                    adjustPlayer(2, "right", True)
                 if event.key == pygame.K_KP_ENTER:
-                    adjustPlayer(1, "up", True)
+                    adjustPlayer(2, "up", True)
                 if event.key == pygame.K_KP5:
-                    adjustPlayer(1, "sword_movement", -1)
+                    adjustPlayer(2, "sword_movement", -1)
                 elif event.key == pygame.K_KP8:
-                    adjustPlayer(1, "sword_movement", 1)
+                    adjustPlayer(2, "sword_movement", 1)
 
             # Let go of key so stop performing said action
             if event.type == pygame.KEYUP:
@@ -106,26 +107,38 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                 if event.key == pygame.K_SPACE:
                     adjustPlayer(1, "up", False)
                 if event.key == pygame.K_KP4:
-                    adjustPlayer(1, "left", True)
+                    adjustPlayer(2, "left", False)
                 elif event.key == pygame.K_KP6:
-                    adjustPlayer(1, "right", True)
+                    adjustPlayer(2, "right", False)
                 if event.key == pygame.K_KP_ENTER:
-                    adjustPlayer(1, "up", True)
+                    adjustPlayer(2, "up", False)
 
 
         # NON EVENT BASED ACTIONS
         # Player 1 Sprite/Movement
+
         p1_x_shift = 0
         if p1_meta_info["left"]:
             p1_x_shift += -3
         elif p1_meta_info["right"]:
             p1_x_shift += 3
         if p1_meta_info["up"] and player1.is_on_ground:#TODO: make better Gravity
-            player1_y_vel =-10
+            player1_y_vel = -20
+            player1.setAirTime(time())
+            player1.setOnGround(False)
         elif not player1.is_on_ground: #TODO: make better Gravity
-            player1_y_vel = (player1_y_vel/6) +1
-
+            if player1.getAirTime() == 0:
+                player1.setAirTime(time())
+            player1_y_vel = player1_y_vel+ 5*(time()-player1.getAirTime())
         p1_y_shift = player1_y_vel
+
+        if p1_x_shift ==0 and p1_y_shift ==0:
+            sdap=0;
+            # No movement NOT IMPLEMENTS , SDAP IS PLACE HOLDER SO TEHRE IS NO ERROR
+        else:
+            sdap = 1;
+            # No movement NOT IMPLEMENTS , SDAP IS PLACE HOLDER SO TEHRE IS NO ERROR
+
         collisions = player1.move(p1_x_shift, p1_y_shift, entities)
 
         if collisions["bottom"]:
@@ -137,15 +150,26 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
             p2_x_shift += -3
         elif p2_meta_info["right"]:
             p2_x_shift += 3
-        if p2_meta_info["up"] and player1.is_on_ground:  # TODO: make better Gravity
-            player2_y_vel = 6
+        if p2_meta_info["up"] and player2.is_on_ground:  # TODO: make better Gravity
+            player2_y_vel = -20
+            player2.setAirTime(time())
+            player2.setOnGround(False)
         elif not player2.is_on_ground:  # TODO: make better Gravity
-            player2_y_vel += (-player1_y_vel / 3) - 1
-
+            if player2.getAirTime() == 0:
+                player2.setAirTime(time())
+            player2_y_vel = player2_y_vel + 5 * (time() - player2.getAirTime())
         p2_y_shift = player2_y_vel
+
+        if p2_x_shift == 0 and p2_y_shift == 0:
+            sdap = 0;
+            # No movement NOT IMPLEMENTS , SDAP IS PLACE HOLDER SO TEHRE IS NO ERROR
+        else:
+            sdap = 1;
+            # No movement NOT IMPLEMENTS , SDAP IS PLACE HOLDER SO TEHRE IS NO ERROR
+
         collisions = player2.move(p2_x_shift, p2_y_shift, entities)
 
         if collisions["bottom"]:
             player2_y_vel = 0
 
-        gameFrame.render(screen, player1,player2,current_map)
+        gameFrame.render(screen, player1, player2, current_map)
