@@ -8,6 +8,9 @@ import time
 #change these
 hit_box_width = 102
 hit_box_height = 140
+player_shift_amount_x = 80 #This variable represents the amount of pixels of whitespace in the X dirrection from the left side of the player
+player_shift_amount_y = 8 #This variable represents the amount of pixels of whitespace in the Y dirrection from the left side of the player
+
 
 # 102x203
 
@@ -30,7 +33,7 @@ class Player:
         self._is_ghost = is_ghost
         self._is_locked_on = is_locked_on
         self._sprite = sprite
-        self.player_rect = Rect(x_pos, y_pos, 61, 140)
+        self.player_rect = Rect(x_pos, y_pos, 73, 140)
         self._image_dict = image_dict
         self._is_on_wall = ""
         self._is_on_ground = False
@@ -80,7 +83,8 @@ class Player:
         return self._sword_height
 
     def setSwordHeight(self, new_pos):
-        self._sword_height = new_pos
+        if new_pos > 0 and new_pos < 4:
+            self._sword_height = new_pos
 
     def getIsGhost(self):
         return self._is_ghost
@@ -120,11 +124,11 @@ class Player:
         self._is_on_wall = ""
         for objects in collision_list:
             if x_shift > 0: #Moving right
-                self.player_rect.right = objects.left
+                self.player_rect.right = objects.left - player_shift_amount_x
                 collisions["right"] = True
                 self._is_on_wall = "right"
             elif x_shift < 0: #Moving left
-                self.player_rect.left = objects.right
+                self.player_rect.left = objects.right - player_shift_amount_x
                 collisions["left"] = True
                 self._is_on_wall = "left"
         #Lock player to look at other player when standing still or moving short time.
@@ -133,10 +137,10 @@ class Player:
         collision_list = self.test_collision(entities)
         for objects in collision_list:
             if y_shift < 0: #Moving up
-                self.player_rect.top = objects.bottom
+                self.player_rect.top = objects.bottom + player_shift_amount_y
                 collisions["top"] = True
             elif y_shift > 0: #Moving down
-                self.player_rect.bottom = objects.top
+                self.player_rect.bottom = objects.top + player_shift_amount_y
                 collisions["bottom"] = True
                 self._is_on_ground = True
 
@@ -145,8 +149,9 @@ class Player:
 
     def test_collision(self, entities):
         collision_list = []
+        rect = Rect(self.player_rect.x + player_shift_amount_x, self.player_rect.y - player_shift_amount_y, 73, 140)
         for objects in entities:
-            if self.player_rect.colliderect(objects):
+            if rect.colliderect(objects):
                 collision_list.append(objects)
         return collision_list
 
@@ -179,6 +184,20 @@ class Player:
     def standUp(self):
         global hit_box_height
         hit_box_height *= 2
+
+    def sword_positioning1(self): #update to image dictionary later
+        if(self._sword_height == 1 and self._direction_facing == 1):
+            self._sprite = "Resources/Images/MontoyaLowR.png"
+        if(self._sword_height == 2 and self._direction_facing == 1):
+            self._sprite = "Resources/Images/MontoyaMedR.png"
+        if(self._sword_height == 3 and self._direction_facing == 1):
+            self._sprite = "Resources/Images/MontoyaHighR.png"
+        if(self._sword_height == 1 and self._direction_facing == 0):
+            self._sprite = "Resources/Images/MontoyaLowL.png"
+        if(self._sword_height == 2 and self._direction_facing == 0):
+            self._sprite = "Resources/Images/MontoyaMedL.png"
+        if(self._sword_height == 3 and self._direction_facing == 0):
+            self._sprite = "Resources/Images/MontoyaHighL.png"
 
     x_pos = property(getXPos, setXPos)
     y_pos = property(getYPos, setYPos)
