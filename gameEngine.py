@@ -55,7 +55,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
 
     entities = current_map.getCollidableEntities()
 	
-    camera = Camera(current_map.x_length, current_map.y_length) # MEEE initializes camera with level's width and height
+    camera = Camera(current_map.x_length, current_map.y_length) # initializes camera with level's width and height
 
     player1 = Player(300, 100, 1, 2, False, True, 'Resources/Images/MontoyaMedR.png',
                      getSkin(skin_selection1))  # Initializes player1

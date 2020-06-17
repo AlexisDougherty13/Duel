@@ -1,9 +1,9 @@
 import pygame
 import os
-from camera import Camera #MEEE
+from camera import Camera 
 
 
-def render(screen, player1, player2, current_map, camera): # MEEE
+def render(screen, player1, player2, current_map, camera): 
     
 
     imagesDictionary = dict()
