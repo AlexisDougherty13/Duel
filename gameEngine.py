@@ -8,6 +8,7 @@ from player import Player
 import pygame
 from playerSkinsList import getSkin
 import gameFrame
+#from swordHitBoxes import getSwordLine
 from time import time
 
 # temp data, should not be here for long....
@@ -43,6 +44,7 @@ def adjustPlayer(player, aspect, value):
     elif player == 2:
         p2_meta_info[aspect] = value
 
+
 # :param Requires a Screen Objects (Created in the main passed to main menu),
 #  an int map_selection to determine what map to put on,
 # and 2 string skin_selection to determine what skins the players choose
@@ -52,10 +54,13 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
 
     entities = current_map.getCollidableEntities()
 
+
     player1 = Player(300, 100, 1, 2, False, True, 'Resources/Images/MontoyaMedR.png',
                      getSkin(skin_selection1))  # Initializes player1
     player2 = Player(400, 100, 1, 2, False, False, 'Resources/Images/MontoyaMedL.png',
                      getSkin(skin_selection2))  # Initializes player2
+
+    
     clock = pygame.time.Clock()
     print("starting")
 
@@ -122,6 +127,15 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
             player1.sword_positioning1()
             p1_meta_info["sword_movement"] = 0
 
+        #player1body = player1.getCollisionRect()
+        #player2body = player2.getCollisionRect()
+        #if player1body.colliderect(getSwordLine(player2)):
+        #    print("player 1 had an ouchie")
+        #elif player2body.colliderect(getSwordLine(player1)):
+        #    print("player 2 had an ouchie")
+        #elif getSwordLine(player1).colliderect(getSwordLine(player2)):
+        #    print("Clash!")
+
 
         p1_x_shift = 0
         if p1_meta_info["left"]:
@@ -183,5 +197,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
 
         if collisions["bottom"]:
             player2_y_vel = 0
+
+
 
         gameFrame.render(screen, player1, player2, current_map)

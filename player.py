@@ -117,6 +117,9 @@ class Player:
     def setImageDict(self, image_dict):
         self._image_dict = image_dict
 
+    def getCollisionRect(self):
+        return Rect(self.player_rect.x + player_shift_amount_x, self.player_rect.y - player_shift_amount_y, 73, 140)
+
     def move(self, x_shift, y_shift, entities): #TODO Check for being stabbed in this method
         collisions = {"top": False, "bottom": False, "left": False, "right": False} #List of directions that have collisions
         self.player_rect.x += x_shift                                               #Move the player by given amount on the X cordinate
@@ -144,7 +147,10 @@ class Player:
                 collisions["bottom"] = True
                 self._is_on_ground = True
 
+
         return collisions
+
+
 
 
     def test_collision(self, entities):
