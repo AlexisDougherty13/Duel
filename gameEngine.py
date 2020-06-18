@@ -11,6 +11,7 @@ import gameFrame
 from time import time
 from camera import Camera #MEEE
 import os
+import gameFrame
 
 
 # temp data, should not be here for long....
@@ -45,13 +46,6 @@ def adjustPlayer(player, aspect, value):
         p1_meta_info[aspect] = value
     elif player == 2:
         p2_meta_info[aspect] = value
-		
-def getImage(path):
-    canonicalized_path = path.replace('/', os.sep).replace('\\', os.sep)
-    image = pygame.image.load(canonicalized_path).convert_alpha()
-    return image
-
-
 
 # :param Requires a Screen Objects (Created in the main passed to main menu),
 #  an int map_selection to determine what map to put on,
@@ -68,7 +62,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
 	
     #create the background used to restore sprite previous location
     background = pygame.Surface(screen.get_size()) 
-    screen.blit(getImage("Resources/Images/UF_Background.png"), (0, 0))
+    screen.blit(gameFrame.getImage("Resources/Images/UF_Background.png"), (0, 0))
 
     player1 = Player((300, 100), 1, 2, False, True, 'Resources/Images/MontoyaMedR.png',
                      getSkin(skin_selection1))  # Initializes player1
