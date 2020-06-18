@@ -9,9 +9,9 @@ import pygame
 from playerSkinsList import getSkin
 import gameFrame
 from time import time
-from camera import Camera #MEEE
-import os
-import gameFrame
+from camera import Camera
+
+
 
 
 # temp data, should not be here for long....
@@ -61,7 +61,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
     draw_buffer = pygame.display.set_mode((current_map.x_length, current_map.y_length))
 	
     #create the background used to restore sprite previous location
-    background = pygame.Surface(screen.get_size()) 
+    background = pygame.Surface(draw_buffer.get_size()) 
     screen.blit(gameFrame.getImage("Resources/Images/UF_Background.png"), (0, 0))
 
     player1 = Player((300, 100), 1, 2, False, True, 'Resources/Images/MontoyaMedR.png',
@@ -188,6 +188,4 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
         if collisions["bottom"]:
             player2_y_vel = 0
 
-        rects = my_sprites.draw(draw_buffer)
-        pygame.display.update(rects)  # copy rects from buffer to screen
-        #def render(screen, player1, player2, current_map):
+        gameFrame.render(my_sprites, draw_buffer)

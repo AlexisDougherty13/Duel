@@ -51,6 +51,7 @@ class Player(pygame.sprite.DirtySprite):
         self._air_time = 0
 	
     def update(self):
+        self.image = pygame.image.load(self.sprite)
         x, y = self.rect.center
         x = (x + self.dx) # move by dx,dy and wrap modulo window size
         y = (y + self.dy)

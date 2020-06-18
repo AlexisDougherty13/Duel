@@ -3,7 +3,7 @@ import os
 from camera import Camera 
 
 
-def render(screen, player1, player2, current_map):
+def render(my_sprites, draw_buffer):
     rects = my_sprites.draw(draw_buffer)
     pygame.display.update(rects)  # copy rects from buffer to screen
 	
