@@ -10,6 +10,7 @@ from playerSkinsList import getSkin
 import gameFrame
 from time import time
 from camera import Camera #MEEE
+import os
 
 
 # temp data, should not be here for long....
@@ -44,6 +45,12 @@ def adjustPlayer(player, aspect, value):
         p1_meta_info[aspect] = value
     elif player == 2:
         p2_meta_info[aspect] = value
+		
+def getImage(path):
+    canonicalized_path = path.replace('/', os.sep).replace('\\', os.sep)
+    image = pygame.image.load(canonicalized_path).convert_alpha()
+    return image
+
 
 
 # :param Requires a Screen Objects (Created in the main passed to main menu),
@@ -56,12 +63,23 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
     entities = current_map.getCollidableEntities()
 	
     camera = Camera(current_map.x_length, current_map.y_length) # initializes camera with level's width and height
+	
+    draw_buffer = pygame.display.set_mode((current_map.x_length, current_map.y_length))
+	
+    #create the background used to restore sprite previous location
+    background = pygame.Surface(screen.get_size()) 
+    screen.blit(getImage("Resources/Images/UF_Background.png"), (0, 0))
 
-    player1 = Player(300, 100, 1, 2, False, True, 'Resources/Images/MontoyaMedR.png',
+    player1 = Player((300, 100), 1, 2, False, True, 'Resources/Images/MontoyaMedR.png',
                      getSkin(skin_selection1))  # Initializes player1
-    player2 = Player(400, 100, 1, 2, False, False, 'Resources/Images/MontoyaMedL.png',
+    player2 = Player((400, 100), 1, 2, False, False, 'Resources/Images/MontoyaMedL.png',
                      getSkin(skin_selection2))  # Initializes player2
+    my_sprites = pygame.sprite.LayeredDirty()  # holds sprites to be drawn
+    my_sprites.add(player1, player2)  # add both to our group
+    my_sprites.clear(draw_buffer, background) # copy background to screen
+	
     clock = pygame.time.Clock()
+    
     print("starting")
 
     player1_y_vel = 0 #temp will be altered soon
@@ -176,4 +194,6 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
         if collisions["bottom"]:
             player2_y_vel = 0
 
-        gameFrame.render(screen, player1, player2, current_map, camera) #MEEEE
+        rects = my_sprites.draw(draw_buffer)
+        pygame.display.update(rects)  # copy rects from buffer to screen
+        #def render(screen, player1, player2, current_map):
