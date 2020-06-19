@@ -10,7 +10,10 @@ from playerSkinsList import getSkin
 import gameFrame
 from swordHitBoxes import getSwordLine
 from time import time
+
 from camera import Camera
+import math
+
 
 # temp data, should not be here for long....
 # Player 1 meta info, store inputs and send to the player object
@@ -151,16 +154,21 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
             player1.sword_positioning()
             p1_meta_info["attack"] = False
 
-
+        if player1.player_rect.x > player2.player_rect.x:
+            player1.setDirection("left")
+        else:
+            player1.setDirection("right")
 
 
         p1_x_shift = 0
         if p1_meta_info["left"]:
             p1_x_shift += -5
-            player1.setDirection("left")
+            if abs(player1.getXVelocity()) > 30:
+                player1.setDirection("left")
         elif p1_meta_info["right"]:
             p1_x_shift += 5
-            player1.setDirection("right")
+            if abs(player1.getXVelocity()) > 30:
+                player1.setDirection("right")
         if p1_meta_info["up"] and player1.is_on_ground:#TODO: make better Gravity
             player1_y_vel = -15
             player1.setAirTime(time())
@@ -193,13 +201,22 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
             player2.sword_positioning()
             p2_meta_info["attack"] = False
 
+        if player1.player_rect.x > player2.player_rect.x:
+            player2.setDirection("right")
+        else:
+            player2.setDirection("left")
+
         p2_x_shift = 0
         if p2_meta_info["left"]:
             p2_x_shift += -5
-            player2.setDirection("left")
+            if abs(player2.getXVelocity()) > 30:
+                player2.setDirection("left")
+
         elif p2_meta_info["right"]:
             p2_x_shift += 5
-            player2.setDirection("right")
+            if abs(player2.getXVelocity()) > 30:
+                player2.setDirection("right")
+
         if p2_meta_info["up"] and player2.is_on_ground:  # TODO: make better Gravity
             player2_y_vel = -15
             player2.setAirTime(time())
@@ -225,21 +242,33 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
         player1body = player1.getCollisionRect()
         player2body = player2.getCollisionRect()
         if getSwordLine(player1).colliderect(getSwordLine(player2)):
-            print("Clash!")
+            #print("Clash!")
             if player1.getDirectionFacing() == "left":
                 player1.move(3.5, 0, entities)
                 player2.move(-3.5, 0, entities)
             else:
                 player1.move(-3.5, 0, entities)
                 player2.move(3.5, 0, entities)
+            player1.setXVelocity(0)
+            player2.setXVelocity(0)
         else:
-            if player1body.colliderect(getSwordLine(player2)):
-                print("player 1 had an ouchie")
-            if player2body.colliderect(getSwordLine(player1)):
-                print("player 2 had an ouchie")
+            if (player1body.colliderect(getSwordLine(player2)) and player2body.colliderect(getSwordLine(player1)))
+                #print("players both died")
+                player1.setIsGhost(True)
+                player2.setIsGhost(True)
+                #screen locked in place
+            elif player1body.colliderect(getSwordLine(player2)):
+                #print("player 1 had an ouchie")
+                player1.setIsGhost(True) #Should start a counter for each frame of death animation, followed by a respawn delay, followed by drawing them as a ghost in that spot
+                player2.setIsGhost(False)
+                #screen follows player 2
+            elif player2body.colliderect(getSwordLine(player1)):
+                #print("player 2 had an ouchie")
+                player2.setIsGhost(True) #Should start a counter for each frame of death animation, followed by a respawn delay, followed by drawing them as a ghost in that spot
+                player1.setIsGhost(False)
+                #screen follows player 1
 
 
 
 
         gameFrame.render(my_sprites, draw_buffer)
-

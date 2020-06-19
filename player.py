@@ -59,6 +59,16 @@ class Player(pygame.sprite.DirtySprite):
         }
         self._is_on_ground = False
         self._air_time = 0
+        self._x_velocity = 0
+
+    def getXVelocity(self):
+        return self._x_velocity
+
+    def setXVelocity(self, x_velocity):
+        self._x_velocity = x_velocity
+
+    def getXPos(self):
+        return self._x_pos
 
     def update(self):
         self.image = pygame.image.load(self.sprite)
@@ -175,6 +185,9 @@ class Player(pygame.sprite.DirtySprite):
         self.dx = x_shift    #Move the player by given amount on the X cordinate
         self.dy = y_shift    #Move the player by given amount on the y cordinate
         self.update()        #updates players position
+        self._x_velocity += x_shift
+        if x_shift == 0:
+            self._x_velocity = 0
 
         collisions = {"top": False, "bottom": False, "left": False, "right": False} #List of directions that have collisions
 
@@ -183,8 +196,9 @@ class Player(pygame.sprite.DirtySprite):
         self._is_on_wall = ""
         self._is_on_ground = False
         for objects in collision_list:
-            if x_shift > 0: #Moving right
-                self.rect.right = objects.left
+            self._x_velocity = 0
+            if x_shift > 0:  # Moving right
+                self.player_rect.right = objects.left - player_shift_amount_x
                 collisions["right"] = True
                 self._is_on_wall = "right"
             elif x_shift < 0: #Moving left
@@ -269,8 +283,7 @@ class Player(pygame.sprite.DirtySprite):
     y_pos = property(getYPos, setYPos)
     is_on_ground = property(getOnGround, setOnGround)
     air_time = property(getAirTime, setAirTime)
-    is_on_wall = property(getOnWall,
-                          setOnWall)  # is one of 3 strings "left" , "right" , "" empty string means not on wall
+    is_on_wall = property(getOnWall,setOnWall)  # is one of 3 strings "left" , "right" , "" empty string means not on wall
     direction_facing = property(getDirectionFacing, setDirection)
     sword_height = property(getSwordHeight, setSwordHeight)
     is_ghost = property(getIsGhost, setIsGhost)
@@ -282,5 +295,5 @@ class Player(pygame.sprite.DirtySprite):
     lower_sword = property(lowerSword)
     duck = property(duck)
     stand_up = property(standUp)
-
-#Sources: https://github.com/gerryjenkinslb/pygame_dirtysprites/blob/master/Simple_Example_dirty_Sprites.py
+    x_velocity = property(getXVelocity, setXVelocity)
+    #Sources: https://github.com/gerryjenkinslb/pygame_dirtysprites/blob/master/Simple_Example_dirty_Sprites.py
