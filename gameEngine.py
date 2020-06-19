@@ -221,7 +221,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
         player1body = player1.getCollisionRect()
         player2body = player2.getCollisionRect()
         if getSwordLine(player1).colliderect(getSwordLine(player2)):
-            print("Clash!")
+            #print("Clash!")
             if player1.getDirectionFacing() == "left":
                 player1.move(3.5, 0, entities)
                 player2.move(-3.5, 0, entities)
@@ -231,10 +231,21 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
             player1.setXVelocity(0)
             player2.setXVelocity(0)
         else:
-            if player1body.colliderect(getSwordLine(player2)):
-                print("player 1 had an ouchie")
-            if player2body.colliderect(getSwordLine(player1)):
-                print("player 2 had an ouchie")
+            if (player1body.colliderect(getSwordLine(player2)) and player2body.colliderect(getSwordLine(player1)))
+                #print("players both died")
+                player1.setIsGhost(True)
+                player2.setIsGhost(True)
+                #screen locked in place
+            elif player1body.colliderect(getSwordLine(player2)):
+                #print("player 1 had an ouchie")
+                player1.setIsGhost(True) #Should start a counter for each frame of death animation, followed by a respawn delay, followed by drawing them as a ghost in that spot
+                player2.setIsGhost(False)
+                #screen follows player 2
+            elif player2body.colliderect(getSwordLine(player1)):
+                #print("player 2 had an ouchie")
+                player2.setIsGhost(True) #Should start a counter for each frame of death animation, followed by a respawn delay, followed by drawing them as a ghost in that spot
+                player1.setIsGhost(False)
+                #screen follows player 1
 
 
 
