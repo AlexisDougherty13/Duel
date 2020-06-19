@@ -8,6 +8,7 @@ from player import Player
 import pygame
 from playerSkinsList import getSkin
 import gameFrame
+#from swordHitBoxes import getSwordLine
 from time import time
 from camera import Camera
 
@@ -55,18 +56,18 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
     current_map = mapSelectionList.selectMap(map_selection)  # returns a child of the map class
 
     entities = current_map.getCollidableEntities()
-	
+
     camera = Camera(gameFrame.cameraMovement, current_map.x_length, current_map.y_length) # initializes camera with level's width and height
-	
+
     draw_buffer = pygame.display.set_mode((current_map.x_length, current_map.y_length))
-	
+
     #create the background used to restore sprite previous location
-    background = pygame.Surface(draw_buffer.get_size()) 
+    background = pygame.Surface(draw_buffer.get_size())
     background.blit(gameFrame.getImage("Resources/Images/UF_Background.png"), (0, 0))
     pygame.draw.rect(background, (255, 0, 0), entities[0])
     pygame.draw.rect(background, (255, 0, 255), entities[1])
     pygame.draw.rect(background, (255, 0, 255), entities[2])
-   
+
 
     player1 = Player((300, 100), 1, 2, False, True, 'Resources/Images/MontoyaMedR.png',
                      getSkin(skin_selection1))  # Initializes player1
@@ -75,9 +76,9 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
     my_sprites = pygame.sprite.LayeredDirty()  # holds sprites to be drawn
     my_sprites.add(player1, player2)  # add both to our group
     my_sprites.clear(draw_buffer, background) # copy background to screen
-	
+
     clock = pygame.time.Clock()
-    
+
     print("starting")
 
     player1_y_vel = 0 #temp will be altered soon
@@ -87,7 +88,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
     while active_match:
         # Delta time is implemented to help make sure that player's models will move at the same speed regardless of monitor refresh rate and processor speed.
         # Could use further optimizing and troubleshooting.
-        clock.tick(120)
+        clock.tick(90)
 
         for event in pygame.event.get():
             # What to do on quit
@@ -107,15 +108,15 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                     adjustPlayer(1, "sword_movement", -1)
                 elif event.key == pygame.K_w:
                     adjustPlayer(1, "sword_movement", 1)
-                if event.key == pygame.K_KP4:
+                if event.key == pygame.K_LEFT:
                     adjustPlayer(2, "left", True)
-                elif event.key == pygame.K_KP6:
+                elif event.key == pygame.K_RIGHT:
                     adjustPlayer(2, "right", True)
-                if event.key == pygame.K_KP_ENTER:
+                if event.key == pygame.K_RSHIFT:
                     adjustPlayer(2, "up", True)
-                if event.key == pygame.K_KP5:
+                if event.key == pygame.K_DOWN:
                     adjustPlayer(2, "sword_movement", -1)
-                elif event.key == pygame.K_KP8:
+                elif event.key == pygame.K_UP:
                     adjustPlayer(2, "sword_movement", 1)
 
             # Let go of key so stop performing said action
@@ -126,38 +127,54 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                     adjustPlayer(1, "left", False)
                 if event.key == pygame.K_SPACE:
                     adjustPlayer(1, "up", False)
-                if event.key == pygame.K_KP4:
+                if event.key == pygame.K_LEFT:
                     adjustPlayer(2, "left", False)
-                elif event.key == pygame.K_KP6:
+                elif event.key == pygame.K_RIGHT:
                     adjustPlayer(2, "right", False)
-                if event.key == pygame.K_KP_ENTER:
+                if event.key == pygame.K_RSHIFT:
                     adjustPlayer(2, "up", False)
 
 
         # NON EVENT BASED ACTIONS
         # Player 1 Sprite/Movement
 
+        if p1_meta_info["sword_movement"] != 0:
+            player1.setSwordHeight(player1.getSwordHeight() + p1_meta_info["sword_movement"])
+            player1.sword_positioning()
+            p1_meta_info["sword_movement"] = 0
+
+        #player1body = player1.getCollisionRect()
+        #player2body = player2.getCollisionRect()
+        #if player1body.colliderect(getSwordLine(player2)):
+        #    print("player 1 had an ouchie")
+        #elif player2body.colliderect(getSwordLine(player1)):
+        #    print("player 2 had an ouchie")
+        #elif getSwordLine(player1).colliderect(getSwordLine(player2)):
+        #    print("Clash!")
+
         p1_x_shift = 0
         if p1_meta_info["left"]:
-            p1_x_shift += -3
+            p1_x_shift += -5
+            player1.setDirection("left")
         elif p1_meta_info["right"]:
-            p1_x_shift += 3
+            p1_x_shift += 5
+            player1.setDirection("right")
         if p1_meta_info["up"] and player1.is_on_ground:#TODO: make better Gravity
-            player1_y_vel = -20
+            player1_y_vel = -15
             player1.setAirTime(time())
             player1.setOnGround(False)
         elif not player1.is_on_ground: #TODO: make better Gravity
             if player1.getAirTime() == 0:
                 player1.setAirTime(time())
-            player1_y_vel = player1_y_vel+ 5*(time()-player1.getAirTime())
+            player1_y_vel = player1_y_vel + 5*(time()-player1.getAirTime())
         p1_y_shift = player1_y_vel
 
         if p1_x_shift ==0 and p1_y_shift ==0:
-            sdap=0;
-            # No movement NOT IMPLEMENTS , SDAP IS PLACE HOLDER SO TEHRE IS NO ERROR
+            sdap=0
+            # No movement NOT IMPLEMENTED , SDAP IS PLACE HOLDER SO THERE IS NO ERROR
         else:
-            sdap = 1;
-            # No movement NOT IMPLEMENTS , SDAP IS PLACE HOLDER SO TEHRE IS NO ERROR
+            sdap = 1
+            # No movement NOT IMPLEMENTED , SDAP IS PLACE HOLDER SO THERE IS NO ERROR
 
         collisions = player1.move(p1_x_shift, p1_y_shift, entities)
 
@@ -165,13 +182,21 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
             player1_y_vel = 0
 
         # Player 2 Sprite/Movement
+
+        if p2_meta_info["sword_movement"] != 0:
+            player2.setSwordHeight(player2.getSwordHeight() + p2_meta_info["sword_movement"])
+            player2.sword_positioning()
+            p2_meta_info["sword_movement"] = 0
+
         p2_x_shift = 0
         if p2_meta_info["left"]:
-            p2_x_shift += -3
+            p2_x_shift += -5
+            player2.setDirection("left")
         elif p2_meta_info["right"]:
-            p2_x_shift += 3
+            p2_x_shift += 5
+            player2.setDirection("right")
         if p2_meta_info["up"] and player2.is_on_ground:  # TODO: make better Gravity
-            player2_y_vel = -20
+            player2_y_vel = -15
             player2.setAirTime(time())
             player2.setOnGround(False)
         elif not player2.is_on_ground:  # TODO: make better Gravity

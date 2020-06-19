@@ -6,9 +6,12 @@ import pygame
 from pygame import Rect
 import time
 
-#change these
+# change these
 hit_box_width = 102
 hit_box_height = 140
+player_shift_amount_x = 80  # This variable represents the amount of pixels of whitespace in the X dirrection from the left side of the player
+player_shift_amount_y = 8  # This variable represents the amount of pixels of whitespace in the Y dirrection from the left side of the player
+
 
 # 102x203
 """Grace's sprite update
@@ -35,8 +38,8 @@ class Player(pygame.sprite.DirtySprite):
         self.rect = self.image.get_rect(center=center)
         self.dx = 0
         self.dy = 0
-		
-		
+
+
         #self._x_pos = x_pos #we should not be saving this as varaibles if it is in a rectangle
         #self._y_pos = y_pos #we also should keep the rectangle for hitbox and image seperate.
         self._direction_facing = direction_facing
@@ -47,16 +50,22 @@ class Player(pygame.sprite.DirtySprite):
         #self.player_rect = Rect(x_pos, y_pos, 61, 140)
         self._image_dict = image_dict
         self._is_on_wall = ""
+        self._player_state = {
+            "running": False,
+            "jumping": False,
+            "ducking": False,
+            "thrusting": False
+        }
         self._is_on_ground = False
         self._air_time = 0
-	
+
     def update(self):
         self.image = pygame.image.load(self.sprite)
         x, y = self.rect.center
         x = (x + self.dx) # move by dx,dy and wrap modulo window size
         y = (y + self.dy)
         self.rect.center = (x, y)  # changes where sprite will be copied to buffer
-        self.dirty = 1  # force redraw from image, since we moved the sprite rect		
+        self.dirty = 1  # force redraw from image, since we moved the sprite rect
 
     # def getXPos(self):
         # return self._x_pos
@@ -89,20 +98,24 @@ class Player(pygame.sprite.DirtySprite):
         return self._air_time
 
     def getDirectionFacing(self):
-        return self._direction_facing
-
-    def switchDirection(self):
-        if(self._x_pos):
-            self._x_pos = False
+        if (self._direction_facing == 1):
+            return "left"
         else:
-            self._x_pos = True
+            return "right"
+
+    def setDirection(self, direction):
+        if (direction == "left"):
+            self._direction_facing = 1
+        else:
+            self._direction_facing = 0
 
     # 0 means no sword, 3 is high, 2 is med, 1 is low sword
     def getSwordHeight(self):
         return self._sword_height
 
     def setSwordHeight(self, new_pos):
-        self._sword_height = new_pos
+        if new_pos > 0 and new_pos < 4:
+            self._sword_height = new_pos
 
     def getIsGhost(self):
         return self._is_ghost
@@ -116,18 +129,30 @@ class Player(pygame.sprite.DirtySprite):
     def getIsLockedOn(self):
         return self._is_locked_on
 
-    def setIsLockedOn(self):
-        if self._is_locked_on:
-            self._is_locked_on = False
-        else:
-            self._is_locked_on = True
+    def setIsLockedOn(self, is_locked):
+        self._is_locked_on = is_locked
 
     def getSprite(self):
-        return self._sprite
-
-    def setSprite(self, sprite):
-
-        self._sprite = sprite
+        if self._direction_facing == 1:
+            append = "_l"
+        else:
+            append = "_r"
+        if self._player_state["running"]:
+            return self._image_dict["run" + append]
+        if self._player_state["jumping"]:
+            return self._image_dict["jump" + append]
+        if self._player_state["ducking"]:
+            return self._image_dict["duck" + append]
+        if self._sword_height == 1:
+            append = "_low"+append
+        elif self._sword_height == 2:
+            append = "_med" + append
+        else:
+            append = "_high" + append
+        if self._player_state["thrusting"]:
+            return self._image_dict["thrust" + append]
+        else:
+            return self._image_dict["sword" + append]
 
     def getImageDict(self):
         return self._image_dict
@@ -135,18 +160,24 @@ class Player(pygame.sprite.DirtySprite):
     def setImageDict(self, image_dict):
         self._image_dict = image_dict
 
+
+    def getCollisionRect(self):
+        return Rect(self.player_rect.x + player_shift_amount_x, self.player_rect.y - player_shift_amount_y, 73, 140)
+
     def move(self, x_shift, y_shift, entities): #TODO Check for being stabbed in this method
         self.dx = x_shift    #Move the player by given amount on the X cordinate
         self.dy = y_shift    #Move the player by given amount on the y cordinate
         self.update()        #updates players position
-		
+
         collisions = {"top": False, "bottom": False, "left": False, "right": False} #List of directions that have collisions
-        
+
         collision_list = self.test_collision(entities)                              #Test all entities on the map for collision with player
+
         self._is_on_wall = ""
+        self._is_on_ground = False
         for objects in collision_list:
             if x_shift > 0: #Moving right
-                self.rect.right = objects.left 
+                self.rect.right = objects.left
                 collisions["right"] = True
                 self._is_on_wall = "right"
             elif x_shift < 0: #Moving left
@@ -155,48 +186,36 @@ class Player(pygame.sprite.DirtySprite):
                 self._is_on_wall = "left"
         #Lock player to look at other player when standing still or moving short time.
         #Flip player if they have been moving a certain amount of time.
-        
+
         collision_list = self.test_collision(entities)
         for objects in collision_list:
             if y_shift < 0: #Moving up
-                self.rect.top = objects.bottom 
+                self.rect.top = objects.bottom
                 collisions["top"] = True
             elif y_shift > 0: #Moving down
-                self.rect.bottom = objects.top 
+                self.rect.bottom = objects.top
                 collisions["bottom"] = True
                 self._is_on_ground = True
 
-        return collisions
 
+        return collisions
 
     def test_collision(self, entities):
         collision_list = []
+        rect = Rect(self.player_rect.x + player_shift_amount_x, self.player_rect.y - player_shift_amount_y, 73, 140)
         for objects in entities:
             if self.rect.colliderect(objects): #NEW
             #if self.player_rect.colliderect(objects):
                 collision_list.append(objects)
         return collision_list
 
-    def moveLeft(self, time):
-        self._x_pos -= 3.0
-        if time>=0.25:
-            self._direction_facing = 0
-            self._sprite = self._image_dict["stand_l"]
-
-    def moveRight(self, time):
-        self._x_pos += 3.0
-        if time>=0.25:
-            self._direction_facing = 1
-
-            self._sprite = self._image_dict["stand_l"]
-
     # 0 means no sword, 3 is high, 2 is med, 1 is low sword
     def raiseSword(self):
-        if(self._sword_height >= 1 and self._sword_height < 3):
+        if (self._sword_height >= 1 and self._sword_height < 3):
             self._sword_height += 1
 
     def lowerSword(self):
-        if(self._sword_height <= 3 and self._sword_height > 1):
+        if (self._sword_height <= 3 and self._sword_height > 1):
             self._sword_height -= 1
 
     def duck(self):
@@ -211,15 +230,14 @@ class Player(pygame.sprite.DirtySprite):
     # y_pos = property(getYPos, setYPos)
     is_on_ground = property(getOnGround, setOnGround)
     air_time = property(getAirTime, setAirTime)
-    is_on_wall = property(getOnWall, setOnWall) #is one of 3 strings "left" , "right" , "" empty string means not on wall
-    direction_facing = property(getDirectionFacing, switchDirection)
+    is_on_wall = property(getOnWall,
+                          setOnWall)  # is one of 3 strings "left" , "right" , "" empty string means not on wall
+    direction_facing = property(getDirectionFacing, setDirection)
     sword_height = property(getSwordHeight, setSwordHeight)
     is_ghost = property(getIsGhost, setIsGhost)
     is_locked_on = property(getIsLockedOn, setIsLockedOn)
-    sprite = property(getSprite, setSprite)
+    sprite = property(getSprite)
     image_dict = property(getImageDict, setImageDict)
-    move_left = property(moveLeft)
-    move_right = property(moveRight)
     raise_sword = property(raiseSword)
     lower_sword = property(lowerSword)
     duck = property(duck)

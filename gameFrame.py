@@ -20,16 +20,4 @@ def getImage(path):
     return image
 
 
-def swordPositioning(player):
-    if player.sword_height == 1 and player.direction_facing == 1:
-        player.sprite = player.image_dict["Resources/Images/sword_low_r"]
-    if player.sword_height == 2 and player.direction_facing == 1:
-        player.sprite = player.image_dict["Resources/Images/sword_med_r"]
-    if player.sword_height == 3 and player.direction_facing == 1:
-        player.sprite = player.image_dict["Resources/Images/sword_high_r"]
-    if player.sword_height == 1 and player.direction_facing == 0:
-        player.sprite = player.image_dict["Resources/Images/sword_low_l"]
-    if player.sword_height == 2 and player.direction_facing == 0:
-        player.sprite = player.image_dict["Resources/Images/sword_med_l"]
-    if player.sword_height == 3 and player.direction_facing == 0:
-        player.sprite = player.image_dict["Resources/Images/sword_high_l"]
+
