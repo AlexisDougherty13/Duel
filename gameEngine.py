@@ -9,6 +9,7 @@ import pygame
 from playerSkinsList import getSkin
 import gameFrame
 from time import time
+import mainMenuFrame
 
 # temp data, should not be here for long....
 # Player 1 meta info, store inputs and send to the player object
@@ -34,7 +35,7 @@ p2_meta_info = {
 }
 
 def mainMenu(screen):  # TODO Call Main Menu Frame instead and have it call startGame
-    startGame(screen, 0, "Montoya", "Montoya")
+    mainMenuFrame.mainMenu(screen)
 
 
 def adjustPlayer(player, aspect, value):
@@ -185,3 +186,4 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
             player2_y_vel = 0
 
         gameFrame.render(screen, player1, player2, current_map)
+
