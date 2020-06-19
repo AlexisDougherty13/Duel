@@ -3,3 +3,7 @@
 # intelliJ
 /.idea
 
+#pycharm stuff
+/__pycache__
+/.pyc
+
