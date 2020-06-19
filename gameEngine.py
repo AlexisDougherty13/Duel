@@ -10,6 +10,10 @@ from playerSkinsList import getSkin
 import gameFrame
 from swordHitBoxes import getSwordLine
 from time import time
+from camera import Camera
+
+
+
 
 # temp data, should not be here for long....
 # Player 1 meta info, store inputs and send to the player object
@@ -46,7 +50,6 @@ def adjustPlayer(player, aspect, value):
     elif player == 2:
         p2_meta_info[aspect] = value
 
-
 # :param Requires a Screen Objects (Created in the main passed to main menu),
 #  an int map_selection to determine what map to put on,
 # and 2 string skin_selection to determine what skins the players choose
@@ -56,10 +59,28 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
 
     entities = current_map.getCollidableEntities()
 
-    player1 = Player(300, 100, 0, 2, False, True, getSkin(skin_selection1))  # Initializes player1
-    player2 = Player(400, 100, 1, 2, False, False, getSkin(skin_selection2))  # Initializes player2
+    camera = Camera(gameFrame.cameraMovement, current_map.x_length, current_map.y_length) # initializes camera with level's width and height
+
+    draw_buffer = pygame.display.set_mode((current_map.x_length, current_map.y_length))
+
+    #create the background used to restore sprite previous location
+    background = pygame.Surface(draw_buffer.get_size())
+    background.blit(gameFrame.getImage("Resources/Images/UF_Background.png"), (0, 0))
+    pygame.draw.rect(background, (255, 0, 0), entities[0])
+    pygame.draw.rect(background, (255, 0, 255), entities[1])
+    pygame.draw.rect(background, (255, 0, 255), entities[2])
+
+
+    player1 = Player((300, 100), 1, 2, False, True, 'Resources/Images/MontoyaMedR.png',
+                     getSkin(skin_selection1))  # Initializes player1
+    player2 = Player((400, 100), 1, 2, False, False, 'Resources/Images/MontoyaMedL.png',
+                     getSkin(skin_selection2))  # Initializes player2
+    my_sprites = pygame.sprite.LayeredDirty()  # holds sprites to be drawn
+    my_sprites.add(player1, player2)  # add both to our group
+    my_sprites.clear(draw_buffer, background) # copy background to screen
 
     clock = pygame.time.Clock()
+
     print("starting")
 
     player1_y_vel = 0 #temp will be altered soon
@@ -134,7 +155,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
             p1_meta_info["attack"] = False
 
 
-        
+
 
         p1_x_shift = 0
         if p1_meta_info["left"]:
@@ -169,7 +190,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
 
         if p2_meta_info["sword_movement"] != 0:
             player2.setSwordHeight(player2.getSwordHeight() + p2_meta_info["sword_movement"])
-            player2.sword_positioning() 
+            player2.sword_positioning()
             p2_meta_info["sword_movement"] = 0
         elif p2_meta_info["attack"] != True:
             player2.sword_positioning()
@@ -204,6 +225,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
         if collisions["bottom"]:
             player2_y_vel = 0
 
+
         player1body = player1.getCollisionRect()
         player2body = player2.getCollisionRect()
         if getSwordLine(player1).colliderect(getSwordLine(player2)):
@@ -222,4 +244,5 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
 
 
 
-        gameFrame.render(screen, player1, player2, current_map)
+
+        gameFrame.render(my_sprites, draw_buffer)

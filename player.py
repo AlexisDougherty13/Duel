@@ -2,6 +2,7 @@
 .. module:: Player
 .. synopsis: module for a player object
 """
+import pygame
 from pygame import Rect
 import time
 
@@ -13,11 +14,17 @@ player_shift_amount_y = 8  # This variable represents the amount of pixels of wh
 
 
 # 102x203
+"""Grace's sprite update
+        : no more x_pos and y_pos variables, now in self.rect.x and self.rect.y_pos
+		: no more self.player_rect, uses self.rect instead
+		: update updates the player's position, is called from the movement method
+		: dx is the change in the player's x position
+		: dy is the change in the player's y position
 
-class Player:
+"""
+
+class Player(pygame.sprite.DirtySprite):
     """Class representing individual players' avatar, their attributes, and movement
-       :param x_pos: the player's x-coordinate
-       :param y_pos: the player's y-coordinate
        :param direction_facing: the direction the player is facing (0 for left and 1 for right)
        :param sword_height: the height at which the player is holding the sword (0 means no sword, 3 is high, 2 is med, 1 is low sword)
        :param is_ghost: True if the player has respawned as a ghost and False if the player is not currently a ghost
@@ -25,15 +32,22 @@ class Player:
        :param sprite: the image name for the player's current motion
        :param image_dict: a dictionary of image file names for each motion
     """
+    def __init__(self, center, direction_facing, sword_height, is_ghost, is_locked_on, sprite, image_dict):
+        pygame.sprite.DirtySprite.__init__(self)
+        self.image = pygame.image.load(sprite)
+        self.rect = self.image.get_rect(center=center)
+        self.dx = 0
+        self.dy = 0
 
-    def __init__(self, x_pos, y_pos, direction_facing, sword_height, is_ghost, is_locked_on, image_dict):
-        self._x_pos = x_pos  # we should not be saving this as varaibles if it is in a rectangle
-        self._y_pos = y_pos  # we also should keep the rectangle for hitbox and image seperate.
+
+        #self._x_pos = x_pos #we should not be saving this as varaibles if it is in a rectangle
+        #self._y_pos = y_pos #we also should keep the rectangle for hitbox and image seperate.
         self._direction_facing = direction_facing
         self._sword_height = sword_height
         self._is_ghost = is_ghost
         self._is_locked_on = is_locked_on
-        self.player_rect = Rect(x_pos, y_pos, 73, 140)
+        self._sprite = sprite
+        #self.player_rect = Rect(x_pos, y_pos, 61, 140)
         self._image_dict = image_dict
         self._is_attacking = False
         self._is_on_wall = ""
@@ -45,17 +59,26 @@ class Player:
         }
         self._is_on_ground = False
         self._air_time = 0
-    def getXPos(self):
-        return self._x_pos
 
-    def setXPos(self, x_pos):
-        self._x_pos = x_pos
+    def update(self):
+        self.image = pygame.image.load(self.sprite)
+        x, y = self.rect.center
+        x = (x + self.dx) # move by dx,dy and wrap modulo window size
+        y = (y + self.dy)
+        self.rect.center = (x, y)  # changes where sprite will be copied to buffer
+        self.dirty = 1  # force redraw from image, since we moved the sprite rect
 
-    def getYPos(self):
-        return self._y_pos
+    # def getXPos(self):
+        # return self._x_pos
 
-    def setYPos(self, y_pos):
-        self._y_pos = y_pos
+    # def setXPos(self, x_pos):
+        # self._x_pos = x_pos
+
+    # def getYPos(self):
+        # return self._y_pos
+
+    # def setYPos(self, y_pos):
+        # self._y_pos = y_pos
 
     def getOnGround(self):
         return self._is_on_ground
@@ -149,31 +172,35 @@ class Player:
         return Rect(self.player_rect.x + player_shift_amount_x, self.player_rect.y - player_shift_amount_y, 73, 140)
 
     def move(self, x_shift, y_shift, entities): #TODO Check for being stabbed in this method
+        self.dx = x_shift    #Move the player by given amount on the X cordinate
+        self.dy = y_shift    #Move the player by given amount on the y cordinate
+        self.update()        #updates players position
+
         collisions = {"top": False, "bottom": False, "left": False, "right": False} #List of directions that have collisions
-        self.player_rect.x += x_shift                                               #Move the player by given amount on the X cordinate
+
         collision_list = self.test_collision(entities)                              #Test all entities on the map for collision with player
-        
+
         self._is_on_wall = ""
         self._is_on_ground = False
         for objects in collision_list:
-            if x_shift > 0:  # Moving right
-                self.player_rect.right = objects.left - player_shift_amount_x
+            if x_shift > 0: #Moving right
+                self.rect.right = objects.left
                 collisions["right"] = True
                 self._is_on_wall = "right"
-            elif x_shift < 0:  # Moving left
-                self.player_rect.left = objects.right - player_shift_amount_x
+            elif x_shift < 0: #Moving left
+                self.rect.left = objects.right
                 collisions["left"] = True
                 self._is_on_wall = "left"
-        # Lock player to look at other player when standing still or moving short time.
-        # Flip player if they have been moving a certain amount of time.
-        self.player_rect.y += y_shift  # Move the player by given amount on the X cordinate
+        #Lock player to look at other player when standing still or moving short time.
+        #Flip player if they have been moving a certain amount of time.
+
         collision_list = self.test_collision(entities)
         for objects in collision_list:
-            if y_shift < 0:  # Moving up
-                self.player_rect.top = objects.bottom + player_shift_amount_y
+            if y_shift < 0: #Moving up
+                self.rect.top = objects.bottom
                 collisions["top"] = True
-            elif y_shift > 0:  # Moving down
-                self.player_rect.bottom = objects.top + player_shift_amount_y
+            elif y_shift > 0: #Moving down
+                self.rect.bottom = objects.top
                 collisions["bottom"] = True
                 self._is_on_ground = True
 
@@ -184,7 +211,8 @@ class Player:
         collision_list = []
         rect = Rect(self.player_rect.x + player_shift_amount_x, self.player_rect.y - player_shift_amount_y, 73, 140)
         for objects in entities:
-            if rect.colliderect(objects):
+            if self.rect.colliderect(objects): #NEW
+            #if self.player_rect.colliderect(objects):
                 collision_list.append(objects)
         return collision_list
 
@@ -254,3 +282,5 @@ class Player:
     lower_sword = property(lowerSword)
     duck = property(duck)
     stand_up = property(standUp)
+
+#Sources: https://github.com/gerryjenkinslb/pygame_dirtysprites/blob/master/Simple_Example_dirty_Sprites.py
