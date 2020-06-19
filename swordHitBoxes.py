@@ -1,10 +1,11 @@
 import player
+import math
 from pygame import Rect
 def getSwordLine(player): 
 	point1 = -1
 	point2 = -1
 	height = -1
-	if True: #if sword is up
+	if abs(player.getXVelocity()) < 30: #if sword is ready
 		if player.getDirectionFacing() == "left":
 			if player.getIsAttacking() == False: #if player is not attacking
 				point1 = player.player_rect.x + 14

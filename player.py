@@ -45,6 +45,14 @@ class Player:
         }
         self._is_on_ground = False
         self._air_time = 0
+        self._x_velocity = 0
+
+    def getXVelocity(self):
+        return self._x_velocity
+
+    def setXVelocity(self, x_velocity):
+        self._x_velocity = x_velocity
+
     def getXPos(self):
         return self._x_pos
 
@@ -149,6 +157,9 @@ class Player:
         return Rect(self.player_rect.x + player_shift_amount_x, self.player_rect.y - player_shift_amount_y, 73, 140)
 
     def move(self, x_shift, y_shift, entities): #TODO Check for being stabbed in this method
+        self._x_velocity += x_shift
+        if x_shift == 0:
+            self._x_velocity = 0
         collisions = {"top": False, "bottom": False, "left": False, "right": False} #List of directions that have collisions
         self.player_rect.x += x_shift                                               #Move the player by given amount on the X cordinate
         collision_list = self.test_collision(entities)                              #Test all entities on the map for collision with player
@@ -156,6 +167,7 @@ class Player:
         self._is_on_wall = ""
         self._is_on_ground = False
         for objects in collision_list:
+            self._x_velocity = 0
             if x_shift > 0:  # Moving right
                 self.player_rect.right = objects.left - player_shift_amount_x
                 collisions["right"] = True
@@ -254,3 +266,4 @@ class Player:
     lower_sword = property(lowerSword)
     duck = property(duck)
     stand_up = property(standUp)
+    x_velocity = property(getXVelocity, setXVelocity)
