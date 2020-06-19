@@ -16,7 +16,6 @@ def render(screen, player1, player2, current_map):
                 (player2.player_rect.x, player2.player_rect.y))
 
     pygame.display.update()
-    return 5
 
 
 def getImage(path, _image_library):
