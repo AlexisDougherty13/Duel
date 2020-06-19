@@ -6,14 +6,14 @@ def getSwordLine(player):
 	height = -1
 	if True: #if sword is up
 		if player.getDirectionFacing() == "left":
-			if True: #if player is not attacking
+			if player.getIsAttacking() == False: #if player is not attacking
 				point1 = player.player_rect.x + 14
 				point2 = player.player_rect.x + 69
 			else: #player is attacking
 				point1 = player.player_rect.x + 0
 				point2 = player.player_rect.x + 55
 		else:
-			if True: #if player is not attacking
+			if player.getIsAttacking() == False: #if player is not attacking
 				point1 = player.player_rect.x + 145
 				point2 = player.player_rect.x + 200
 			else: #player is attacking

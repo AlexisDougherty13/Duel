@@ -35,6 +35,7 @@ class Player:
         self._is_locked_on = is_locked_on
         self.player_rect = Rect(x_pos, y_pos, 73, 140)
         self._image_dict = image_dict
+        self._is_attacking = False
         self._is_on_wall = ""
         self._player_state = {
             "running": False,
@@ -108,6 +109,12 @@ class Player:
 
     def setIsLockedOn(self, is_locked):
         self._is_locked_on = is_locked
+
+    def getIsAttacking(self):
+        return self._is_attacking
+
+    def setIsAttacking(self, is_attacking):
+        self._is_attacking = is_attacking
 
     def getSprite(self):
         if self._direction_facing == 1:
@@ -198,19 +205,37 @@ class Player:
         global hit_box_height
         hit_box_height *= 2
 
-    def sword_positioning(self):  # update to image dictionary later
+    def sword_positioning(self):  # update to image dictionary later, Update with new images
         if (self._sword_height == 1 and self._direction_facing == 1):
-            self._sprite = "Resources/Images/MontoyaLowR.png"
+            if self._is_attacking:
+                pass
+            else:
+                self._sprite = "Resources/Images/MontoyaLowR.png"
         if (self._sword_height == 2 and self._direction_facing == 1):
-            self._sprite = "Resources/Images/MontoyaMedR.png"
+            if self._is_attacking:
+                pass
+            else:
+                self._sprite = "Resources/Images/MontoyaMedR.png"
         if (self._sword_height == 3 and self._direction_facing == 1):
-            self._sprite = "Resources/Images/MontoyaHighR.png"
+            if self._is_attacking:
+                pass
+            else:
+                self._sprite = "Resources/Images/MontoyaHighR.png"
         if (self._sword_height == 1 and self._direction_facing == 0):
-            self._sprite = "Resources/Images/MontoyaLowL.png"
+            if self._is_attacking:
+                pass
+            else:
+                self._sprite = "Resources/Images/MontoyaLowL.png"
         if (self._sword_height == 2 and self._direction_facing == 0):
-            self._sprite = "Resources/Images/MontoyaMedL.png"
+            if self._is_attacking:
+                pass
+            else:
+                self._sprite = "Resources/Images/MontoyaMedL.png"
         if (self._sword_height == 3 and self._direction_facing == 0):
-            self._sprite = "Resources/Images/MontoyaHighL.png"
+            if self._is_attacking:
+                pass
+            else:
+                self._sprite = "Resources/Images/MontoyaHighL.png"
 
     x_pos = property(getXPos, setXPos)
     y_pos = property(getYPos, setYPos)
@@ -224,6 +249,7 @@ class Player:
     is_locked_on = property(getIsLockedOn, setIsLockedOn)
     sprite = property(getSprite)
     image_dict = property(getImageDict, setImageDict)
+    is_attacking = property(getIsAttacking, setIsAttacking)
     raise_sword = property(raiseSword)
     lower_sword = property(lowerSword)
     duck = property(duck)

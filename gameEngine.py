@@ -20,7 +20,8 @@ p1_meta_info = {
     "down": False,  # if the player is moving in this direction
     "sword_movement": 0, #if the sword is moving up its +1 if its moving down its -1 if not moving its 0
     "sword_down": False,  # down due to movement greater than 1/4sec
-    "movement_clock": 0  # time in milliseconds in which the player has moved without stopping
+    "movement_clock": 0,  # time in milliseconds in which the player has moved without stopping
+    "attack": False
 }
 
     # Player 2 meta info, store inputs and send to the player object
@@ -31,7 +32,8 @@ p2_meta_info = {
     "down": False,  # if the player is moving in this direction
     "sword_movement": 0,  # if the sword is moving up its +1 if its moving down its -1 if not moving its 0
     "sword_down": False,  # down due to movement greater than 1/4sec
-    "movement_clock": 0  # time in milliseconds in which the player has moved without stopping
+    "movement_clock": 0,  # time in milliseconds in which the player has moved without stopping
+    "attack": False
 }
 
 def mainMenu(screen):  # TODO Call Main Menu Frame instead and have it call startGame
@@ -87,6 +89,9 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                     adjustPlayer(1, "sword_movement", -1)
                 elif event.key == pygame.K_w:
                     adjustPlayer(1, "sword_movement", 1)
+                if event.key == pygame.K_f:
+                    adjustPlayer(1, "attack", True)
+                    player1.setIsAttacking(True)
                 if event.key == pygame.K_LEFT:
                     adjustPlayer(2, "left", True)
                 elif event.key == pygame.K_RIGHT:
@@ -97,6 +102,9 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                     adjustPlayer(2, "sword_movement", -1)
                 elif event.key == pygame.K_UP:
                     adjustPlayer(2, "sword_movement", 1)
+                if event.key == pygame.K_QUESTION:
+                    adjustPlayer(1, "attack", True)
+                    player2.setIsAttacking(True)
 
             # Let go of key so stop performing said action
             if event.type == pygame.KEYUP:
@@ -121,15 +129,12 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
             player1.setSwordHeight(player1.getSwordHeight() + p1_meta_info["sword_movement"])
             player1.sword_positioning()
             p1_meta_info["sword_movement"] = 0
+        elif p1_meta_info["attack"] != True:
+            player1.sword_positioning()
+            p1_meta_info["attack"] = False
 
-        player1body = player1.getCollisionRect()
-        player2body = player2.getCollisionRect()
-        if player1body.colliderect(getSwordLine(player2)):
-            print("player 1 had an ouchie")
-        elif player2body.colliderect(getSwordLine(player1)):
-            print("player 2 had an ouchie")
-        elif getSwordLine(player1).colliderect(getSwordLine(player2)):
-            print("Clash!")
+
+        
 
         p1_x_shift = 0
         if p1_meta_info["left"]:
@@ -164,8 +169,11 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
 
         if p2_meta_info["sword_movement"] != 0:
             player2.setSwordHeight(player2.getSwordHeight() + p2_meta_info["sword_movement"])
-            player2.sword_positioning()
+            player2.sword_positioning() 
             p2_meta_info["sword_movement"] = 0
+        elif p2_meta_info["attack"] != True:
+            player2.sword_positioning()
+            p2_meta_info["attack"] = False
 
         p2_x_shift = 0
         if p2_meta_info["left"]:
@@ -195,6 +203,22 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
 
         if collisions["bottom"]:
             player2_y_vel = 0
+
+        player1body = player1.getCollisionRect()
+        player2body = player2.getCollisionRect()
+        if getSwordLine(player1).colliderect(getSwordLine(player2)):
+            print("Clash!")
+            if player1.getDirectionFacing() == "left":
+                player1.move(3.5, 0, entities)
+                player2.move(-3.5, 0, entities)
+            else:
+                player1.move(-3.5, 0, entities)
+                player2.move(3.5, 0, entities)
+        else:
+            if player1body.colliderect(getSwordLine(player2)):
+                print("player 1 had an ouchie")
+            if player2body.colliderect(getSwordLine(player1)):
+                print("player 2 had an ouchie")
 
 
 
