@@ -279,8 +279,8 @@ class Player(pygame.sprite.DirtySprite):
             else:
                 self._sprite = "Resources/Images/MontoyaHighL.png"
 
-    x_pos = property(getXPos, setXPos)
-    y_pos = property(getYPos, setYPos)
+    #x_pos = property(getXPos, setXPos)
+    #y_pos = property(getYPos, setYPos)
     is_on_ground = property(getOnGround, setOnGround)
     air_time = property(getAirTime, setAirTime)
     is_on_wall = property(getOnWall,setOnWall)  # is one of 3 strings "left" , "right" , "" empty string means not on wall
