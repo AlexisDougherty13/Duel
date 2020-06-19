@@ -14,7 +14,7 @@ hit_box_height = 140
 """Grace's sprite update
         : no more x_pos and y_pos variables, now in self.rect.x and self.rect.y_pos
 		: no more self.player_rect, uses self.rect instead
-		: update updates the player's position
+		: update updates the player's position, is called from the movement method
 		: dx is the change in the player's x position
 		: dy is the change in the player's y position
 
@@ -146,11 +146,11 @@ class Player(pygame.sprite.DirtySprite):
         self._is_on_wall = ""
         for objects in collision_list:
             if x_shift > 0: #Moving right
-                #self.player_rect.right = objects.left
+                self.rect.right = objects.left 
                 collisions["right"] = True
                 self._is_on_wall = "right"
             elif x_shift < 0: #Moving left
-                #self.player_rect.left = objects.right
+                self.rect.left = objects.right
                 collisions["left"] = True
                 self._is_on_wall = "left"
         #Lock player to look at other player when standing still or moving short time.
@@ -159,10 +159,10 @@ class Player(pygame.sprite.DirtySprite):
         collision_list = self.test_collision(entities)
         for objects in collision_list:
             if y_shift < 0: #Moving up
-                #self.player_rect.top = objects.bottom
+                self.rect.top = objects.bottom 
                 collisions["top"] = True
             elif y_shift > 0: #Moving down
-                #self.player_rect.bottom = objects.top
+                self.rect.bottom = objects.top 
                 collisions["bottom"] = True
                 self._is_on_ground = True
 
@@ -172,7 +172,7 @@ class Player(pygame.sprite.DirtySprite):
     def test_collision(self, entities):
         collision_list = []
         for objects in entities:
-            if self.rect.colliderect(objects):
+            if self.rect.colliderect(objects): #NEW
             #if self.player_rect.colliderect(objects):
                 collision_list.append(objects)
         return collision_list

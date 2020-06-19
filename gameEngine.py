@@ -56,13 +56,17 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
 
     entities = current_map.getCollidableEntities()
 	
-    camera = Camera(current_map.x_length, current_map.y_length) # initializes camera with level's width and height
+    camera = Camera(gameFrame.cameraMovement, current_map.x_length, current_map.y_length) # initializes camera with level's width and height
 	
     draw_buffer = pygame.display.set_mode((current_map.x_length, current_map.y_length))
 	
     #create the background used to restore sprite previous location
     background = pygame.Surface(draw_buffer.get_size()) 
-    screen.blit(gameFrame.getImage("Resources/Images/UF_Background.png"), (0, 0))
+    background.blit(gameFrame.getImage("Resources/Images/UF_Background.png"), (0, 0))
+    pygame.draw.rect(background, (255, 0, 0), entities[0])
+    pygame.draw.rect(background, (255, 0, 255), entities[1])
+    pygame.draw.rect(background, (255, 0, 255), entities[2])
+   
 
     player1 = Player((300, 100), 1, 2, False, True, 'Resources/Images/MontoyaMedR.png',
                      getSkin(skin_selection1))  # Initializes player1
