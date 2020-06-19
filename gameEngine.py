@@ -8,7 +8,7 @@ from player import Player
 import pygame
 from playerSkinsList import getSkin
 import gameFrame
-#from swordHitBoxes import getSwordLine
+from swordHitBoxes import getSwordLine
 from time import time
 
 # temp data, should not be here for long....
@@ -122,14 +122,14 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
             player1.sword_positioning()
             p1_meta_info["sword_movement"] = 0
 
-        #player1body = player1.getCollisionRect()
-        #player2body = player2.getCollisionRect()
-        #if player1body.colliderect(getSwordLine(player2)):
-        #    print("player 1 had an ouchie")
-        #elif player2body.colliderect(getSwordLine(player1)):
-        #    print("player 2 had an ouchie")
-        #elif getSwordLine(player1).colliderect(getSwordLine(player2)):
-        #    print("Clash!")
+        player1body = player1.getCollisionRect()
+        player2body = player2.getCollisionRect()
+        if player1body.colliderect(getSwordLine(player2)):
+            print("player 1 had an ouchie")
+        elif player2body.colliderect(getSwordLine(player1)):
+            print("player 2 had an ouchie")
+        elif getSwordLine(player1).colliderect(getSwordLine(player2)):
+            print("Clash!")
 
         p1_x_shift = 0
         if p1_meta_info["left"]:
