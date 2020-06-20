@@ -48,12 +48,12 @@ class Player(pygame.sprite.DirtySprite):
             "sword_height": 1,
             "direction_facing": direction_facing,
             "air_time": 0,
-            "x_velocity" : 0,
-            "y_velocity" : 0
+            "x_velocity": 0,
+            "y_velocity": 0
         }
+        self._image_dict = image_dict
         self.image = pygame.image.load(self.getSprite())
         self.rect = self.image.get_rect(center=center)
-        self._image_dict = image_dict
 
     def getXPos(self):
         return self.rect.x
@@ -81,12 +81,21 @@ class Player(pygame.sprite.DirtySprite):
         else:
             self._player_state["direction_facing"] = 0
 
-    def setSwordHeight(self, new_pos):
-        if new_pos > 0 and new_pos < 4:
-            self._player_state["sword_height"] = new_pos
+    def getDirection(self):
+        if (self._player_state["direction_facing"] == 1):
+            return "left"
+        else:
+            return "right"
+
+    def adjustSwordHeight(self, adjustment):
+        self._player_state["sword_height"] += adjustment
+        if self._player_state["sword_height"] > 0:
+            self._player_state["sword_height"] = 1
+        elif self._player_state["sword_height"] < 4:
+            self._player_state["sword_height"] = 3
 
     def getSprite(self):
-        if self._direction_facing == 1:
+        if self._player_state["direction_facing"] == 1:
             append = "_l"
         else:
             append = "_r"
@@ -96,9 +105,9 @@ class Player(pygame.sprite.DirtySprite):
             return self._image_dict["jump" + append]
         if self._player_state["ducking"]:
             return self._image_dict["duck" + append]
-        if self._sword_height == 1:
+        if self._player_state["sword_height"] == 1:
             append = "_low"+append
-        elif self._sword_height == 2:
+        elif self._player_state["sword_height"] == 2:
             append = "_med" + append
         else:
             append = "_high" + append
@@ -116,14 +125,11 @@ class Player(pygame.sprite.DirtySprite):
     def getCollisionRect(self):
         return Rect(self.rect.x + self._player_state["x_velocity"], self.rect.y - self._player_state["y_velocity"], 73, 140)
 
-    def move(self, x_shift, y_shift, entities): #TODO Check for being stabbed in this method
-        self._player_state["x_velocity"] = x_shift    #Move the player by given amount on the X cordinate
-        self._player_state["y_velocity"] = y_shift    #Move the player by given amount on the y cordinate
-        self.update()        #updates players position
-        self._x_velocity += x_shift
-        if x_shift == 0:
-            self._x_velocity = 0
-
+    def move(self, entities): #TODO Check for being stabbed in this method
+        print(self.rect.x)
+        self.rect.x += (self.getPlayerState("x_velocity"))
+        print(self.rect.x)
+        self.rect.y += (self.getPlayerState("y_velocity"))
         collisions = {"top": False, "bottom": False, "left": False, "right": False} #List of directions that have collisions
 
         collision_list = self.test_collision(entities)                              #Test all entities on the map for collision with player
@@ -132,46 +138,37 @@ class Player(pygame.sprite.DirtySprite):
         self._is_on_ground = False
         for objects in collision_list:
             self._x_velocity = 0
-            if x_shift > 0:  # Moving right
+            if self.getPlayerState("x_velocity") > 0:  # Moving right
                 self.rect.right = objects.left - player_shift_amount_x
                 collisions["right"] = True
-                self._is_on_wall = "right"
-            elif x_shift < 0: #Moving left
+                self.setPlayerState("on_right_wall", True)
+            elif self.getPlayerState("x_velocity") < 0: #Moving left
                 self.rect.left = objects.right
                 collisions["left"] = True
-                self._is_on_wall = "left"
+                self.setPlayerState("on_left_wall", True)
         #Lock player to look at other player when standing still or moving short time.
         #Flip player if they have been moving a certain amount of time.
 
         collision_list = self.test_collision(entities)
         for objects in collision_list:
-            if y_shift < 0: #Moving up
+            if self.getPlayerState("y_velocity") < 0: #Moving up
                 self.rect.top = objects.bottom
                 collisions["top"] = True
-            elif y_shift > 0: #Moving down
+            elif self.getPlayerState("y_velocity") > 0: #Moving down
                 self.rect.bottom = objects.top
                 collisions["bottom"] = True
-                self._is_on_ground = True
+                self.setPlayerState("on_ground", True)
 
-
+        self.update()  # updates players position
         return collisions
 
     def test_collision(self, entities):
         collision_list = []
-        rect = Rect(self.rect.x + player_shift_amount_x, self.rect.y - player_shift_amount_y, 73, 140)
+        rect = Rect(self.rect.x + self.getPlayerState("x_velocity"), self.rect.y - self.getPlayerState("y_velocity"), 73, 140)
         for objects in entities:
             if self.rect.colliderect(objects):
                 collision_list.append(objects)
         return collision_list
-
-    # 0 means no sword, 3 is high, 2 is med, 1 is low sword
-    def raiseSword(self):
-        if (self._sword_height >= 1 and self._sword_height < 3):
-            self._sword_height += 1
-
-    def lowerSword(self):
-        if (self._sword_height <= 3 and self._sword_height > 1):
-            self._sword_height -= 1
 
     def duck(self):
         global hit_box_height
@@ -181,13 +178,8 @@ class Player(pygame.sprite.DirtySprite):
         global hit_box_height
         hit_box_height *= 2
 
-
-    direction_facing = property(setDirection)
-    sword_height = property(setSwordHeight)
     sprite = property(getSprite)
     image_dict = property(getImageDict, setImageDict)
-    raise_sword = property(raiseSword)
-    lower_sword = property(lowerSword)
     duck = property(duck)
     stand_up = property(standUp)
     #Sources: https://github.com/gerryjenkinslb/pygame_dirtysprites/blob/master/Simple_Example_dirty_Sprites.py
