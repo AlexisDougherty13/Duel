@@ -48,6 +48,7 @@ def adjustPlayer(player, aspect, value):
 #  an int map_selection to determine what map to put on,
 # and 2 string skin_selection to determine what skins the players choose
 def startGame(screen, map_selection, skin_selection1, skin_selection2):
+    paused = False
 
     current_map = mapSelectionList.selectMap(map_selection)  # returns a child of the map class
 
@@ -95,6 +96,8 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                     adjustPlayer(2, "sword_movement", -1)
                 elif event.key == pygame.K_UP:
                     adjustPlayer(2, "sword_movement", 1)
+                if event.key == pygame.K_ESCAPE:
+                    mainMenuFrame.pauseMenu(screen)
 
             # Let go of key so stop performing said action
             if event.type == pygame.KEYUP:
