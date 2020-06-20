@@ -60,8 +60,8 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
 
     entities = current_map.getCollidableEntities()
 
-    player1 = Player((300, 100), 1, 2, False, True, getSkin(skin_selection1))  # Initializes player1
-    player2 = Player((400, 100), 1, 2, False, False, getSkin(skin_selection2))  # Initializes player2
+    player1 = Player(300, 100, 1, 2, False, True, getSkin(skin_selection1))  # Initializes player1
+    player2 = Player(400, 100, 1, 2, False, False, getSkin(skin_selection2))  # Initializes player2
 
     draw_buffer, my_sprites = gameFrame.init(player1, player2, current_map, entities)
 
@@ -76,7 +76,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
     while active_match:
         # Delta time is implemented to help make sure that player's models will move at the same speed regardless of monitor refresh rate and processor speed.
         # Could use further optimizing and troubleshooting.
-        clock.tick(1)
+        clock.tick(90)
 
         for event in pygame.event.get():
             # What to do on quit
@@ -188,7 +188,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
         elif not player2.getPlayerState("on_ground"):  # TODO: make better Gravity
             player2.calculateGravity(time())
 
-       # player2.move(entities)
+        #player2.move(entities)
 
         #Collision stuffs
         # player1body = player1.getCollisionRect()
