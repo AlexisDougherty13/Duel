@@ -54,6 +54,7 @@ def adjustPlayer(player, aspect, value):
 #  an int map_selection to determine what map to put on,
 # and 2 string skin_selection to determine what skins the players choose
 def startGame(screen, map_selection, skin_selection1, skin_selection2):
+    paused = False
 
     current_map = mapSelectionList.selectMap(map_selection)  # returns a child of the map class
 
@@ -63,7 +64,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                      getSkin(skin_selection1))  # Initializes player1
     player2 = Player((400, 100), 1, 2, False, False, 'Resources/Images/MontoyaMedL.png',
                      getSkin(skin_selection2))  # Initializes player2
-	
+
     draw_buffer, my_sprites = gameFrame.init(player1, player2, current_map, entities)
 
     clock = pygame.time.Clock()
@@ -113,6 +114,9 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                 if event.key == pygame.K_QUESTION:
                     adjustPlayer(1, "attack", True)
                     player2.setIsAttacking(True)
+                if event.key == pygame.K_ESCAPE:
+                    mainMenuFrame.pauseMenu(screen)
+
 
             # Let go of key so stop performing said action
             if event.type == pygame.KEYUP:

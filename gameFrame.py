@@ -7,7 +7,6 @@ def render(my_sprites, draw_buffer):
     rects = my_sprites.draw(draw_buffer)
     pygame.display.update(rects)  # copy rects from buffer to screen
     imagesDictionary = dict()
-    return 5
 
 def init(player1, player2, current_map, entities):
     #camera = Camera(gameFrame.cameraMovement, current_map.x_length, current_map.y_length) # initializes camera with level's width and height
@@ -20,11 +19,11 @@ def init(player1, player2, current_map, entities):
     pygame.draw.rect(background, (255, 0, 0), entities[0])
     pygame.draw.rect(background, (255, 0, 255), entities[1])
     pygame.draw.rect(background, (255, 0, 255), entities[2])
-	
+
     my_sprites = pygame.sprite.LayeredDirty()  # holds sprites to be drawn
     my_sprites.add(player1, player2)  # add both to our group
     my_sprites.clear(draw_buffer, background) # copy background to screen
-	
+
     return draw_buffer, my_sprites
 
 def cameraMovement(camera, target_rect): #method that determines centering on target
