@@ -25,7 +25,7 @@ p1_meta_info = {
     "sword_movement": 0, #if the sword is moving up its +1 if its moving down its -1 if not moving its 0
     "sword_down": False,  # down due to movement greater than 1/4sec
     "movement_clock": 0,  # time in milliseconds in which the player has moved without stopping
-    "attack": False
+    "attack_count": 0
 }
 
     # Player 2 meta info, store inputs and send to the player object
@@ -37,7 +37,7 @@ p2_meta_info = {
     "sword_movement": 0,  # if the sword is moving up its +1 if its moving down its -1 if not moving its 0
     "sword_down": False,  # down due to movement greater than 1/4sec
     "movement_clock": 0,  # time in milliseconds in which the player has moved without stopping
-    "attack": False
+    "attack_count": 0
 }
 
 def mainMenu(screen):  # TODO Call Main Menu Frame instead and have it call startGame
@@ -97,8 +97,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                 elif event.key == pygame.K_w:
                     adjustPlayer(1, "sword_movement", 1)
                 if event.key == pygame.K_f:
-                    adjustPlayer(1, "attack", True)
-                    player1.setIsAttacking(True)
+                    adjustPlayer(1, "attack_count", 30)
                 if event.key == pygame.K_LEFT:
                     adjustPlayer(2, "left", True)
                 elif event.key == pygame.K_RIGHT:
@@ -111,7 +110,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                     adjustPlayer(2, "sword_movement", 1)
                 if event.key == pygame.K_QUESTION:
                     adjustPlayer(1, "attack", True)
-                    player2.setIsAttacking(True)
+                    player2.setPlayerState("attacking", True)
                 if event.key == pygame.K_ESCAPE:
                     mainMenuFrame.pauseMenu(screen)
 
@@ -134,14 +133,14 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
 
         # NON EVENT BASED ACTIONS
         # Player 1 Sprite/Movement
-        if p1_meta_info["attack"]:
-            player1.setPlayerState("attacking", True)
-            p1_meta_info["attack"] = False
-        elif not p1_meta_info["attack"]:
-            player1.setPlayerState("attacking", False)
-        elif p1_meta_info["sword_movement"] != 0:
-            player1.adjustSwordHeight(p1_meta_info["sword_movement"])
-            p1_meta_info["sword_movement"] = 0
+        if p1_meta_info["attack_count"] > 0:
+            player1.setPlayerState("thrusting", True)
+            p1_meta_info["attack_count"] -= 1
+        else:
+            player1.setPlayerState("thrusting", False)
+            if p1_meta_info["sword_movement"] != 0:
+                player1.adjustSwordHeight(p1_meta_info["sword_movement"])
+                p1_meta_info["sword_movement"] = 0
 
         if player1.rect.x > player2.rect.x:
             player1.setDirection("left")
@@ -154,23 +153,21 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
             player1.moveRight()
         elif player1.getPlayerState("x_velocity") != 0:
             player1.standingStill()
-        if p1_meta_info["up"] and player1.getPlayerState("on_ground"):#TODO: make better Gravity
+        if p1_meta_info["up"] and player1.getPlayerState("on_ground"):
             player1.jump(time())
-        elif not player1.getPlayerState("on_ground"): #TODO: make better Gravity
+        elif not player1.getPlayerState("on_ground"):
             player1.calculateGravity(time())
-
-        player1.move(entities)
 
         # Player 2 Sprite/Movement
 
-        if p2_meta_info["attack"]:
-            player2.setPlayerState("attacking", True)
-            p2_meta_info["attack"] = False
-        elif not p2_meta_info["attack"]:
-            player2.setPlayerState("attacking", False)
-        elif p2_meta_info["sword_movement"] != 0:
-            player2.adjustSwordHeight(p2_meta_info["sword_movement"])
-            p2_meta_info["sword_movement"] = 0
+        if p2_meta_info["attack_count"] > 0:
+            player2.setPlayerState("thrusting", True)
+            p2_meta_info["attack_count"] -= 1
+        else :
+            player2.setPlayerState("thrusting", False)
+            if p2_meta_info["sword_movement"] != 0:
+                player2.adjustSwordHeight(p2_meta_info["sword_movement"])
+                p2_meta_info["sword_movement"] = 0
 
         if player2.rect.x > player1.rect.x:
             player2.setDirection("left")
@@ -183,43 +180,45 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
             player2.moveRight()
         elif player2.getPlayerState("x_velocity") != 0:
             player2.standingStill()
-        if p2_meta_info["up"] and player2.getPlayerState("on_ground"):  # TODO: make better Gravity
+        if p2_meta_info["up"] and player2.getPlayerState("on_ground"):
             player2.jump(time())
-        elif not player2.getPlayerState("on_ground"):  # TODO: make better Gravity
+        elif not player2.getPlayerState("on_ground"):
             player2.calculateGravity(time())
 
-        #player2.move(entities)
+        player2.move(entities)
 
         #Collision stuffs
-        # player1body = player1.getCollisionRect()
-        # player2body = player2.getCollisionRect()
-        # if getSwordLine(player1).colliderect(getSwordLine(player2)):
-        #     #print("Clash!")
-        #     if player1.getDirection() == "left":
-        #         player1.move(entities)
-        #         player2.move(-3.5, 0, entities)
-        #     else:
-        #         player1.move(-3.5, 0, entities)
-        #         player2.move(3.5, 0, entities)
-        #     player1.setPlayerState("x_velocity", 0)
-        #     player2.setPlayerState("x_velocity", 0)
-        # else:
-        #     if player1body.colliderect(getSwordLine(player2)) and player2body.colliderect(getSwordLine(player1)):
-        #
-        #         #print("players both died")
-        #         player1.setPlayerState("ghost", True)
-        #         player2.setPlayerState("ghost", True)
-        #         #screen locked in place
-        #     elif player1body.colliderect(getSwordLine(player2)):
-        #         #print("player 1 had an ouchie")
-        #         player1.setPlayerState("ghost", True) #Should start a counter for each frame of death animation, followed by a respawn delay, followed by drawing them as a ghost in that spot
-        #         player2.setPlayerState("ghost", False)
-        #         #screen follows player 2
-        #     elif player2body.colliderect(getSwordLine(player1)):
-        #         #print("player 2 had an ouchie")
-        #         player2.setPlayerState("ghost", True) #Should start a counter for each frame of death animation, followed by a respawn delay, followed by drawing them as a ghost in that spot
-        #         player1.setPlayerState("ghost", False)
-        #         #screen follows player 1
+        player1body = player1.getCollisionRect()
+        player2body = player2.getCollisionRect()
+        if getSwordLine(player1).colliderect(getSwordLine(player2)):
+            #print("Clash!")
+            player1.setPlayerState("x_velocity", 0)
+            player2.setPlayerState("x_velocity", 0)
+            if player1.getDirection() == "left":
+                player1.moveRight()
+                player2.moveLeft()
+            else:
+                player1.moveLeft()
+                player2.moveRight()
+        else:
+            if player1body.colliderect(getSwordLine(player2)) and player2body.colliderect(getSwordLine(player1)):
+                print("players both died")
+                player1.setPlayerState("ghost", True)
+                player2.setPlayerState("ghost", True)
+                #screen locked in place
+            elif player1body.colliderect(getSwordLine(player2)):
+                print("player 1 had an ouchie")
+                player1.setPlayerState("ghost", True) #Should start a counter for each frame of death animation, followed by a respawn delay, followed by drawing them as a ghost in that spot
+                player2.setPlayerState("ghost", False)
+                #screen follows player 2
+            elif player2body.colliderect(getSwordLine(player1)):
+                print("player 2 had an ouchie")
+                player2.setPlayerState("ghost", True) #Should start a counter for each frame of death animation, followed by a respawn delay, followed by drawing them as a ghost in that spot
+                player1.setPlayerState("ghost", False)
+                #screen follows player 1
+
+        player1.move(entities)
+        player2.move(entities)
 
         #render
         gameFrame.render(my_sprites, draw_buffer)
