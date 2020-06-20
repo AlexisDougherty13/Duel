@@ -42,7 +42,6 @@ class Player(pygame.sprite.DirtySprite):
             "on_right_wall": False,
             "on_left_wall": False,
             "on_ground": False,
-            "attacking": False,
             "locked_on": False,
             "ghost": False,
             "sword_height": 1,
@@ -73,8 +72,8 @@ class Player(pygame.sprite.DirtySprite):
             self._player_state["count_until_turn_around"] = 20
         elif self._player_state["count_until_turn_around"] < 0:
             self._player_state["count_until_turn_around"] = 0
-        if self.getPlayerState("x_velocity") < -15 and self._player_state["count_until_turn_around"] ==15:
-                self.setPlayerState("x_velocity", -10)
+        if self.getPlayerState("x_velocity") < -10:
+            self.setPlayerState("x_velocity", -10)
 
     def moveRight(self):
         self.setPlayerState("x_velocity", self.getPlayerState("x_velocity") + 1)
@@ -143,9 +142,9 @@ class Player(pygame.sprite.DirtySprite):
 
     def adjustSwordHeight(self, adjustment):
         self._player_state["sword_height"] += adjustment
-        if self._player_state["sword_height"] > 0:
+        if self._player_state["sword_height"] < 1:
             self._player_state["sword_height"] = 1
-        elif self._player_state["sword_height"] < 4:
+        elif self._player_state["sword_height"] > 3:
             self._player_state["sword_height"] = 3
 
     def getSprite(self):
@@ -179,7 +178,7 @@ class Player(pygame.sprite.DirtySprite):
     def getCollisionRect(self):
         return Rect(self.rect.x + image_shift_amount_x, self.rect.y - image_shift_amount_y, 73, 140)
 
-    def move(self, entities): #TODO Check for being stabbed in this method
+    def debug(self):
         print("x_vel: ", end="")
         print(self.getPlayerState("x_velocity"), end=" ")
         print("y_vel: ", end="")
@@ -190,6 +189,9 @@ class Player(pygame.sprite.DirtySprite):
         print(self.rect.y)
         print("count: ", end="")
         print(self.getPlayerState("count_until_turn_around"))
+
+    def move(self, entities): #TODO Check for being stabbed in this method
+
         self.setPlayerState("on_ground", False)
         self.setPlayerState("on_right_wall", False)
         self.setPlayerState("on_left_wall", False)
@@ -197,12 +199,12 @@ class Player(pygame.sprite.DirtySprite):
         collision_list = self.test_collision_X(entities)  # Test all entities on the map for collision with player
         self.rect.x += (self.getPlayerState("x_velocity"))
         for objects in collision_list:
-            if self.getPlayerState("x_velocity") > 0:  # Moving right
+            if self.getPlayerState("x_velocity") < 0:  # Moving left
                 self.rect.left = objects.right - image_shift_amount_x
-                self.setPlayerState("on_right_wall", True)
-            elif self.getPlayerState("x_velocity") < 0:  # Moving left
-                self.rect.right = objects.left + image_shift_amount_x
                 self.setPlayerState("on_left_wall", True)
+            elif self.getPlayerState("x_velocity") > 0:  # Moving right
+                self.rect.right = objects.left - image_shift_amount_x
+                self.setPlayerState("on_right_wall", True)
         # Lock player to look at other player when standing still or moving short time.
         # Flip player if they have been moving a certain amount of time.
 
@@ -210,9 +212,9 @@ class Player(pygame.sprite.DirtySprite):
         self.rect.y += (self.getPlayerState("y_velocity"))
         for objects in collision_list:
             if self.getPlayerState("y_velocity") < 0:  # Moving up
-                self.rect.top = objects.bottom + image_shift_amount_y
+                self.rect.top = objects.bottom - image_shift_amount_y
             elif self.getPlayerState("y_velocity") > 0:  # Moving down
-                self.rect.bottom = objects.top - image_shift_amount_y
+                self.rect.bottom = objects.top + image_shift_amount_y
                 self.setPlayerState("on_ground", True)
         self.update()  # updates players position
 
@@ -223,11 +225,6 @@ class Player(pygame.sprite.DirtySprite):
             if self.getCollisionRect().colliderect(objects):
                 collision_list.append(objects)
         self.rect.y -= (self.getPlayerState("y_velocity"))
-
-
-
-        if collision_list.__len__() > 0:
-            print(collision_list[0])
         return collision_list
 
     def test_collision_X(self, entities):
@@ -237,11 +234,6 @@ class Player(pygame.sprite.DirtySprite):
             if self.getCollisionRect().colliderect(objects):
                 collision_list.append(objects)
         self.rect.x -= (self.getPlayerState("x_velocity"))
-
-
-
-        if collision_list.__len__() > 0:
-            print(collision_list[0])
         return collision_list
 
     def duck(self):
