@@ -31,8 +31,8 @@ def getSkin(character_type):
             "sword_med_r": "Resources/Images/MontoyaMedR.png",
             "sword_low_l": "Resources/Images/MontoyaLowL.png",
             "sword_low_r": "Resources/Images/MontoyaLowR.png",
-            "duck_l": "Resources/Images/FillerSpriteL.png",
-            "duck_r": "Resources/Images/FillerSpriteR.png",
+            "duck_l": "Resources/Images/MontoyaDuckL.png",
+            "duck_r": "Resources/Images/MontoyaDuckR.png",
             "jump_l": "Resources/Images/FillerSpriteL.png",
             "jump_r": "Resources/Images/FillerSpriteR.png",
             "thrust_high_l": "Resources/Images/MontoyaHighThrustL.png",
@@ -41,12 +41,12 @@ def getSkin(character_type):
             "thrust_med_r": "Resources/Images/MontoyaMedThrustR.png",
             "thrust_low_l": "Resources/Images/MontoyaLowThrustL.png",
             "thrust_low_r": "Resources/Images/MontoyaLowThrustR.png",
-            "dead_l_1": "Resources/Images/FillerSpriteL.png",
-            "dead_r_1": "Resources/Images/FillerSpriteL.png",
-            "dead_l_2": "Resources/Images/FillerSpriteL.png",
-            "dead_r_2": "Resources/Images/FillerSpriteL.png",
-            "dead_l_3": "Resources/Images/FillerSpriteL.png",
-            "dead_r_3": "Resources/Images/FillerSpriteL.png"
+            "dead_l_1": "Resources/Images/MontoyaDeath1L.png",
+            "dead_r_1": "Resources/Images/MontoyaDeath1R.png",
+            "dead_l_2": "Resources/Images/MontoyaDeath2L.png",
+            "dead_r_2": "Resources/Images/MontoyaDeath2R.png",
+            "dead_l_3": "Resources/Images/MontoyaDeath3L.png",
+            "dead_r_3": "Resources/Images/MontoyaDeath3R.png"
         }
     else:
         # set a default skin
@@ -59,8 +59,8 @@ def getSkin(character_type):
             "sword_med_r": "Resources/Images/MontoyaMedR.png",
             "sword_low_l": "Resources/Images/MontoyaLowL.png",
             "sword_low_r": "Resources/Images/MontoyaLowR.png",
-            "duck_l": "Resources/Images/FillerSpriteL.png",
-            "duck_r": "Resources/Images/FillerSpriteR.png",
+            "duck_l": "Resources/Images/MontoyaDuckL.png",
+            "duck_r": "Resources/Images/MontoyaDuckR.png",
             "jump_l": "Resources/Images/FillerSpriteL.png",
             "jump_r": "Resources/Images/FillerSpriteR.png",
             "thrust_high_l": "Resources/Images/MontoyaHighThrustL.png",
@@ -69,11 +69,11 @@ def getSkin(character_type):
             "thrust_med_r": "Resources/Images/MontoyaMedThrustR.png",
             "thrust_low_l": "Resources/Images/MontoyaLowThrustL.png",
             "thrust_low_r": "Resources/Images/MontoyaLowThrustR.png",
-            "dead_l_1": "Resources/Images/FillerSpriteL.png",
-            "dead_r_1": "Resources/Images/FillerSpriteL.png",
-            "dead_l_2": "Resources/Images/FillerSpriteL.png",
-            "dead_r_2": "Resources/Images/FillerSpriteL.png",
-            "dead_l_3": "Resources/Images/FillerSpriteL.png",
-            "dead_r_3": "Resources/Images/FillerSpriteL.png"
+            "dead_l_1": "Resources/Images/MontoyaDeath1L.png",
+            "dead_r_1": "Resources/Images/MontoyaDeath1R.png",
+            "dead_l_2": "Resources/Images/MontoyaDeath2L.png",
+            "dead_r_2": "Resources/Images/MontoyaDeath2R.png",
+            "dead_l_3": "Resources/Images/MontoyaDeath3L.png",
+            "dead_r_3": "Resources/Images/MontoyaDeath3R.png"
         }
     return images_dictionary
