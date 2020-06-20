@@ -54,30 +54,18 @@ def adjustPlayer(player, aspect, value):
 #  an int map_selection to determine what map to put on,
 # and 2 string skin_selection to determine what skins the players choose
 def startGame(screen, map_selection, skin_selection1, skin_selection2):
+    paused = False
 
     current_map = mapSelectionList.selectMap(map_selection)  # returns a child of the map class
 
     entities = current_map.getCollidableEntities()
 
-    camera = Camera(gameFrame.cameraMovement, current_map.x_length, current_map.y_length) # initializes camera with level's width and height
-
-    draw_buffer = pygame.display.set_mode((current_map.x_length, current_map.y_length))
-
-    #create the background used to restore sprite previous location
-    background = pygame.Surface(draw_buffer.get_size())
-    background.blit(gameFrame.getImage("Resources/Images/UF_Background.png"), (0, 0))
-    pygame.draw.rect(background, (255, 0, 0), entities[0])
-    pygame.draw.rect(background, (255, 0, 255), entities[1])
-    pygame.draw.rect(background, (255, 0, 255), entities[2])
-
-
     player1 = Player((300, 100), 1, 2, False, True, 'Resources/Images/MontoyaMedR.png',
                      getSkin(skin_selection1))  # Initializes player1
     player2 = Player((400, 100), 1, 2, False, False, 'Resources/Images/MontoyaMedL.png',
                      getSkin(skin_selection2))  # Initializes player2
-    my_sprites = pygame.sprite.LayeredDirty()  # holds sprites to be drawn
-    my_sprites.add(player1, player2)  # add both to our group
-    my_sprites.clear(draw_buffer, background) # copy background to screen
+
+    draw_buffer, my_sprites = gameFrame.init(player1, player2, current_map, entities)
 
     clock = pygame.time.Clock()
 
@@ -126,6 +114,9 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                 if event.key == pygame.K_QUESTION:
                     adjustPlayer(1, "attack", True)
                     player2.setIsAttacking(True)
+                if event.key == pygame.K_ESCAPE:
+                    mainMenuFrame.pauseMenu(screen)
+
 
             # Let go of key so stop performing said action
             if event.type == pygame.KEYUP:
@@ -154,7 +145,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
             player1.sword_positioning()
             p1_meta_info["attack"] = False
 
-        if player1.player_rect.x > player2.player_rect.x:
+        if player1.rect.x > player2.rect.x:
             player1.setDirection("left")
         else:
             player1.setDirection("right")
@@ -201,7 +192,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
             player2.sword_positioning()
             p2_meta_info["attack"] = False
 
-        if player1.player_rect.x > player2.player_rect.x:
+        if player1.rect.x > player2.rect.x:
             player2.setDirection("right")
         else:
             player2.setDirection("left")
@@ -253,6 +244,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
             player2.setXVelocity(0)
         else:
             if player1body.colliderect(getSwordLine(player2)) and player2body.colliderect(getSwordLine(player1)):
+
                 #print("players both died")
                 player1.setIsGhost(True)
                 player2.setIsGhost(True)

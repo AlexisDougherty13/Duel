@@ -113,7 +113,6 @@ class Player(pygame.sprite.DirtySprite):
     def setImageDict(self, image_dict):
         self._image_dict = image_dict
 
-
     def getCollisionRect(self):
         return Rect(self.rect.x + self._player_state["x_velocity"], self.rect.y - self._player_state["y_velocity"], 73, 140)
 
@@ -134,7 +133,7 @@ class Player(pygame.sprite.DirtySprite):
         for objects in collision_list:
             self._x_velocity = 0
             if x_shift > 0:  # Moving right
-                self.player_rect.right = objects.left - player_shift_amount_x
+                self.rect.right = objects.left - player_shift_amount_x
                 collisions["right"] = True
                 self._is_on_wall = "right"
             elif x_shift < 0: #Moving left
@@ -159,10 +158,9 @@ class Player(pygame.sprite.DirtySprite):
 
     def test_collision(self, entities):
         collision_list = []
-        rect = Rect(self.player_rect.x + player_shift_amount_x, self.player_rect.y - player_shift_amount_y, 73, 140)
+        rect = Rect(self.rect.x + player_shift_amount_x, self.rect.y - player_shift_amount_y, 73, 140)
         for objects in entities:
-            if self.rect.colliderect(objects): #NEW
-            #if self.player_rect.colliderect(objects):
+            if self.rect.colliderect(objects):
                 collision_list.append(objects)
         return collision_list
 

@@ -4,6 +4,7 @@ import sys
 import menuButtons
 import gameFrame
 
+
 button_sprites = {
     "play_unhighl" : "Resources/Images/Buttons/PlayButtonUnhighlighted.png",
     "play_highl": "Resources/Images/Buttons/PlayButtonHighlighted.png",
@@ -37,10 +38,13 @@ game_state = {
     "settings": False,
     "back": False,
     "paused": False,
+    "resume": False,
     "restart": False
 }
 
 images_dictionary = dict()
+
+
 
 def mainMenu(screen):
 
@@ -152,6 +156,8 @@ def settingsMenu(screen):
 
 def pauseMenu(screen): #Only can be brought up once in game
 
+
+
     game_state["paused"] = True
     #Menu loop
     while True:
@@ -168,13 +174,13 @@ def pauseMenu(screen): #Only can be brought up once in game
                     m1_clicked = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    game_state["back"] = True
+                    game_state["resume"] = True
 
 
         if menu_buttons["play_button"].button_rect.collidepoint(mx, my):
             menu_buttons["play_button"].sprite = button_sprites["play_highl"]
             if m1_clicked: #Mouse click inside of the button's sprite
-                game_state["start"] = True
+                game_state["resume"] = True
                 menu_buttons["play_button"].sprite = button_sprites["play_clicked"]
         else:
             menu_buttons["play_button"].sprite = button_sprites["play_unhighl"]
@@ -187,13 +193,13 @@ def pauseMenu(screen): #Only can be brought up once in game
         else:
             menu_buttons["exit_button"].sprite = button_sprites["exit_unhighl"]
 
-        if menu_buttons["settings_button"].button_rect.collidepoint(mx, my):
-            menu_buttons["settings_button"].sprite = button_sprites["settings_highl"]
-            if m1_clicked:
-                game_state["settings"] = True
-                menu_buttons["settings_button"].sprite = button_sprites["settings_clicked"]
-        else:
-            menu_buttons["settings_button"].sprite = button_sprites["settings_unhighl"]
+        #if menu_buttons["settings_button"].button_rect.collidepoint(mx, my):
+           # menu_buttons["settings_button"].sprite = button_sprites["settings_highl"]
+           # if m1_clicked:
+            #    game_state["settings"] = True
+             #   menu_buttons["settings_button"].sprite = button_sprites["settings_clicked"]
+        #else:
+            #menu_buttons["settings_button"].sprite = button_sprites["settings_unhighl"]
 
         if menu_buttons["restart_button"].button_rect.collidepoint(mx, my):
             menu_buttons["restart_button"].sprite = button_sprites["restart_highl"]
@@ -204,58 +210,59 @@ def pauseMenu(screen): #Only can be brought up once in game
             menu_buttons["restart_button"].sprite = button_sprites["restart_unhighl"]
 
 
+
         renderMenuButtons("Pause", screen, menu_buttons)
         pygame.display.update()
 
-        if game_state["start"]:
+        if game_state["resume"]:
             pygame.time.delay(400)
             game_state["paused"] = False
-            #resume game.
+            game_state["resume"] = False
+            break
+
         if game_state["restart"]:
             pygame.time.delay(400)
             game_state["restart"] = False
             game_state["paused"] = False
             gameEngine.startGame(screen, 1, "Montoya", "Montoya")
-        if game_state["settings"]:
-            pygame.time.delay(400)
-            game_state["settings"] = False
-            settingsMenu(screen)
+        #if game_state["settings"]:
+            #pygame.time.delay(400)
+            #game_state["settings"] = False
+            #game_state["paused"] = True
+            #settingsMenu(screen)
         if game_state["exit"]:
             pygame.time.delay(400)
+            game_state["exit"] = False
             game_state["paused"] = False
             mainMenu(screen)
+
 
 
 
 #Reusable render function that will render depending on which menu loop you are in.
 def renderMenuButtons(menu_name, screen, buttons):
     if menu_name == "Main":
-        #drawButton(buttons, screen, "play_button")
-        buttons["play_button"].button_rect.center = (500, 350)
-        screen.blit(gameFrame.getImage(buttons["play_button"].sprite, images_dictionary), (buttons["play_button"].button_rect.x, buttons["play_button"].button_rect.y))
-        buttons["settings_button"].button_rect.center = (500, 450)
-        screen.blit(gameFrame.getImage(buttons["settings_button"].sprite, images_dictionary), (buttons["settings_button"].button_rect.x, buttons["settings_button"].button_rect.y))
-        buttons["exit_button"].button_rect.center = (500, 550)
-        screen.blit(gameFrame.getImage(buttons["exit_button"].sprite, images_dictionary), (buttons["exit_button"].button_rect.x, buttons["exit_button"].button_rect.y))
+        drawButton(buttons, screen, "play_button", 500, 350)
+        drawButton(buttons,screen, "settings_button", 500, 450)
+        drawButton(buttons, screen, "exit_button", 500, 550)
         #Draw the duel logo
         screen.blit(gameFrame.getImage("Resources/Images/MenuTitle.png", images_dictionary), (0,0))
 
     elif menu_name == "Settings":
-        buttons["back_button"].button_rect.center = (500, 450)
-        screen.blit(gameFrame.getImage(buttons["back_button"].sprite, images_dictionary), (buttons["back_button"].button_rect.x, buttons["back_button"].button_rect.y))
+        drawButton(buttons, screen, "back_button", 500, 450)
 
     elif menu_name == "Pause":
-        buttons["play_button"].button_rect.center = (500, 300)
-        screen.blit(gameFrame.getImage(buttons["play_button"].sprite, images_dictionary), (buttons["play_button"].button_rect.x, buttons["play_button"].button_rect.y))
-        buttons["settings_button"].button_rect.center = (500, 400)
-        screen.blit(gameFrame.getImage(buttons["settings_button"].sprite, images_dictionary), (buttons["settings_button"].button_rect.x, buttons["settings_button"].button_rect.y))
-        buttons["exit_button"].button_rect.center = (500, 500)
-        screen.blit(gameFrame.getImage(buttons["exit_button"].sprite, images_dictionary), (buttons["exit_button"].button_rect.x, buttons["exit_button"].button_rect.y))
+        drawButton(buttons, screen, "play_button", 500, 300)
+        drawButton(buttons, screen, "restart_button", 500, 350)
+        #drawButton(buttons,screen, "settings_button", 500, 400)
+        drawButton(buttons, screen, "exit_button", 500, 400)
+
+
 
     #Add new menus by adding elif's and creating a function that holds the menu loop.
 
-def drawButton(buttons, screen, button_name): #This function was not working when I implemented it, need to find a better way to simplify rendering function.
+def drawButton(buttons, screen, button_name, x_pos, y_pos): #This function was not working when I implemented it, need to find a better way to simplify rendering function.
     #Center the button on its x and y coordinates to make it flush with the window.
-    buttons[button_name].button_rect.center = (buttons[button_name].button_rect.x, buttons[button_name].button_rect.y)
+    buttons[button_name].button_rect.center = (x_pos, y_pos)
     #Blit it to the screen
     screen.blit(gameFrame.getImage(buttons[button_name].sprite, images_dictionary), (buttons[button_name].button_rect.x, buttons[button_name].button_rect.y))

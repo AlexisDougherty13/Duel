@@ -35,12 +35,18 @@ def getSkin(character_type):
             "duck_r": "Resources/Images/FillerSpriteR.png",
             "jump_l": "Resources/Images/FillerSpriteL.png",
             "jump_r": "Resources/Images/FillerSpriteR.png",
-            "thrust_high_l": "Resources/Images/FillerSpriteL.png",
-            "thrust_high_r": "Resources/Images/FillerSpriteR.png",
-            "thrust_med_l": "Resources/Images/FillerSpriteL.png",
-            "thrust_med_r": "Resources/Images/FillerSpriteR.png",
-            "thrust_low_l": "Resources/Images/FillerSpriteL.png",
-            "thrust_low_r": "Resources/Images/FillerSpriteR.png"
+            "thrust_high_l": "Resources/Images/MontoyaHighThrustL.png",
+            "thrust_high_r": "Resources/Images/MontoyaHighThrustR.png",
+            "thrust_med_l": "Resources/Images/MontoyaMedThrustL.png",
+            "thrust_med_r": "Resources/Images/MontoyaMedThrustR.png",
+            "thrust_low_l": "Resources/Images/MontoyaLowThrustL.png",
+            "thrust_low_r": "Resources/Images/MontoyaLowThrustR.png",
+            "dead_l_1": "Resources/Images/FillerSpriteL.png",
+            "dead_r_1": "Resources/Images/FillerSpriteL.png",
+            "dead_l_2": "Resources/Images/FillerSpriteL.png",
+            "dead_r_2": "Resources/Images/FillerSpriteL.png",
+            "dead_l_3": "Resources/Images/FillerSpriteL.png",
+            "dead_r_3": "Resources/Images/FillerSpriteL.png"
         }
     else:
         # set a default skin
@@ -57,11 +63,17 @@ def getSkin(character_type):
             "duck_r": "Resources/Images/FillerSpriteR.png",
             "jump_l": "Resources/Images/FillerSpriteL.png",
             "jump_r": "Resources/Images/FillerSpriteR.png",
-            "thrust_high_l": "Resources/Images/FillerSpriteL.png",
-            "thrust_high_r": "Resources/Images/FillerSpriteR.png",
-            "thrust_med_l": "Resources/Images/FillerSpriteL.png",
-            "thrust_med_r": "Resources/Images/FillerSpriteR.png",
-            "thrust_low_l": "Resources/Images/FillerSpriteL.png",
-            "thrust_low_r": "Resources/Images/FillerSpriteR.png"
+            "thrust_high_l": "Resources/Images/MontoyaHighThrustL.png",
+            "thrust_high_r": "Resources/Images/MontoyaHighThrustR.png",
+            "thrust_med_l": "Resources/Images/MontoyaMedThrustL.png",
+            "thrust_med_r": "Resources/Images/MontoyaMedThrustR.png",
+            "thrust_low_l": "Resources/Images/MontoyaLowThrustL.png",
+            "thrust_low_r": "Resources/Images/MontoyaLowThrustR.png",
+            "dead_l_1": "Resources/Images/FillerSpriteL.png",
+            "dead_r_1": "Resources/Images/FillerSpriteL.png",
+            "dead_l_2": "Resources/Images/FillerSpriteL.png",
+            "dead_r_2": "Resources/Images/FillerSpriteL.png",
+            "dead_l_3": "Resources/Images/FillerSpriteL.png",
+            "dead_r_3": "Resources/Images/FillerSpriteL.png"
         }
     return images_dictionary
