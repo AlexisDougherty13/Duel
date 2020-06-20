@@ -243,7 +243,8 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
             player1.setXVelocity(0)
             player2.setXVelocity(0)
         else:
-            if (player1body.colliderect(getSwordLine(player2)) and player2body.colliderect(getSwordLine(player1))):
+            if player1body.colliderect(getSwordLine(player2)) and player2body.colliderect(getSwordLine(player1)):
+
                 #print("players both died")
                 player1.setIsGhost(True)
                 player2.setIsGhost(True)

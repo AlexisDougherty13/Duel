@@ -5,8 +5,6 @@ import menuButtons
 import gameFrame
 
 
-
-
 button_sprites = {
     "play_unhighl" : "Resources/Images/Buttons/PlayButtonUnhighlighted.png",
     "play_highl": "Resources/Images/Buttons/PlayButtonHighlighted.png",
