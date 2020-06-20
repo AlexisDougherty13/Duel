@@ -9,8 +9,8 @@ import time
 # change these
 hit_box_width = 102
 hit_box_height = 140
-player_shift_amount_x = 80  # This variable represents the amount of pixels of whitespace in the X dirrection from the left side of the player
-player_shift_amount_y = 8  # This variable represents the amount of pixels of whitespace in the Y dirrection from the left side of the player
+image_shift_amount_x = 80  # This variable represents the amount of pixels of whitespace in the X dirrection from the left side of the player
+image_shift_amount_y = 16  # This variable represents the amount of pixels of whitespace in the Y dirrection from the left side of the player
 
 
 # 102x203
@@ -32,7 +32,7 @@ class Player(pygame.sprite.DirtySprite):
        :param sprite: the image name for the player's current motion
        :param image_dict: a dictionary of image file names for each motion
     """
-    def __init__(self, center, direction_facing, sword_height, is_ghost, is_locked_on, image_dict):
+    def __init__(self, x_pos, y_pos, direction_facing, sword_height, is_ghost, is_locked_on, image_dict):
         pygame.sprite.DirtySprite.__init__(self)
         self._player_state = {
             "running": False,
@@ -49,11 +49,12 @@ class Player(pygame.sprite.DirtySprite):
             "direction_facing": direction_facing,
             "air_time": 0,
             "x_velocity": 0,
-            "y_velocity": 0
+            "y_velocity": 0,
+            "count_until_turn_around" :0
         }
         self._image_dict = image_dict
         self.image = pygame.image.load(self.getSprite())
-        self.rect = self.image.get_rect(center=center)
+        self.rect = Rect(x_pos + image_shift_amount_x, y_pos - image_shift_amount_y, 73, 140)
 
     def getXPos(self):
         return self.rect.x
@@ -61,28 +62,81 @@ class Player(pygame.sprite.DirtySprite):
     def getYPos(self):
         return self.rect.y
 
+    def moveLeft(self):
+        self.setPlayerState("x_velocity", self.getPlayerState("x_velocity") - 1)
+        if abs(self.getPlayerState("x_velocity")) > 5:
+            self._player_state["count_until_turn_around"] += 1
+        else:
+            self._player_state["count_until_turn_around"] -= 4
+        if self._player_state["count_until_turn_around"] > 15:
+            self.setDirection("left")
+            self._player_state["count_until_turn_around"] = 20
+        elif self._player_state["count_until_turn_around"] < 0:
+            self._player_state["count_until_turn_around"] = 0
+        if self.getPlayerState("x_velocity") < -15 and self._player_state["count_until_turn_around"] ==15:
+                self.setPlayerState("x_velocity", -10)
+
+    def moveRight(self):
+        self.setPlayerState("x_velocity", self.getPlayerState("x_velocity") + 1)
+        if abs(self.getPlayerState("x_velocity")) > 5:
+            self._player_state["count_until_turn_around"] += 1
+        else:
+            self._player_state["count_until_turn_around"] -= 4
+        if self._player_state["count_until_turn_around"] > 15:
+            self.setDirection("right")
+            self._player_state["count_until_turn_around"] = 20
+        elif self._player_state["count_until_turn_around"] < 0:
+            self._player_state["count_until_turn_around"] = 0
+
+        if self.getPlayerState("x_velocity") > 10:
+            self.setPlayerState("x_velocity", 10)
+
+    def standingStill(self):
+        if self.getPlayerState("x_velocity") > 0:
+            self.setPlayerState("x_velocity", self.getPlayerState("x_velocity") / 5)
+        elif self.getPlayerState("x_velocity") < 0:
+            self.setPlayerState("x_velocity", self.getPlayerState("x_velocity") / 5)
+        if abs(self.getPlayerState("x_velocity")) < .1:
+            self.setPlayerState("x_velocity", 0)
+        if abs(self.getPlayerState("x_velocity")) < 1:
+            self._player_state["count_until_turn_around"] -= 4
+        if self._player_state["count_until_turn_around"] > 15:
+            self.setDirection("right")
+        elif self._player_state["count_until_turn_around"] < 0:
+            self._player_state["count_until_turn_around"] = 0
+
+    def calculateGravity(self, time):
+        if self.getPlayerState("air_time") == 0:
+            self.setPlayerState("air_time", time)
+        self.setPlayerState("y_velocity", self.getPlayerState("y_velocity") + 5 * (time - self.getPlayerState("air_time")))
+        if self.getPlayerState("y_velocity") > 50:
+            self.setPlayerState("y_velocity", 50)
+        if self.getPlayerState("on_ground"):
+            self.setPlayerState("y_velocity", 0)
+
+    def jump(self, time):
+        self.setPlayerState("y_velocity", - 15)
+        self.setPlayerState("air_time", time)
+        self.setPlayerState("on_ground", False)
+
     def update(self):
         self.image = pygame.image.load(self.getSprite())
-        x, y = self.rect.center
-        x = (x + self._player_state["x_velocity"]) # move by dx,dy and wrap modulo window size
-        y = (y + self._player_state["y_velocity"])
-        self.rect.center = (x, y)  # changes where sprite will be copied to buffer
         self.dirty = 1  # force redraw from image, since we moved the sprite rect
 
     def getPlayerState(self, type):
         return self._player_state[type]
 
-    def setPlayerState(self , type, value):
-        self._player_state[type]=value
+    def setPlayerState(self, type, value):
+        self._player_state[type] = value
 
     def setDirection(self, direction):
-        if (direction == "left"):
+        if direction == "left":
             self._player_state["direction_facing"] = 1
         else:
             self._player_state["direction_facing"] = 0
 
     def getDirection(self):
-        if (self._player_state["direction_facing"] == 1):
+        if self._player_state["direction_facing"] == 1:
             return "left"
         else:
             return "right"
@@ -123,51 +177,71 @@ class Player(pygame.sprite.DirtySprite):
         self._image_dict = image_dict
 
     def getCollisionRect(self):
-        return Rect(self.rect.x + self._player_state["x_velocity"], self.rect.y - self._player_state["y_velocity"], 73, 140)
+        return Rect(self.rect.x + image_shift_amount_x, self.rect.y - image_shift_amount_y, 73, 140)
 
     def move(self, entities): #TODO Check for being stabbed in this method
-        print(self.rect.x)
+        print("x_vel: ", end="")
+        print(self.getPlayerState("x_velocity"), end=" ")
+        print("y_vel: ", end="")
+        print(self.getPlayerState("y_velocity"), end=" ")
+        print("x_cord: ", end="")
+        print(self.rect.x, end=" ")
+        print("y_cord: ", end="")
+        print(self.rect.y)
+        print("count: ", end="")
+        print(self.getPlayerState("count_until_turn_around"))
+        self.setPlayerState("on_ground", False)
+        self.setPlayerState("on_right_wall", False)
+        self.setPlayerState("on_left_wall", False)
+
+        collision_list = self.test_collision_X(entities)  # Test all entities on the map for collision with player
         self.rect.x += (self.getPlayerState("x_velocity"))
-        print(self.rect.x)
-        self.rect.y += (self.getPlayerState("y_velocity"))
-        collisions = {"top": False, "bottom": False, "left": False, "right": False} #List of directions that have collisions
-
-        collision_list = self.test_collision(entities)                              #Test all entities on the map for collision with player
-
-        self._is_on_wall = ""
-        self._is_on_ground = False
         for objects in collision_list:
-            self._x_velocity = 0
             if self.getPlayerState("x_velocity") > 0:  # Moving right
-                self.rect.right = objects.left - player_shift_amount_x
-                collisions["right"] = True
+                self.rect.left = objects.right - image_shift_amount_x
                 self.setPlayerState("on_right_wall", True)
-            elif self.getPlayerState("x_velocity") < 0: #Moving left
-                self.rect.left = objects.right
-                collisions["left"] = True
+            elif self.getPlayerState("x_velocity") < 0:  # Moving left
+                self.rect.right = objects.left + image_shift_amount_x
                 self.setPlayerState("on_left_wall", True)
-        #Lock player to look at other player when standing still or moving short time.
-        #Flip player if they have been moving a certain amount of time.
+        # Lock player to look at other player when standing still or moving short time.
+        # Flip player if they have been moving a certain amount of time.
 
-        collision_list = self.test_collision(entities)
+        collision_list = self.test_collision_Y(entities)
+        self.rect.y += (self.getPlayerState("y_velocity"))
         for objects in collision_list:
-            if self.getPlayerState("y_velocity") < 0: #Moving up
-                self.rect.top = objects.bottom
-                collisions["top"] = True
-            elif self.getPlayerState("y_velocity") > 0: #Moving down
-                self.rect.bottom = objects.top
-                collisions["bottom"] = True
+            if self.getPlayerState("y_velocity") < 0:  # Moving up
+                self.rect.top = objects.bottom + image_shift_amount_y
+            elif self.getPlayerState("y_velocity") > 0:  # Moving down
+                self.rect.bottom = objects.top - image_shift_amount_y
                 self.setPlayerState("on_ground", True)
-
         self.update()  # updates players position
-        return collisions
 
-    def test_collision(self, entities):
+    def test_collision_Y(self, entities):
         collision_list = []
-        rect = Rect(self.rect.x + self.getPlayerState("x_velocity"), self.rect.y - self.getPlayerState("y_velocity"), 73, 140)
+        self.rect.y += (self.getPlayerState("y_velocity"))
         for objects in entities:
-            if self.rect.colliderect(objects):
+            if self.getCollisionRect().colliderect(objects):
                 collision_list.append(objects)
+        self.rect.y -= (self.getPlayerState("y_velocity"))
+
+
+
+        if collision_list.__len__() > 0:
+            print(collision_list[0])
+        return collision_list
+
+    def test_collision_X(self, entities):
+        collision_list = []
+        self.rect.x += (self.getPlayerState("x_velocity"))
+        for objects in entities:
+            if self.getCollisionRect().colliderect(objects):
+                collision_list.append(objects)
+        self.rect.x -= (self.getPlayerState("x_velocity"))
+
+
+
+        if collision_list.__len__() > 0:
+            print(collision_list[0])
         return collision_list
 
     def duck(self):

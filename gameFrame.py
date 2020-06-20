@@ -6,7 +6,6 @@ from camera import Camera
 def render(my_sprites, draw_buffer):
     rects = my_sprites.draw(draw_buffer)
     pygame.display.update(rects)  # copy rects from buffer to screen
-    imagesDictionary = dict()
 
 def init(player1, player2, current_map, entities):
     #camera = Camera(gameFrame.cameraMovement, current_map.x_length, current_map.y_length) # initializes camera with level's width and height

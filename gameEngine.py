@@ -60,8 +60,8 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
 
     entities = current_map.getCollidableEntities()
 
-    player1 = Player((300, 100), 1, 2, False, True, getSkin(skin_selection1))  # Initializes player1
-    player2 = Player((400, 100), 1, 2, False, False, getSkin(skin_selection2))  # Initializes player2
+    player1 = Player(300, 100, 1, 2, False, True, getSkin(skin_selection1))  # Initializes player1
+    player2 = Player(400, 100, 1, 2, False, False, getSkin(skin_selection2))  # Initializes player2
 
     draw_buffer, my_sprites = gameFrame.init(player1, player2, current_map, entities)
 
@@ -148,123 +148,78 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
         else:
             player1.setDirection("right")
 
-
-        p1_x_shift = 0
         if p1_meta_info["left"]:
-            player1.setPlayerState("x_velocity", player1.getPlayerState("x_velocity") - .3)
-            if abs(player1.getPlayerState("x_velocity")) > 5:
-                player1.setDirection("left")
-                p1_x_shift = 0
+            player1.moveLeft()
         elif p1_meta_info["right"]:
-            player1.setPlayerState("x_velocity", player1.getPlayerState("x_velocity") +.3)
-            if abs(player1.getPlayerState("x_velocity")) > 5:
-                player1.setDirection("right")
-                p1_x_shift = 0
+            player1.moveRight()
         elif player1.getPlayerState("x_velocity") != 0:
-            if player1.getPlayerState("x_velocity") > 0:
-                player1.setPlayerState("x_velocity", player1.getPlayerState("x_velocity")/4)
-            elif player1.getPlayerState("x_velocity") < 0:
-                player1.setPlayerState("x_velocity", player1.getPlayerState("x_velocity")/4)
+            player1.standingStill()
         if p1_meta_info["up"] and player1.getPlayerState("on_ground"):#TODO: make better Gravity
-            player1.setPlayerState("y_velocity", player1.getPlayerState("y_velocity") - 15)
-            player1.setPlayerState("air_time", time())
-            player1.setPlayerState("on_ground", False)
+            player1.jump(time())
         elif not player1.getPlayerState("on_ground"): #TODO: make better Gravity
-            if player1.getPlayerState("air_time") == 0:
-                player1.setPlayerState("air_time", time())
-            player1.setPlayerState("y_velocity", player1.getPlayerState("y_velocity") + 5*(time()-player1.getPlayerState("air_time")))
-        p1_y_shift = player1_y_vel
+            player1.calculateGravity(time())
 
-        if p1_x_shift ==0 and p1_y_shift ==0:
-            sdap=0
-            # No movement NOT IMPLEMENTED , SDAP IS PLACE HOLDER SO THERE IS NO ERROR
-        else:
-            sdap = 1
-            # No movement NOT IMPLEMENTED , SDAP IS PLACE HOLDER SO THERE IS NO ERROR
-
-        collisions = player1.move(entities)
-        if abs(player1.getPlayerState("y_velocity")) > 50:
-            player1_y_vel = 50
-            player1.setPlayerState("y_velocity", 50)
-        if collisions["bottom"]:
-            player1_y_vel = 0
+        player1.move(entities)
 
         # Player 2 Sprite/Movement
 
-        if player1.rect.x > player2.rect.x:
-            player2.setDirection("right")
-        else:
+        if p2_meta_info["attack"]:
+            player2.setPlayerState("attacking", True)
+            p2_meta_info["attack"] = False
+        elif not p2_meta_info["attack"]:
+            player2.setPlayerState("attacking", False)
+        elif p2_meta_info["sword_movement"] != 0:
+            player2.adjustSwordHeight(p2_meta_info["sword_movement"])
+            p2_meta_info["sword_movement"] = 0
+
+        if player2.rect.x > player1.rect.x:
             player2.setDirection("left")
+        else:
+            player2.setDirection("right")
 
-        p2_x_shift = 0
         if p2_meta_info["left"]:
-            p2_x_shift += -2
-            if abs(player2.getPlayerState("x_velocity")) > 20:
-                player2.setDirection("left")
-                p2_x_shift = 0
-
+            player2.moveLeft()
         elif p2_meta_info["right"]:
-            p2_x_shift += 2
-            if abs(player2.getPlayerState("x_velocity")) > 20:
-                player2.setDirection("right")
-                p2_x_shift = 0
-
+            player2.moveRight()
         elif player2.getPlayerState("x_velocity") != 0:
-            if player2.getPlayerState("x_velocity") > 0:
-                player2.setPlayerState("x_velocity", player1.getPlayerState("x_velocity")/4)
-            elif player2.getPlayerState("x_velocity") < 0:
-                player2.setPlayerState("x_velocity", player1.getPlayerState("x_velocity")/4)
-
+            player2.standingStill()
         if p2_meta_info["up"] and player2.getPlayerState("on_ground"):  # TODO: make better Gravity
-            player2_y_vel = -15
-            player2.setPlayerState("air_time", time())
-            player2.setPlayerState("on_ground", False)
+            player2.jump(time())
         elif not player2.getPlayerState("on_ground"):  # TODO: make better Gravity
-            if player2.getPlayerState("air_time") == 0:
-                player2.setPlayerState("air_time", time())
-            player2_y_vel = player2_y_vel + 5 * (time() - player2.getPlayerState("air_time"))
-        p2_y_shift = player2_y_vel
+            player2.calculateGravity(time())
 
-        if p2_x_shift == 0 and p2_y_shift == 0:
-            sdap = 0;
-            # No movement NOT IMPLEMENTS , SDAP IS PLACE HOLDER SO TEHRE IS NO ERROR
-        else:
-            sdap = 1;
-            # No movement NOT IMPLEMENTS , SDAP IS PLACE HOLDER SO TEHRE IS NO ERROR
+        #player2.move(entities)
 
-        collisions = player2.move(entities)
+        #Collision stuffs
+        # player1body = player1.getCollisionRect()
+        # player2body = player2.getCollisionRect()
+        # if getSwordLine(player1).colliderect(getSwordLine(player2)):
+        #     #print("Clash!")
+        #     if player1.getDirection() == "left":
+        #         player1.move(entities)
+        #         player2.move(-3.5, 0, entities)
+        #     else:
+        #         player1.move(-3.5, 0, entities)
+        #         player2.move(3.5, 0, entities)
+        #     player1.setPlayerState("x_velocity", 0)
+        #     player2.setPlayerState("x_velocity", 0)
+        # else:
+        #     if player1body.colliderect(getSwordLine(player2)) and player2body.colliderect(getSwordLine(player1)):
+        #
+        #         #print("players both died")
+        #         player1.setPlayerState("ghost", True)
+        #         player2.setPlayerState("ghost", True)
+        #         #screen locked in place
+        #     elif player1body.colliderect(getSwordLine(player2)):
+        #         #print("player 1 had an ouchie")
+        #         player1.setPlayerState("ghost", True) #Should start a counter for each frame of death animation, followed by a respawn delay, followed by drawing them as a ghost in that spot
+        #         player2.setPlayerState("ghost", False)
+        #         #screen follows player 2
+        #     elif player2body.colliderect(getSwordLine(player1)):
+        #         #print("player 2 had an ouchie")
+        #         player2.setPlayerState("ghost", True) #Should start a counter for each frame of death animation, followed by a respawn delay, followed by drawing them as a ghost in that spot
+        #         player1.setPlayerState("ghost", False)
+        #         #screen follows player 1
 
-        if collisions["bottom"]:
-            player2_y_vel = 0
-
-        player1body = player1.getCollisionRect()
-        player2body = player2.getCollisionRect()
-        if getSwordLine(player1).colliderect(getSwordLine(player2)):
-            #print("Clash!")
-            if player1.getDirection() == "left":
-                player1.move( entities)
-                player2.move(-3.5, 0, entities)
-            else:
-                player1.move(-3.5, 0, entities)
-                player2.move(3.5, 0, entities)
-            player1.setPlayerState("x_velocity", 0)
-            player2.setPlayerState("x_velocity", 0)
-        else:
-            if player1body.colliderect(getSwordLine(player2)) and player2body.colliderect(getSwordLine(player1)):
-
-                #print("players both died")
-                player1.setPlayerState("ghost", True)
-                player2.setPlayerState("ghost", True)
-                #screen locked in place
-            elif player1body.colliderect(getSwordLine(player2)):
-                #print("player 1 had an ouchie")
-                player1.setPlayerState("ghost", True) #Should start a counter for each frame of death animation, followed by a respawn delay, followed by drawing them as a ghost in that spot
-                player2.setPlayerState("ghost", False)
-                #screen follows player 2
-            elif player2body.colliderect(getSwordLine(player1)):
-                #print("player 2 had an ouchie")
-                player2.setPlayerState("ghost", True) #Should start a counter for each frame of death animation, followed by a respawn delay, followed by drawing them as a ghost in that spot
-                player1.setPlayerState("ghost", False)
-                #screen follows player 1
-        print(player1.rect.x)
+        #render
         gameFrame.render(my_sprites, draw_buffer)

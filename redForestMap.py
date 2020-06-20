@@ -14,7 +14,7 @@ class RedForestMap(Map):
         self.setCollidableEntities()
 
     def setCollidableEntities(self):
-        floor_rect = Rect(-100, 400, 1100, 200)
+        floor_rect = Rect(-400, 400, 1600, 200)
         self._collidable_entities.append(floor_rect)
         block_rect = Rect(100, 300, 100, 100)
         self._collidable_entities.append(block_rect)
