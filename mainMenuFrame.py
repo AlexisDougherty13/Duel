@@ -4,12 +4,6 @@ import sys
 import menuButtons
 import gameFrame
 
-
-
-#Window is 1000x600
-window_height = 1000
-window_width =  600
-
 button_sprites = {
     "play_unhighl" : "Resources/Images/Buttons/PlayButtonUnhighlighted.png",
     "play_highl": "Resources/Images/Buttons/PlayButtonHighlighted.png",

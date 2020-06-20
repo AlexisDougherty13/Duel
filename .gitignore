@@ -5,5 +5,5 @@
 
 #pycharm stuff
 /__pycache__
-/.pyc
+/*.pyc
 
