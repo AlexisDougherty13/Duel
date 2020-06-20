@@ -63,6 +63,8 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                      getSkin(skin_selection1))  # Initializes player1
     player2 = Player((400, 100), 1, 2, False, False, 'Resources/Images/MontoyaMedL.png',
                      getSkin(skin_selection2))  # Initializes player2
+	
+    draw_buffer, my_sprites = gameFrame.init(player1, player2, current_map, entities)
 
     clock = pygame.time.Clock()
 
@@ -139,7 +141,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
             player1.sword_positioning()
             p1_meta_info["attack"] = False
 
-        if player1.player_rect.x > player2.player_rect.x:
+        if player1.rect.x > player2.rect.x:
             player1.setDirection("left")
         else:
             player1.setDirection("right")
@@ -186,7 +188,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
             player2.sword_positioning()
             p2_meta_info["attack"] = False
 
-        if player1.player_rect.x > player2.player_rect.x:
+        if player1.rect.x > player2.rect.x:
             player2.setDirection("right")
         else:
             player2.setDirection("left")
