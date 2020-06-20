@@ -190,7 +190,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
 
        # player2.move(entities)
 
-        #Collision stuff
+        #Collision stuffs
         # player1body = player1.getCollisionRect()
         # player2body = player2.getCollisionRect()
         # if getSwordLine(player1).colliderect(getSwordLine(player2)):
