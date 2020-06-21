@@ -71,6 +71,7 @@ class Player(pygame.sprite.DirtySprite):
         if self._player_state["count_until_turn_around"] > 15:
             self.setDirection("left")
             self._player_state["count_until_turn_around"] = 20
+            self.setPlayerState("running", True)
         elif self._player_state["count_until_turn_around"] < 0:
             self._player_state["count_until_turn_around"] = 0
         if self.getPlayerState("x_velocity") < -10:
@@ -85,6 +86,7 @@ class Player(pygame.sprite.DirtySprite):
         if self._player_state["count_until_turn_around"] > 15:
             self.setDirection("right")
             self._player_state["count_until_turn_around"] = 20
+            self.setPlayerState("running", True)
         elif self._player_state["count_until_turn_around"] < 0:
             self._player_state["count_until_turn_around"] = 0
 
