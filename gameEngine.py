@@ -185,8 +185,6 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
         elif not player2.getPlayerState("on_ground"):
             player2.calculateGravity(time())
 
-        player2.move(entities)
-
         #Collision stuffs
         player1body = player1.getCollisionRect()
         player2body = player2.getCollisionRect()
