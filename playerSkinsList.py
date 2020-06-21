@@ -44,7 +44,7 @@ def getSkin(character_type):
             "dead_l_2": "Resources/Images/MontoyaDeath2L.png",
             "dead_r_2": "Resources/Images/MontoyaDeath2R.png",
             "dead_l_3": "Resources/Images/MontoyaDeath3L.png",
-            "dead_r_3": "Resources/Images/MontoyaDeath3R.png"
+            "dead_r_3": "Resources/Images/MontoyaDeath3R.png",
             "ghost_run_l": "Resources/Images/MontoyaGhostRunL.png",
             "ghost_run_r": "Resources/Images/MontoyaGhostRunR.png",
             "ghost_sword_high_l": "Resources/Images/MontoyaGhostHighL.png",
@@ -92,7 +92,7 @@ def getSkin(character_type):
             "dead_l_2": "Resources/Images/MontoyaDeath2L.png",
             "dead_r_2": "Resources/Images/MontoyaDeath2R.png",
             "dead_l_3": "Resources/Images/MontoyaDeath3L.png",
-            "dead_r_3": "Resources/Images/MontoyaDeath3R.png"
+            "dead_r_3": "Resources/Images/MontoyaDeath3R.png",
             "ghost_run_l": "Resources/Images/MontoyaGhostRunL.png",
             "ghost_run_r": "Resources/Images/MontoyaGhostRunR.png",
             "ghost_sword_high_l": "Resources/Images/MontoyaGhostHighL.png",

@@ -6,6 +6,7 @@ import mapSelectionList
 import sys
 from player import Player
 import pygame
+from pygame import Rect
 from playerSkinsList import getSkin
 import gameFrame
 from swordHitBoxes import getSwordLine
@@ -186,8 +187,10 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
             player2.calculateGravity(time())
 
         #Collision stuffs
-        player1body = player1.getCollisionRect()
-        player2body = player2.getCollisionRect()
+        #player1body = player1.getCollisionRect()
+        player1body = Rect(player1.rect.x + 100, player1.rect.y - 16, 15, 140)
+        #player2body = player2.getCollisionRect()
+        player2body = Rect(player2.rect.x + 100, player2.rect.y - 16, 15, 140)
         if getSwordLine(player1).colliderect(getSwordLine(player2)):
             #print("Clash!")
             player1.setPlayerState("x_velocity", 0)
