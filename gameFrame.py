@@ -14,10 +14,10 @@ def init(player1, player2, current_map, entities):
 
     #create the background used to restore sprite previous location
     background = pygame.Surface(draw_buffer.get_size())
+    pygame.draw.rect(background, (255, 255, 255, 255), entities[0])
     background.blit(getImage("Resources/Images/UF_Background.png", imagesDict), (0, 0))
-    pygame.draw.rect(background, (255, 0, 0), entities[0])
-    pygame.draw.rect(background, (255, 0, 255), entities[1])
-    pygame.draw.rect(background, (255, 0, 255), entities[2])
+    pygame.draw.rect(background, (139, 69, 19), entities[1])
+    pygame.draw.rect(background, (139, 69, 19), entities[2])
 
     my_sprites = pygame.sprite.LayeredDirty()  # holds sprites to be drawn
     my_sprites.add(player1, player2)  # add both to our group

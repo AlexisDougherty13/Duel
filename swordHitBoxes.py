@@ -7,14 +7,14 @@ def getSwordLine(player):
 	height = -1
 	if abs(player.getPlayerState("x_velocity")) < 10: #if sword is ready
 		if player.getDirection() == "left":
-			if player.getPlayerState("thrusting"): #if player is not attacking
+			if not player.getPlayerState("thrusting"): #if player is not attacking
 				point1 = player.rect.x + 14
 				point2 = player.rect.x + 69
 			else: #player is attacking
 				point1 = player.rect.x + 0
 				point2 = player.rect.x + 55
 		else:
-			if player.getPlayerState("thrusting"): #if player is not attacking
+			if not player.getPlayerState("thrusting"): #if player is not attacking
 				point1 = player.rect.x + 145
 				point2 = player.rect.x + 200
 			else: #player is attacking

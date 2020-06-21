@@ -61,8 +61,8 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
 
     entities = current_map.getCollidableEntities()
 
-    player1 = Player(300, 100, 1, 2, False, True, getSkin(skin_selection1))  # Initializes player1
-    player2 = Player(400, 100, 1, 2, False, False, getSkin(skin_selection2))  # Initializes player2
+    player1 = Player(-50, 100, 1, 2, False, True, getSkin(skin_selection1))  # Initializes player1
+    player2 = Player(675, 100, 1, 2, False, False, getSkin(skin_selection2))  # Initializes player2
 
     draw_buffer, my_sprites = gameFrame.init(player1, player2, current_map, entities)
 
@@ -109,8 +109,8 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                     adjustPlayer(2, "sword_movement", -1)
                 elif event.key == pygame.K_UP:
                     adjustPlayer(2, "sword_movement", 1)
-                if event.key == pygame.K_QUESTION:
-                    adjustPlayer(1, "attack", True)
+                if event.key == pygame.K_SLASH:
+                    adjustPlayer(2, "attack_count", 30)
                     player2.setPlayerState("attacking", True)
                 if event.key == pygame.K_ESCAPE:
                     mainMenuFrame.pauseMenu(screen)
@@ -191,35 +191,52 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
         player1body = Rect(player1.rect.x + 100, player1.rect.y - 16, 15, 140)
         #player2body = player2.getCollisionRect()
         player2body = Rect(player2.rect.x + 100, player2.rect.y - 16, 15, 140)
-        if getSwordLine(player1).colliderect(getSwordLine(player2)):
+        while getSwordLine(player1).colliderect(getSwordLine(player2)):
             #print("Clash!")
             player1.setPlayerState("x_velocity", 0)
             player2.setPlayerState("x_velocity", 0)
             if player1.getDirection() == "left":
                 player1.moveRight()
                 player2.moveLeft()
+                player1.move(entities)
+                player2.move(entities)
             else:
                 player1.moveLeft()
                 player2.moveRight()
+                player1.move(entities)
+                player2.move(entities)
         else:
             if player1body.colliderect(getSwordLine(player2)) and player2body.colliderect(getSwordLine(player1)):
                 print("players both died")
-                player1.setPlayerState("ghost", True)
-                player2.setPlayerState("ghost", True)
+                player1.setPlayerState("ghost_counter", 0)
+                player2.setPlayerState("ghost_counter", 0)
                 #screen locked in place
             elif player1body.colliderect(getSwordLine(player2)):
                 print("player 1 had an ouchie")
-                player1.setPlayerState("ghost", True) #Should start a counter for each frame of death animation, followed by a respawn delay, followed by drawing them as a ghost in that spot
+                player1.setPlayerState("ghost_counter", 0) #Should start a counter for each frame of death animation, followed by a respawn delay, followed by drawing them as a ghost in that spot
+                player2.setPlayerState("ghost_counter", -1)
                 player2.setPlayerState("ghost", False)
                 #screen follows player 2
             elif player2body.colliderect(getSwordLine(player1)):
                 print("player 2 had an ouchie")
-                player2.setPlayerState("ghost", True) #Should start a counter for each frame of death animation, followed by a respawn delay, followed by drawing them as a ghost in that spot
+                player2.setPlayerState("ghost_counter", 0) #Should start a counter for each frame of death animation, followed by a respawn delay, followed by drawing them as a ghost in that spot
+                player1.setPlayerState("ghost_counter", -1)
                 player1.setPlayerState("ghost", False)
                 #screen follows player 1
+
+        if player1.getPlayerState("ghost_counter") > -1:
+            #print("woooooowie")
+            player1.setPlayerState("ghost_counter", player1.getPlayerState("ghost_counter") + 1)
+        if player2.getPlayerState("ghost_counter") > -1:
+            #print("woooooowie 2")
+            player2.setPlayerState("ghost_counter", player2.getPlayerState("ghost_counter") + 1)
+
+
 
         player1.move(entities)
         player2.move(entities)
 
         #render
         gameFrame.render(my_sprites, draw_buffer)
+
+#if player1.getPlayerState("ghost_counter") >= 0 and player1.getPlayerState("ghost_counter") < 11:
