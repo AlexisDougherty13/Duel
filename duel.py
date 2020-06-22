@@ -53,7 +53,7 @@ from pygame import Rect
 # 7. Do stuff with sword hitboxes. People can die. OMG, now we have a somewhat competent looking game
 # 8. Dead guy respawns as ghost. Ghost kills person => person becomes ghost, ghost becomes person.
 # 9. Add some sort of background and goal points at either side of the map, so we can test screen movement
-# 10.Screen locks on to whoever isnt a ghost, and locks in place at the start.
+# 0
 # 11.Reaching the edge of screen => victory conditions show
 # CONGRATS, NOW WE HAVE SOMETHING TO SHOW FOR OUR MIDTERM :D
 # 12.Fix bugs and make game look good
