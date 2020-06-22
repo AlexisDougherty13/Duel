@@ -87,6 +87,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
 
             # Pressed a key so perform said action
             if event.type == pygame.KEYDOWN:
+
                 if player1.getPlayerState("ghost_counter") == -1 or player1.getPlayerState("ghost_counter") > 300:
                     if event.key == pygame.K_d:
                         adjustPlayer(1, "right", True)
@@ -115,7 +116,8 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                         adjustPlayer(2, "attack_count", 30)
                         player2.setPlayerState("attacking", True)
                 if event.key == pygame.K_ESCAPE:
-                    mainMenuFrame.pauseMenu(screen)
+                    mainMenuFrame.pauseMenu(screen, p1_meta_info, p2_meta_info)
+
 
 
             # Let go of key so stop performing said action
