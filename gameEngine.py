@@ -87,31 +87,34 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
 
             # Pressed a key so perform said action
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_d:
-                    adjustPlayer(1, "right", True)
-                elif event.key == pygame.K_a:
-                    adjustPlayer(1, "left", True)
-                if event.key == pygame.K_SPACE:
-                    adjustPlayer(1, "up", True)
-                if event.key == pygame.K_s:
-                    adjustPlayer(1, "sword_movement", -1)
-                elif event.key == pygame.K_w:
-                    adjustPlayer(1, "sword_movement", 1)
-                if event.key == pygame.K_f:
-                    adjustPlayer(1, "attack_count", 30)
-                if event.key == pygame.K_LEFT:
-                    adjustPlayer(2, "left", True)
-                elif event.key == pygame.K_RIGHT:
-                    adjustPlayer(2, "right", True)
-                if event.key == pygame.K_RSHIFT:
-                    adjustPlayer(2, "up", True)
-                if event.key == pygame.K_DOWN:
-                    adjustPlayer(2, "sword_movement", -1)
-                elif event.key == pygame.K_UP:
-                    adjustPlayer(2, "sword_movement", 1)
-                if event.key == pygame.K_RCTRL:
-                    adjustPlayer(2, "attack_count", 30)
-                    player2.setPlayerState("attacking", True)
+
+                if player1.getPlayerState("ghost_counter") == -1 or player1.getPlayerState("ghost_counter") > 300:
+                    if event.key == pygame.K_d:
+                        adjustPlayer(1, "right", True)
+                    elif event.key == pygame.K_a:
+                        adjustPlayer(1, "left", True)
+                    if event.key == pygame.K_SPACE:
+                        adjustPlayer(1, "up", True)
+                    if event.key == pygame.K_s:
+                        adjustPlayer(1, "sword_movement", -1)
+                    elif event.key == pygame.K_w:
+                        adjustPlayer(1, "sword_movement", 1)
+                    if event.key == pygame.K_f:
+                        adjustPlayer(1, "attack_count", 30)
+                if player2.getPlayerState("ghost_counter") == -1 or player2.getPlayerState("ghost_counter") > 300:
+                    if event.key == pygame.K_LEFT:
+                        adjustPlayer(2, "left", True)
+                    elif event.key == pygame.K_RIGHT:
+                        adjustPlayer(2, "right", True)
+                    if event.key == pygame.K_RSHIFT:
+                        adjustPlayer(2, "up", True)
+                    if event.key == pygame.K_DOWN:
+                        adjustPlayer(2, "sword_movement", -1)
+                    elif event.key == pygame.K_UP:
+                        adjustPlayer(2, "sword_movement", 1)
+                    if event.key == pygame.K_SLASH:
+                        adjustPlayer(2, "attack_count", 30)
+                        player2.setPlayerState("attacking", True)
                 if event.key == pygame.K_ESCAPE:
                     mainMenuFrame.pauseMenu(screen, p1_meta_info, p2_meta_info)
 
@@ -135,6 +138,12 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
 
         # NON EVENT BASED ACTIONS
         # Player 1 Sprite/Movement
+
+
+        player1.setPlayerState("running", False)
+        player2.setPlayerState("running", False)
+        
+
         if p1_meta_info["attack_count"] > 0:
             player1.setPlayerState("thrusting", True)
             p1_meta_info["attack_count"] -= 1
@@ -188,10 +197,16 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
             player2.calculateGravity(time())
 
         #Collision stuffs
-        #player1body = player1.getCollisionRect()
-        player1body = Rect(player1.rect.x + 100, player1.rect.y - 16, 15, 140)
-        #player2body = player2.getCollisionRect()
-        player2body = Rect(player2.rect.x + 100, player2.rect.y - 16, 15, 140)
+        if player1.getPlayerState("ghost_counter") > 300 or player1.getPlayerState("ghost_counter") == -1:
+            player1body = Rect(player1.rect.x + 100, player1.rect.y - 16, 15, 140)
+        else:
+            player1body = Rect(-100, -100, 1, 1)
+
+        if player2.getPlayerState("ghost_counter") > 300 or player2.getPlayerState("ghost_counter") == -1:
+            player2body = Rect(player2.rect.x + 100, player2.rect.y - 16, 15, 140)
+        else:
+            player2body = Rect(-100, -100, 1, 1)
+
         while getSwordLine(player1).colliderect(getSwordLine(player2)):
             #print("Clash!")
             player1.setPlayerState("x_velocity", 0)
@@ -211,6 +226,17 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                 print("players both died")
                 player1.setPlayerState("ghost_counter", 0)
                 player2.setPlayerState("ghost_counter", 0)
+                if player1.getPlayerState("direction_facing") == "left":
+                    player1.setPlayerState("x_velocity", 10)
+                    player2.setPlayerState("x_velocity", -10)
+                    player1.moveRight()
+                    player2.moveLeft()
+                else:
+                    player1.setPlayerState("x_velocity", -10)
+                    player2.setPlayerState("x_velocity", 10)
+                    player2.moveRight()
+                    player1.moveLeft()
+
                 #screen locked in place
             elif player1body.colliderect(getSwordLine(player2)):
                 print("player 1 had an ouchie")
@@ -233,9 +259,9 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
             player2.setPlayerState("ghost_counter", player2.getPlayerState("ghost_counter") + 1)
 
 
-
         player1.move(entities)
         player2.move(entities)
+
 
         #render
         gameFrame.render(my_sprites, draw_buffer)
