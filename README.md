@@ -1,6 +1,6 @@
 # Duel
 
-Team Name: Python Buds
+Team Name: Python Buds <br>
 Team Members: Alexis Dougherty, Aaron Gonzales, Zach Stanford, Grace Wilcox, Joshua Zimmerman
 
 ## How to Run
