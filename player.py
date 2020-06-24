@@ -63,35 +63,41 @@ class Player(pygame.sprite.DirtySprite):
         return self.rect.y
 
     def moveLeft(self):
-        self.setPlayerState("x_velocity", self.getPlayerState("x_velocity") - 1)
-        if abs(self.getPlayerState("x_velocity")) > 5:
-            self._player_state["count_until_turn_around"] += 1
+        if (self.getPlayerState("ghost_counter") > 300 or self.getPlayerState("ghost_counter") == -1):
+            self.setPlayerState("x_velocity", self.getPlayerState("x_velocity") - 1)
+            if abs(self.getPlayerState("x_velocity")) > 5:
+                self._player_state["count_until_turn_around"] += 1
+            else:
+                self._player_state["count_until_turn_around"] -= 4
+            if self._player_state["count_until_turn_around"] > 15:
+                self.setDirection("left")
+                self._player_state["count_until_turn_around"] = 20
+                self.setPlayerState("running", True)
+            elif self._player_state["count_until_turn_around"] < 0:
+                self._player_state["count_until_turn_around"] = 0
+            if self.getPlayerState("x_velocity") < -10:
+                self.setPlayerState("x_velocity", -10)
         else:
-            self._player_state["count_until_turn_around"] -= 4
-        if self._player_state["count_until_turn_around"] > 15:
-            self.setDirection("left")
-            self._player_state["count_until_turn_around"] = 20
-            self.setPlayerState("running", True)
-        elif self._player_state["count_until_turn_around"] < 0:
-            self._player_state["count_until_turn_around"] = 0
-        if self.getPlayerState("x_velocity") < -10:
-            self.setPlayerState("x_velocity", -10)
+            self.setPlayerState("x_velocity", 0)
 
     def moveRight(self):
-        self.setPlayerState("x_velocity", self.getPlayerState("x_velocity") + 1)
-        if abs(self.getPlayerState("x_velocity")) > 5:
-            self._player_state["count_until_turn_around"] += 1
-        else:
-            self._player_state["count_until_turn_around"] -= 4
-        if self._player_state["count_until_turn_around"] > 15:
-            self.setDirection("right")
-            self._player_state["count_until_turn_around"] = 20
-            self.setPlayerState("running", True)
-        elif self._player_state["count_until_turn_around"] < 0:
-            self._player_state["count_until_turn_around"] = 0
+        if (self.getPlayerState("ghost_counter") > 300 or self.getPlayerState("ghost_counter") == -1):
+            self.setPlayerState("x_velocity", self.getPlayerState("x_velocity") + 1)
+            if abs(self.getPlayerState("x_velocity")) > 5:
+                self._player_state["count_until_turn_around"] += 1
+            else:
+                self._player_state["count_until_turn_around"] -= 4
+            if self._player_state["count_until_turn_around"] > 15:
+                self.setDirection("right")
+                self._player_state["count_until_turn_around"] = 20
+                self.setPlayerState("running", True)
+            elif self._player_state["count_until_turn_around"] < 0:
+                self._player_state["count_until_turn_around"] = 0
 
-        if self.getPlayerState("x_velocity") > 10:
-            self.setPlayerState("x_velocity", 10)
+            if self.getPlayerState("x_velocity") > 10:
+                self.setPlayerState("x_velocity", 10)
+        else:
+            self.setPlayerState("x_velocity", 0)
 
     def standingStill(self):
         if self.getPlayerState("x_velocity") > 0:
@@ -132,10 +138,11 @@ class Player(pygame.sprite.DirtySprite):
         self._player_state[type] = value
 
     def setDirection(self, direction):
-        if direction == "left":
-            self._player_state["direction_facing"] = 1
-        else:
-            self._player_state["direction_facing"] = 0
+        if (self.getPlayerState("ghost_counter") > 300 or self.getPlayerState("ghost_counter") == -1):
+            if direction == "left":
+                self._player_state["direction_facing"] = 1
+            else:
+                self._player_state["direction_facing"] = 0
 
     def getDirection(self):
         if self._player_state["direction_facing"] == 1:
