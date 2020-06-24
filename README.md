@@ -1,7 +1,7 @@
 # Duel
 
 Team Name: Python Buds <br>
-Team Members: Alexis Dougherty, Aaron Gonzales, Zach Stanford, Grace Wilcox, Joshua Zimmerman
+Team Members: Alexis Dougherty, Aaron Gonzales, Zach Stanford, Grace Wilcox, and Joshua Zimmerman
 
 ## How to Run
 To run the application, click the executable, Duel.exe. A game window should appear.
