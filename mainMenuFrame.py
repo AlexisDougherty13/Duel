@@ -2,6 +2,7 @@ import gameEngine
 import pygame
 import sys
 import menuButtons
+import pauseButtons
 import gameFrame
 
 
@@ -210,14 +211,18 @@ def settingsMenu(screen):
             else:
                 mainMenu(screen)
 
-def pauseMenu(screen, p1_meta_info, p2_meta_info): #Only can be brought up once in game
+def pauseMenu(screen, p1_meta_info, p2_meta_info, pause_buttons, draw_buffer, my_sprites): #Only can be brought up once in game
+
+    #Make dirty sprite pause buttons visible
+    pause_buttons["play_button"].visible = 1
+    pause_buttons["restart_button"].visible = 1
+    pause_buttons["exit_button"].visible = 1
 
     #Reset Player meta info to prevent infinite movement after unpausing.
     p1_meta_info["left"] = False
     p1_meta_info["right"] = False
     p1_meta_info["up"] = False
     p1_meta_info["down"] = False
-
     p2_meta_info["left"] = False
     p2_meta_info["right"] = False
     p2_meta_info["up"] = False
@@ -243,47 +248,43 @@ def pauseMenu(screen, p1_meta_info, p2_meta_info): #Only can be brought up once 
                     game_state["resume"] = True
 
 
-        if menu_buttons["play_button"].button_rect.collidepoint(mx, my):
-            menu_buttons["play_button"].sprite = button_sprites["play_highl"]
+        if pause_buttons["play_button"].rect.collidepoint(mx, my):
+            pause_buttons["play_button"].updateState("Highlighted")
             if m1_clicked: #Mouse click inside of the button's sprite
                 game_state["resume"] = True
-                menu_buttons["play_button"].sprite = button_sprites["play_clicked"]
+                pause_buttons["play_button"].updateState("Clicked")
         else:
-            menu_buttons["play_button"].sprite = button_sprites["play_unhighl"]
+            pause_buttons["play_button"].updateState("Unhighlighted")
 
-        if menu_buttons["exit_button"].button_rect.collidepoint(mx, my):
-            menu_buttons["exit_button"].sprite = button_sprites["exit_highl"]
-            if m1_clicked:
+        if pause_buttons["exit_button"].rect.collidepoint(mx, my):
+            pause_buttons["exit_button"].updateState("Highlighted")
+            if m1_clicked: #Mouse click inside of the button's sprite
                 game_state["exit"] = True
-                menu_buttons["exit_button"].sprite = button_sprites["exit_clicked"]
+                pause_buttons["exit_button"].updateState("Clicked")
         else:
-            menu_buttons["exit_button"].sprite = button_sprites["exit_unhighl"]
+            pause_buttons["exit_button"].updateState("Unhighlighted")
 
-        #if menu_buttons["settings_button"].button_rect.collidepoint(mx, my):
-           # menu_buttons["settings_button"].sprite = button_sprites["settings_highl"]
-           # if m1_clicked:
-            #    game_state["settings"] = True
-             #   menu_buttons["settings_button"].sprite = button_sprites["settings_clicked"]
-        #else:
-            #menu_buttons["settings_button"].sprite = button_sprites["settings_unhighl"]
-
-        if menu_buttons["restart_button"].button_rect.collidepoint(mx, my):
-            menu_buttons["restart_button"].sprite = button_sprites["restart_highl"]
-            if m1_clicked:
+        if pause_buttons["restart_button"].rect.collidepoint(mx, my):
+            pause_buttons["restart_button"].updateState("Highlighted")
+            if m1_clicked:  # Mouse click inside of the button's sprite
                 game_state["restart"] = True
-                menu_buttons["restart_button"].sprite = button_sprites["restart_clicked"]
+                pause_buttons["restart_button"].updateState("Clicked")
         else:
-            menu_buttons["restart_button"].sprite = button_sprites["restart_unhighl"]
+            pause_buttons["restart_button"].updateState("Unhighlighted")
 
+        pause_buttons["play_button"].update()
+        pause_buttons["restart_button"].update()
+        pause_buttons["exit_button"].update()
 
-
-        renderMenuButtons("Pause", screen, menu_buttons)
-        pygame.display.update()
+        gameFrame.render(my_sprites, draw_buffer)
 
         if game_state["resume"]:
             pygame.time.delay(400)
             game_state["paused"] = False
             game_state["resume"] = False
+            pause_buttons["play_button"].visible = 0
+            pause_buttons["restart_button"].visible = 0
+            pause_buttons["exit_button"].visible = 0
             break
 
         if game_state["restart"]:
@@ -323,11 +324,11 @@ def renderMenuButtons(menu_name, screen, buttons):
         screen.blit(gameFrame.getImage("Resources/Images/TutorialScreen.png", images_dictionary), (0,0))
         drawButton(buttons, screen, "back_button", 125, 560)
 
-    elif menu_name == "Pause":
-        drawButton(buttons, screen, "play_button", 500, 300)
-        drawButton(buttons, screen, "restart_button", 500, 350)
+    #elif menu_name == "Pause":
+        #drawButton(buttons, screen, "play_button", 500, 300)
+        #drawButton(buttons, screen, "restart_button", 500, 350)
         #drawButton(buttons,screen, "settings_button", 500, 400)
-        drawButton(buttons, screen, "exit_button", 500, 400)
+        #drawButton(buttons, screen, "exit_button", 500, 400)
 
 
 
