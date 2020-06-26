@@ -12,6 +12,7 @@ import gameFrame
 from swordHitBoxes import getSwordLine
 from time import time
 import mainMenuFrame
+import pauseButtons
 from camera import Camera
 import math
 
@@ -41,6 +42,12 @@ p2_meta_info = {
     "attack_count": 0
 }
 
+pause_buttons = {
+    "play_button": pauseButtons.PauseButton("Play"),
+    "restart_button": pauseButtons.PauseButton("Restart"),
+    "exit_button": pauseButtons.PauseButton("Exit")
+}
+
 def mainMenu(screen):  # TODO Call Main Menu Frame instead and have it call startGame
     mainMenuFrame.mainMenu(screen)
 
@@ -64,7 +71,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
     player1 = Player(-50, 100, 1, 2, False, True, getSkin(skin_selection1))  # Initializes player1
     player2 = Player(675, 100, 1, 2, False, False, getSkin(skin_selection2))  # Initializes player2
 
-    draw_buffer, my_sprites = gameFrame.init(player1, player2, current_map, entities)
+    draw_buffer, my_sprites = gameFrame.init(player1, player2, current_map, entities, pause_buttons)
 
     clock = pygame.time.Clock()
 
@@ -112,12 +119,11 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                         adjustPlayer(2, "sword_movement", -1)
                     elif event.key == pygame.K_UP:
                         adjustPlayer(2, "sword_movement", 1)
-                    if event.key == pygame.K_SLASH:
+                    if event.key == pygame.K_RCTRL:
                         adjustPlayer(2, "attack_count", 30)
                         player2.setPlayerState("attacking", True)
                 if event.key == pygame.K_ESCAPE:
-                    mainMenuFrame.pauseMenu(screen, p1_meta_info, p2_meta_info)
-
+                    mainMenuFrame.pauseMenu(screen, p1_meta_info, p2_meta_info, pause_buttons, draw_buffer, my_sprites)
 
 
             # Let go of key so stop performing said action

@@ -53,7 +53,7 @@ class Player(pygame.sprite.DirtySprite):
             "count_until_turn_around" :0
         }
         self._image_dict = image_dict
-        self.image = pygame.image.load(self.getSprite())
+        self.image = pygame.image.load(self.getSprite()).convert_alpha()
         self.rect = Rect(x_pos + image_shift_amount_x, y_pos - image_shift_amount_y, 73, 140)
 
     def getXPos(self):
