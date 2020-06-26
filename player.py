@@ -157,6 +157,12 @@ class Player(pygame.sprite.DirtySprite):
         elif self._player_state["sword_height"] > 3:
             self._player_state["sword_height"] = 3
 
+    def respawn(self):
+        if self._player_state["direction_facing"] == 1:
+            self.rect.x += 50
+        else:
+            self.rect.x -= 50
+
     def getSprite(self):
         #print(self._player_state["ghost_counter"])
         if self._player_state["ghost"]:
