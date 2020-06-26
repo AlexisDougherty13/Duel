@@ -204,12 +204,12 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
 
         #Collision stuffs
         if player1.getPlayerState("ghost_counter") > 300 or player1.getPlayerState("ghost_counter") == -1:
-            player1body = Rect(player1.rect.x + 100, player1.rect.y - 16, 15, 140)
+            player1body = Rect(player1.rect.x + 127, player1.rect.y - 16, 15, 140)
         else:
             player1body = Rect(-100, -100, 1, 1)
 
         if player2.getPlayerState("ghost_counter") > 300 or player2.getPlayerState("ghost_counter") == -1:
-            player2body = Rect(player2.rect.x + 100, player2.rect.y - 16, 15, 140)
+            player2body = Rect(player2.rect.x + 127, player2.rect.y - 16, 15, 140)
         else:
             player2body = Rect(-100, -100, 1, 1)
 
@@ -232,12 +232,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                 print("players both died")
                 player1.setPlayerState("ghost_counter", 0)
                 player2.setPlayerState("ghost_counter", 0)
-                if player1.getPlayerState("direction_facing") == "left":
-                    player1.rect.x += 50
-                    player2.rect.x -= 50
-                else:
-                    player1.rect.x -= 50
-                    player2.rect.x += 50
+                
 
                 #screen locked in place
             elif player1body.colliderect(getSwordLine(player2)):
@@ -259,6 +254,12 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
         if player2.getPlayerState("ghost_counter") > -1:
             #print("woooooowie 2")
             player2.setPlayerState("ghost_counter", player2.getPlayerState("ghost_counter") + 1)
+        if player1.getPlayerState("ghost_counter") == 300:
+            #print("woooooowie")
+            player1.respawn()
+        if player2.getPlayerState("ghost_counter") == 300:
+            #print("woooooowie 2")
+            player2.respawn()
 
         player1.move(entities)
         player2.move(entities)
