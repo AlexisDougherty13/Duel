@@ -233,15 +233,11 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                 player1.setPlayerState("ghost_counter", 0)
                 player2.setPlayerState("ghost_counter", 0)
                 if player1.getPlayerState("direction_facing") == "left":
-                    player1.setPlayerState("x_velocity", 10)
-                    player2.setPlayerState("x_velocity", -10)
-                    player1.moveRight()
-                    player2.moveLeft()
+                    player1.rect.x += 50
+                    player2.rect.x -= 50
                 else:
-                    player1.setPlayerState("x_velocity", -10)
-                    player2.setPlayerState("x_velocity", 10)
-                    player2.moveRight()
-                    player1.moveLeft()
+                    player1.rect.x -= 50
+                    player2.rect.x += 50
 
                 #screen locked in place
             elif player1body.colliderect(getSwordLine(player2)):
