@@ -170,7 +170,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
             player1.moveRight()
         elif player1.getPlayerState("x_velocity") != 0:
             player1.standingStill()
-        if p1_meta_info["up"] and player1.getPlayerState("on_ground"):
+        if p1_meta_info["up"] and player1.getPlayerState("on_ground") and (player1.getPlayerState("ghost_counter") > 300 or player1.getPlayerState("ghost_counter") == -1):
             player1.jump(time())
         elif not player1.getPlayerState("on_ground"):
             player1.calculateGravity(time())
@@ -197,7 +197,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
             player2.moveRight()
         elif player2.getPlayerState("x_velocity") != 0:
             player2.standingStill()
-        if p2_meta_info["up"] and player2.getPlayerState("on_ground"):
+        if p2_meta_info["up"] and player2.getPlayerState("on_ground") and (player2.getPlayerState("ghost_counter") > 300 or player2.getPlayerState("ghost_counter") == -1):
             player2.jump(time())
         elif not player2.getPlayerState("on_ground"):
             player2.calculateGravity(time())
@@ -259,7 +259,6 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
         if player2.getPlayerState("ghost_counter") > -1:
             #print("woooooowie 2")
             player2.setPlayerState("ghost_counter", player2.getPlayerState("ghost_counter") + 1)
-
 
         player1.move(entities)
         player2.move(entities)
