@@ -103,6 +103,8 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                     if event.key == pygame.K_SPACE:
                         adjustPlayer(1, "up", True)
                     if event.key == pygame.K_s:
+                        if player1.getPlayerState("sword_height") == 1:
+                            player1.setPlayerState("ducking", True)
                         adjustPlayer(1, "sword_movement", -1)
                     elif event.key == pygame.K_w:
                         adjustPlayer(1, "sword_movement", 1)
@@ -116,6 +118,8 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                     if event.key == pygame.K_RSHIFT:
                         adjustPlayer(2, "up", True)
                     if event.key == pygame.K_DOWN:
+                        if player2.getPlayerState("sword_height") == 1:
+                            player2.setPlayerState("ducking", True)
                         adjustPlayer(2, "sword_movement", -1)
                     elif event.key == pygame.K_UP:
                         adjustPlayer(2, "sword_movement", 1)
@@ -134,13 +138,16 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                     adjustPlayer(1, "left", False)
                 if event.key == pygame.K_SPACE:
                     adjustPlayer(1, "up", False)
+                if event.key == pygame.K_s:
+                    player1.setPlayerState("ducking", False)
                 if event.key == pygame.K_LEFT:
                     adjustPlayer(2, "left", False)
                 elif event.key == pygame.K_RIGHT:
                     adjustPlayer(2, "right", False)
                 if event.key == pygame.K_RSHIFT:
                     adjustPlayer(2, "up", False)
-
+                if event.key == pygame.K_DOWN:
+                    player2.setPlayerState("ducking", False)
 
         # NON EVENT BASED ACTIONS
         # Player 1 Sprite/Movement
@@ -204,12 +211,18 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
 
         #Collision stuffs
         if player1.getPlayerState("ghost_counter") > 300 or player1.getPlayerState("ghost_counter") == -1:
-            player1body = Rect(player1.rect.x + 127, player1.rect.y - 16, 15, 140)
+            if player1.getPlayerState("ducking") == False:
+                player1body = Rect(player1.rect.x + 127, player1.rect.y - 16, 15, 140)
+            else:
+                player1body = Rect(player1.rect.x + 127, player1.rect.y + 54, 15, 70)
         else:
             player1body = Rect(-100, -100, 1, 1)
 
         if player2.getPlayerState("ghost_counter") > 300 or player2.getPlayerState("ghost_counter") == -1:
-            player2body = Rect(player2.rect.x + 127, player2.rect.y - 16, 15, 140)
+            if player2.getPlayerState("ducking") == False:
+                player2body = Rect(player2.rect.x + 127, player2.rect.y - 16, 15, 140)
+            else:
+                player2body = Rect(player2.rect.x + 127, player2.rect.y + 54, 15, 70)
         else:
             player2body = Rect(-100, -100, 1, 1)
 
@@ -247,6 +260,12 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                 player1.setPlayerState("ghost_counter", -1)
                 player1.setPlayerState("ghost", False)
                 #screen follows player 1
+
+        #Just died
+        if player1.getPlayerState("ghost_counter") == 0:
+            player1.setPlayerState("ducking", False)
+        if player2.getPlayerState("ghost_counter") == 0:
+            player2.setPlayerState("ducking", False)
 
         if player1.getPlayerState("ghost_counter") > -1:
             #print("woooooowie")
