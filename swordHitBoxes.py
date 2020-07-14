@@ -28,6 +28,12 @@ def getSwordLine(player):
 			elif player.getPlayerState("sword_height") == 3:
 				height = player.rect.y + 13
 		else:
-			pass #add some hitbox in upper corner maybe
+			if player.getDirection() == "left":
+				point1 = player.rect.x + 95
+				point2 = player.rect.x + 97
+			else:
+				point1 = player.rect.x + 171
+				point2 = player.rect.x + 173
+			height = player.rect.y + 20
 	return Rect(point1, height, point2-point1, 3)
 
