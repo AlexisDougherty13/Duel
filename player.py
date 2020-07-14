@@ -50,7 +50,9 @@ class Player(pygame.sprite.DirtySprite):
             "air_time": 0,
             "x_velocity": 0,
             "y_velocity": 0,
-            "count_until_turn_around" :0
+            "count_until_turn_around" : 0,
+            "sword": True,
+            "sword_moving": True
         }
         self._image_dict = image_dict
         self.image = pygame.image.load(self.getSprite()).convert_alpha()

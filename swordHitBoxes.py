@@ -5,7 +5,7 @@ def getSwordLine(player):
 	point1 = -1
 	point2 = -1
 	height = -1
-	if abs(player.getPlayerState("x_velocity")) < 10 and (player.getPlayerState("ghost_counter") > 300 or player.getPlayerState("ghost_counter") == -1): #if sword is ready
+	if abs(player.getPlayerState("x_velocity")) < 10 and (player.getPlayerState("ghost_counter") > 300 or player.getPlayerState("ghost_counter") == -1) and (player.getPlayerState("sword")): #if sword is ready
 		if player.getPlayerState("ducking") == False:
 			if player.getDirection() == "left":
 				if not player.getPlayerState("thrusting"): #if player is not attacking
