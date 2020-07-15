@@ -4,6 +4,7 @@ import sys
 import menuButtons
 import pauseButtons
 import gameFrame
+from audioEngine import AudioEngine
 
 
 #To-do: create a function that checks for button sprite changes based on mx and my and an inputted string.
@@ -55,7 +56,7 @@ pygame.font.init()
 lobster_font = pygame.font.Font("Resources/Lobster.ttf", 64)
 
 
-def mainMenu(screen):
+def mainMenu(screen, audio):
 
     #Menu loop
     while True:
@@ -119,7 +120,7 @@ def mainMenu(screen):
         if game_state["start"]:
             pygame.time.delay(400)
             game_state["start"] = False #Reset game states to false.
-            gameEngine.startGame(screen, 1, "Montoya", "Montoya")
+            gameEngine.startGame(screen, 1, "Montoya", "Montoya", audio)
         if game_state["tutorial"]:
             pygame.time.delay(400)
             game_state["tutorial"] = False
@@ -130,6 +131,7 @@ def mainMenu(screen):
             settingsMenu(screen)
         if game_state["exit"]:
             pygame.time.delay(400)
+            audio.closeAudioEngine()
             pygame.quit()
             sys.exit()
 
