@@ -3,6 +3,7 @@ import pygame
 import sys
 import menuButtons
 import gameFrame
+from audioEngine import AudioEngine
 
 
 button_sprites = {
@@ -46,7 +47,7 @@ images_dictionary = dict()
 
 
 
-def mainMenu(screen):
+def mainMenu(screen, audio):
 
     #Menu loop
     while True:
@@ -102,13 +103,14 @@ def mainMenu(screen):
         if game_state["start"]:
             pygame.time.delay(400)
             game_state["start"] = False #Reset game states to false.
-            gameEngine.startGame(screen, 1, "Montoya", "Montoya")
+            gameEngine.startGame(screen, 1, "Montoya", "Montoya", audio)
         if game_state["settings"]:
             pygame.time.delay(400)
             game_state["settings"] = False
             settingsMenu(screen)
         if game_state["exit"]:
             pygame.time.delay(400)
+            audio.closeAudioEngine()
             pygame.quit()
             sys.exit()
 

@@ -13,7 +13,7 @@ from time import time
 import mainMenuFrame
 from camera import Camera
 import math
-
+from audioEngine import AudioEngine
 
 # temp data, should not be here for long....
 # Player 1 meta info, store inputs and send to the player object
@@ -40,9 +40,9 @@ p2_meta_info = {
     "attack_count": 0
 }
 
-def mainMenu(screen):  # TODO Call Main Menu Frame instead and have it call startGame
-    mainMenuFrame.mainMenu(screen)
-
+def mainMenu(screen , audio):  # TODO Call Main Menu Frame instead and have it call startGame
+    audio.changeSong("Main Menu")
+    mainMenuFrame.mainMenu(screen, audio)
 
 def adjustPlayer(player, aspect, value):
     if player == 1:
@@ -53,7 +53,7 @@ def adjustPlayer(player, aspect, value):
 # :param Requires a Screen Objects (Created in the main passed to main menu),
 #  an int map_selection to determine what map to put on,
 # and 2 string skin_selection to determine what skins the players choose
-def startGame(screen, map_selection, skin_selection1, skin_selection2):
+def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
     paused = False
 
     current_map = mapSelectionList.selectMap(map_selection)  # returns a child of the map class
@@ -73,6 +73,9 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
     player2_y_vel = 0  # temp will be altered soon
 
     active_match = True
+
+    audio.changeSong(current_map.songName)
+
     while active_match:
         # Delta time is implemented to help make sure that player's models will move at the same speed regardless of monitor refresh rate and processor speed.
         # Could use further optimizing and troubleshooting.
