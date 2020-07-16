@@ -5,6 +5,7 @@
 from map import Map
 from pygame import Rect
 
+#MAKE A CITYSCAPE????
 
 class RedForestMap(Map):
     """Class representing a Specific Map
@@ -16,8 +17,8 @@ class RedForestMap(Map):
     def setCollidableEntities(self):
         floor_rect = Rect(-400, 500, 1600, 50)
         self._collidable_entities.append(floor_rect)
-        block_rect = Rect(100, 400, 100, 100)
-        self._collidable_entities.append(block_rect)
+        #block_rect = Rect(100, 400, 100, 100)
+        #self._collidable_entities.append(block_rect)
         #block2_rect = Rect(800, 400, 100, 100)
         #self._collidable_entities.append(block2_rect)
 

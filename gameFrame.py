@@ -7,7 +7,7 @@ from camera import Camera
     #rects = my_sprites.draw(draw_buffer)
     #pygame.display.update(rects)  # copy rects from buffer to screen
 
-def render(display, draw_screen, player1, player2, entities, camera):
+def render(display, screen, player1, player2, entities, camera):
     #camera.setTarget(player1)
 
     if camera.getActive() == True:
@@ -19,20 +19,20 @@ def render(display, draw_screen, player1, player2, entities, camera):
 
     print("x1" + str(player1.rect.x + offset[0]))
     print("x2" + str(player2.rect.x + offset[0]))
-    display.blit(player1.image, (player1.rect.x, player1.rect.y))
+    display.blit(player1.image, (player1.rect.x + offset[0], player1.rect.y + offset[1]))
     display.blit(player2.image, (player2.rect.x + offset[0], player2.rect.y + offset[1]))
 
-    for x in entities:
-        pygame.draw.rect(display, (255,255,255), x )
+    for rec in entities:
+        newRect = pygame.Rect(rec.left + offset[0], rec.top, rec.width, rec.height)
+        pygame.draw.rect(display, (255,255,255), newRect)
 
-    draw_screen.blit(display, (0,0))
+    screen.blit(display, (0,0))
     pygame.display.update()  # copy rects from buffer to screen
 
 def initTwo(current_map):
-    draw_screen = pygame.display.set_mode()
     display = pygame.Surface((current_map.x_length, current_map.y_length))
     camera = Camera()
-    return draw_screen, display, camera
+    return display, camera
     
 
 

@@ -8,7 +8,7 @@ class Camera:
       self._active = True
 
    def getOffset(self):
-      self._offset[0] += .25
+      self._offset[0] += 1
       #self._offset[0] += (self._target.rect.x-self._offset[0]-152)/20
       #self._offset[1] += (self._target.rect.y-self._offset[1]-106)/20
       return self._offset
