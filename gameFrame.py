@@ -8,8 +8,6 @@ from camera import Camera
     #pygame.display.update(rects)  # copy rects from buffer to screen
 
 def render(display, screen, player1, player2, entities, camera):
-    #camera.setTarget(player1)
-
     if camera.getActive() == True:
         offset = camera.getOffset()
     else:
@@ -17,13 +15,13 @@ def render(display, screen, player1, player2, entities, camera):
    
     display.fill((146,244,255))
 
-    print("x1" + str(player1.rect.x + offset[0]))
-    print("x2" + str(player2.rect.x + offset[0]))
-    display.blit(player1.image, (player1.rect.x + offset[0], player1.rect.y + offset[1]))
-    display.blit(player2.image, (player2.rect.x + offset[0], player2.rect.y + offset[1]))
+    #print("x1" + str(player1.rect.x + offset[0]))
+    #print("x2" + str(player2.rect.x + offset[0]))
+    display.blit(player1.image, (player1.rect.x - offset[0], player1.rect.y - offset[1]))
+    display.blit(player2.image, (player2.rect.x - offset[0], player2.rect.y - offset[1]))
 
     for rec in entities:
-        newRect = pygame.Rect(rec.left + offset[0], rec.top, rec.width, rec.height)
+        newRect = pygame.Rect(rec.left - offset[0], rec.top - offset[1], rec.width, rec.height)
         pygame.draw.rect(display, (255,255,255), newRect)
 
     screen.blit(display, (0,0))

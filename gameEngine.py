@@ -234,6 +234,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                 print("players both died")
                 player1.setPlayerState("ghost_counter", 0)
                 player2.setPlayerState("ghost_counter", 0)
+                camera.setActive(False)
                 
 
                 #screen locked in place
@@ -242,12 +243,16 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                 player1.setPlayerState("ghost_counter", 0) #Should start a counter for each frame of death animation, followed by a respawn delay, followed by drawing them as a ghost in that spot
                 player2.setPlayerState("ghost_counter", -1)
                 player2.setPlayerState("ghost", False)
+                camera.setActive(True)
+                camera.setTarget(player2)
                 #screen follows player 2
             elif player2body.colliderect(getSwordLine(player1)):
                 print("player 2 had an ouchie")
                 player2.setPlayerState("ghost_counter", 0) #Should start a counter for each frame of death animation, followed by a respawn delay, followed by drawing them as a ghost in that spot
                 player1.setPlayerState("ghost_counter", -1)
                 player1.setPlayerState("ghost", False)
+                camera.setActive(True)
+                camera.setTarget(player1)
                 #screen follows player 1
 
         if player1.getPlayerState("ghost_counter") > -1:
