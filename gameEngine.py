@@ -49,8 +49,7 @@ pause_buttons = {
 }
 
 def mainMenu(screen):  # TODO Call Main Menu Frame instead and have it call startGame
-    #mainMenuFrame.mainMenu(screen)
-    startGame(screen, 1, "Montoya", "Montoya")
+    mainMenuFrame.mainMenu(screen)
 
 
 def adjustPlayer(player, aspect, value):
