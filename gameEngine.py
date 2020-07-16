@@ -49,7 +49,8 @@ pause_buttons = {
 }
 
 def mainMenu(screen):  # TODO Call Main Menu Frame instead and have it call startGame
-    mainMenuFrame.mainMenu(screen)
+    #mainMenuFrame.mainMenu(screen)
+    startGame(screen, 1, "Montoya", "Montoya")
 
 
 def adjustPlayer(player, aspect, value):
@@ -71,7 +72,8 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
     player1 = Player(-50, 100, 1, 2, False, True, getSkin(skin_selection1))  # Initializes player1
     player2 = Player(675, 100, 1, 2, False, False, getSkin(skin_selection2))  # Initializes player2
 
-    draw_buffer, my_sprites = gameFrame.init(player1, player2, current_map, entities, pause_buttons)
+    #draw_buffer, my_sprites = gameFrame.init(player1, player2, current_map, entities, pause_buttons)
+    draw_screen, display, camera = gameFrame.initTwo(current_map)
 
     clock = pygame.time.Clock()
 
@@ -266,6 +268,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
 
 
         #render
-        gameFrame.render(my_sprites, draw_buffer)
+        #gameFrame.render(my_sprites, draw_buffer)
+        gameFrame.render(display, draw_screen, player1, player2, entities, camera)
 
 #if player1.getPlayerState("ghost_counter") >= 0 and player1.getPlayerState("ghost_counter") < 11:

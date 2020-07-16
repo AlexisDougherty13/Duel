@@ -3,12 +3,40 @@ import os
 from camera import Camera
 
 
-def render(my_sprites, draw_buffer):
-    rects = my_sprites.draw(draw_buffer)
-    pygame.display.update(rects)  # copy rects from buffer to screen
+#def render(my_sprites, draw_buffer):
+    #rects = my_sprites.draw(draw_buffer)
+    #pygame.display.update(rects)  # copy rects from buffer to screen
+
+def render(display, draw_screen, player1, player2, entities, camera):
+    #camera.setTarget(player1)
+
+    if camera.getActive() == True:
+        offset = camera.getOffset()
+    else:
+        offset = [0,0]
+   
+    display.fill((146,244,255))
+
+    print("x1" + str(player1.rect.x + offset[0]))
+    print("x2" + str(player2.rect.x + offset[0]))
+    display.blit(player1.image, (player1.rect.x, player1.rect.y))
+    display.blit(player2.image, (player2.rect.x + offset[0], player2.rect.y + offset[1]))
+
+    for x in entities:
+        pygame.draw.rect(display, (255,255,255), x )
+
+    draw_screen.blit(display, (0,0))
+    pygame.display.update()  # copy rects from buffer to screen
+
+def initTwo(current_map):
+    draw_screen = pygame.display.set_mode()
+    display = pygame.Surface((current_map.x_length, current_map.y_length))
+    camera = Camera()
+    return draw_screen, display, camera
+    
+
 
 def init(player1, player2, current_map, entities, pause_buttons):
-    #camera = Camera(gameFrame.cameraMovement, current_map.x_length, current_map.y_length) # initializes camera with level's width and height
     imagesDict = dict()
     draw_buffer = pygame.display.set_mode((current_map.x_length, current_map.y_length))
 
@@ -16,19 +44,16 @@ def init(player1, player2, current_map, entities, pause_buttons):
     background = pygame.Surface(draw_buffer.get_size())
     pygame.draw.rect(background, (255, 255, 255, 255), entities[0])
     background.blit(getImage("Resources/Images/ScaledBackgroundAutumnForest.png", imagesDict), (0, 0))
-    pygame.draw.rect(background, (139, 69, 19), entities[1])
-    pygame.draw.rect(background, (139, 69, 19), entities[2])
+    
+    #pygame.draw.rect(background, (139, 69, 19), entities[1])
+    #pygame.draw.rect(background, (139, 69, 19), entities[2])
+
     my_sprites = pygame.sprite.LayeredDirty()  # holds sprites to be drawn
     initializePauseButtons(pause_buttons)
     my_sprites.add(player1, player2, pause_buttons["play_button"], pause_buttons["restart_button"], pause_buttons["exit_button"])  # add both to our group
     my_sprites.clear(draw_buffer, background) # copy background to screen
 
     return draw_buffer, my_sprites
-
-def cameraMovement(camera, target_rect): #method that determines centering on target
-        l, t, _, _ = target_rect # l = left,  t = top
-        _, _, w, h = camera     # w = width, h = height
-        return pygame.Rect(-l+(.5 * camera.width), -t+(.5 * camera.height), w, h)
 
 def getImage(path, _image_library):
     if path not in _image_library:
