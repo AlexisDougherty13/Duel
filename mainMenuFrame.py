@@ -27,15 +27,19 @@ button_sprites = {
     "tutorial_unhighl": "Resources/Images/Buttons/TutorialButtonUnhighlighted.png",
     "tutorial_highl": "Resources/Images/Buttons/TutorialButtonHighlighted.png",
     "tutorial_clicked": "Resources/Images/Buttons/TutorialButtonClicked.png",
+    "credits_unhighl": "Resources/Images/Buttons/CreditsButtonUnhighlighted.png",
+    "credits_highl": "Resources/Images/Buttons/CreditsButtonHighlighted.png",
+    "credits_clicked": "Resources/Images/Buttons/CreditsButtonClicked.png"
 }
 
 menu_buttons = {
     "play_button": menuButtons.Button(button_sprites["play_unhighl"], 400, 300, 220, 50),
-    "settings_button": menuButtons.Button(button_sprites["settings_unhighl"], 400, 400, 220, 50),
+    "settings_button": menuButtons.Button(button_sprites["settings_unhighl"], 400, 400, 50, 50),
     "exit_button": menuButtons.Button(button_sprites["exit_unhighl"], 400, 500, 220, 50),
     "back_button": menuButtons.Button(button_sprites["back_unhighl"], 400, 500, 220, 50),
     "restart_button": menuButtons.Button(button_sprites["restart_unhighl"], 0, 0, 220, 50),
-    "tutorial_button": menuButtons.Button(button_sprites["tutorial_unhighl"], 0, 0, 220, 50)
+    "tutorial_button": menuButtons.Button(button_sprites["tutorial_unhighl"], 0, 0, 220, 50),
+    "credits_button": menuButtons.Button(button_sprites["credits_unhighl"], 0, 0, 220, 50)
 }
 
 #Remember to change game state booleans when going between menus.
@@ -47,7 +51,8 @@ game_state = {
     "paused": False,
     "resume": False,
     "restart": False,
-    "tutorial": False
+    "tutorial": False,
+    "credits": False
 }
 
 images_dictionary = dict()
@@ -109,6 +114,14 @@ def mainMenu(screen):
         else:
             menu_buttons["tutorial_button"].sprite = button_sprites["tutorial_unhighl"]
 
+        if menu_buttons["credits_button"].button_rect.collidepoint(mx, my):
+            menu_buttons["credits_button"].sprite = button_sprites["credits_highl"]
+            if m1_clicked:
+                game_state["credits"] = True
+                menu_buttons["credits_button"].sprite = button_sprites["credits_clicked"]
+        else:
+            menu_buttons["credits_button"].sprite = button_sprites["credits_unhighl"]
+
 
 
         renderMenuButtons("Main", screen, menu_buttons)
@@ -124,6 +137,9 @@ def mainMenu(screen):
             pygame.time.delay(400)
             game_state["tutorial"] = False
             tutorialMenu(screen)
+        if game_state["credits"]:
+            pygame.time.delay(400)
+            creditsMenu(screen)
         if game_state["settings"]:
             pygame.time.delay(400)
             game_state["settings"] = False
@@ -168,6 +184,44 @@ def tutorialMenu(screen):
         if game_state["back"]:
             pygame.time.delay(400)
             game_state["back"] = False
+            mainMenu(screen)
+
+def creditsMenu(screen):
+
+    while True:
+        screen.fill((0,0,0))
+        mx, my = pygame.mouse.get_pos()
+
+        m1_clicked = False
+        #Event loop
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    m1_clicked = True
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    game_state["back"] = True
+
+
+        if menu_buttons["back_button"].button_rect.collidepoint(mx, my):
+            menu_buttons["back_button"].sprite = button_sprites["back_highl"]
+            if m1_clicked: #Mouse click inside of the button's sprite
+                game_state["back"] = True
+                menu_buttons["back_button"].sprite = button_sprites["back_clicked"]
+        else:
+            menu_buttons["back_button"].sprite = button_sprites["back_unhighl"]
+
+
+        renderMenuButtons("Credits", screen, menu_buttons)
+        pygame.display.update()
+
+        if game_state["back"]:
+            pygame.time.delay(400)
+            game_state["back"] = False
+            game_state["credits"] = False
             mainMenu(screen)
 
 def settingsMenu(screen):
@@ -311,8 +365,9 @@ def renderMenuButtons(menu_name, screen, buttons):
     if menu_name == "Main":
         drawButton(buttons, screen, "play_button", 500, 330)
         drawButton(buttons, screen, "tutorial_button", 500, 400)
-        drawButton(buttons,screen, "settings_button", 500, 470)
+        drawButton(buttons,screen, "settings_button", 50, 545)
         drawButton(buttons, screen, "exit_button", 500, 540)
+        drawButton(buttons, screen, "credits_button", 500, 470)
         #Draw the duel logo
         screen.blit(gameFrame.getImage("Resources/Images/MenuTitle.png", images_dictionary), (0,0))
 
@@ -322,7 +377,11 @@ def renderMenuButtons(menu_name, screen, buttons):
     elif menu_name == "Tutorial":
         #tutorial sprite draw
         screen.blit(gameFrame.getImage("Resources/Images/TutorialScreen.png", images_dictionary), (0,0))
-        drawButton(buttons, screen, "back_button", 125, 560)
+        drawButton(buttons, screen, "back_button", 140, 555)
+
+    elif  menu_name == "Credits":
+        #blit credits screen here
+        drawButton(buttons, screen, "back_button", 140, 555)
 
     #elif menu_name == "Pause":
         #drawButton(buttons, screen, "play_button", 500, 300)
