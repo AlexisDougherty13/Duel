@@ -13,6 +13,7 @@ class RedForestMap(Map):
     def __init__(self):
         Map.__init__(self, 1000, 600, 450, 300, 550, 300, "Resources/Images/UF_Background.png", "assets_dict") #TODO: implement Assets Dict
         self.setCollidableEntities()
+        self.songName = "Red Forest"
 
     def setCollidableEntities(self):
         floor_rect = Rect(-400, 500, 1600, 50)

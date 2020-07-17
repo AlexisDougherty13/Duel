@@ -50,7 +50,9 @@ class Player(pygame.sprite.DirtySprite):
             "air_time": 0,
             "x_velocity": 0,
             "y_velocity": 0,
-            "count_until_turn_around" :0
+            "count_until_turn_around" : 0,
+            "sword": True,
+            "sword_moving": True
         }
         self._image_dict = image_dict
         self.image = pygame.image.load(self.getSprite()).convert_alpha()
@@ -77,6 +79,8 @@ class Player(pygame.sprite.DirtySprite):
                 self._player_state["count_until_turn_around"] = 0
             if self.getPlayerState("x_velocity") < -10:
                 self.setPlayerState("x_velocity", -10)
+            if self.getPlayerState("ducking") and self.getPlayerState("x_velocity") < -3:
+            	self.setPlayerState("x_velocity", -3)
         else:
             self.setPlayerState("x_velocity", 0)
 
@@ -96,6 +100,8 @@ class Player(pygame.sprite.DirtySprite):
 
             if self.getPlayerState("x_velocity") > 10:
                 self.setPlayerState("x_velocity", 10)
+            if self.getPlayerState("ducking") and self.getPlayerState("x_velocity") > 3:
+            	self.setPlayerState("x_velocity", 3)
         else:
             self.setPlayerState("x_velocity", 0)
 
@@ -123,7 +129,7 @@ class Player(pygame.sprite.DirtySprite):
             self.setPlayerState("y_velocity", 0)
 
     def jump(self, time):
-        self.setPlayerState("y_velocity", - 15)
+        self.setPlayerState("y_velocity", - 12)
         self.setPlayerState("air_time", time)
         self.setPlayerState("on_ground", False)
 
@@ -226,6 +232,9 @@ class Player(pygame.sprite.DirtySprite):
         self.setPlayerState("on_ground", False)
         self.setPlayerState("on_right_wall", False)
         self.setPlayerState("on_left_wall", False)
+
+        if self.getPlayerState("ducking"):
+        	self.setPlayerState("running", False)
 
         collision_list = self.test_collision_X(entities)  # Test all entities on the map for collision with player
         self.rect.x += (self.getPlayerState("x_velocity"))

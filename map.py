@@ -3,10 +3,9 @@
 .. synopsis: module for a map object
 """
 from pygame import Rect
-from abc import ABC, abstractmethod
 
 
-class Map(ABC):
+class Map():
     """Class representing a General Map's attributes, this is applied to all maps, this is an abstract class
            :param x_length: the level's width
            :param y_length: the level's height

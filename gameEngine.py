@@ -5,6 +5,7 @@
 import mapSelectionList
 import sys
 from player import Player
+from sword import Sword
 import pygame
 from pygame import Rect
 from playerSkinsList import getSkin
@@ -15,7 +16,7 @@ import mainMenuFrame
 import pauseButtons
 from camera import Camera
 import math
-
+from audioEngine import AudioEngine
 
 # temp data, should not be here for long....
 # Player 1 meta info, store inputs and send to the player object
@@ -42,15 +43,16 @@ p2_meta_info = {
     "attack_count": 0
 }
 
+
 pause_buttons = {
     "play_button": pauseButtons.PauseButton("Play"),
     "restart_button": pauseButtons.PauseButton("Restart"),
     "exit_button": pauseButtons.PauseButton("Exit")
 }
 
-def mainMenu(screen):  # TODO Call Main Menu Frame instead and have it call startGame
-    mainMenuFrame.mainMenu(screen)
-
+def mainMenu(screen , audio):  # TODO Call Main Menu Frame instead and have it call startGame
+    audio.changeSong("Main Menu")
+    mainMenuFrame.mainMenu(screen, audio)
 
 def adjustPlayer(player, aspect, value):
     if player == 1:
@@ -61,7 +63,7 @@ def adjustPlayer(player, aspect, value):
 # :param Requires a Screen Objects (Created in the main passed to main menu),
 #  an int map_selection to determine what map to put on,
 # and 2 string skin_selection to determine what skins the players choose
-def startGame(screen, map_selection, skin_selection1, skin_selection2):
+def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
     paused = False
 
     current_map = mapSelectionList.selectMap(map_selection)  # returns a child of the map class
@@ -70,9 +72,11 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
 
     player1 = Player(-50, 100, 1, 2, False, True, getSkin(skin_selection1))  # Initializes player1
     player2 = Player(675, 100, 1, 2, False, False, getSkin(skin_selection2))  # Initializes player2
+    testSword = Sword(50, 50, 0)
 
     #draw_buffer, my_sprites = gameFrame.init(player1, player2, current_map, entities, pause_buttons)
     display, camera = gameFrame.initTwo(current_map)
+
 
     clock = pygame.time.Clock()
 
@@ -82,6 +86,9 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
     player2_y_vel = 0  # temp will be altered soon
 
     active_match = True
+
+    audio.changeSong(current_map.songName)
+
     while active_match:
         # Delta time is implemented to help make sure that player's models will move at the same speed regardless of monitor refresh rate and processor speed.
         # Could use further optimizing and troubleshooting.
@@ -104,9 +111,15 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                     if event.key == pygame.K_SPACE:
                         adjustPlayer(1, "up", True)
                     if event.key == pygame.K_s:
+                        if player1.getPlayerState("sword_height") == 1:
+                            player1.setPlayerState("ducking", True)
                         adjustPlayer(1, "sword_movement", -1)
+                        player1.setPlayerState("sword_moving", True)
                     elif event.key == pygame.K_w:
                         adjustPlayer(1, "sword_movement", 1)
+                        player1.setPlayerState("sword_moving", True)
+                    else:
+                        player1.setPlayerState("sword_moving", False)
                     if event.key == pygame.K_f:
                         adjustPlayer(1, "attack_count", 30)
                 if player2.getPlayerState("ghost_counter") == -1 or player2.getPlayerState("ghost_counter") > 300:
@@ -117,9 +130,15 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                     if event.key == pygame.K_RSHIFT:
                         adjustPlayer(2, "up", True)
                     if event.key == pygame.K_DOWN:
+                        if player2.getPlayerState("sword_height") == 1:
+                            player2.setPlayerState("ducking", True)
                         adjustPlayer(2, "sword_movement", -1)
+                        player2.setPlayerState("sword_moving", True)
                     elif event.key == pygame.K_UP:
                         adjustPlayer(2, "sword_movement", 1)
+                        player2.setPlayerState("sword_moving", True)
+                    else:
+                        player2.setPlayerState("sword_moving", False)
                     if event.key == pygame.K_RCTRL:
                         adjustPlayer(2, "attack_count", 30)
                         player2.setPlayerState("attacking", True)
@@ -135,13 +154,16 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                     adjustPlayer(1, "left", False)
                 if event.key == pygame.K_SPACE:
                     adjustPlayer(1, "up", False)
+                if event.key == pygame.K_s:
+                    player1.setPlayerState("ducking", False)
                 if event.key == pygame.K_LEFT:
                     adjustPlayer(2, "left", False)
                 elif event.key == pygame.K_RIGHT:
                     adjustPlayer(2, "right", False)
                 if event.key == pygame.K_RSHIFT:
                     adjustPlayer(2, "up", False)
-
+                if event.key == pygame.K_DOWN:
+                    player2.setPlayerState("ducking", False)
 
         # NON EVENT BASED ACTIONS
         # Player 1 Sprite/Movement
@@ -205,29 +227,41 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
 
         #Collision stuffs
         if player1.getPlayerState("ghost_counter") > 300 or player1.getPlayerState("ghost_counter") == -1:
-            player1body = Rect(player1.rect.x + 127, player1.rect.y - 16, 15, 140)
+            if player1.getPlayerState("ducking") == False:
+                player1body = Rect(player1.rect.x + 127, player1.rect.y - 16, 15, 140)
+            else:
+                player1body = Rect(player1.rect.x + 127, player1.rect.y + 54, 15, 70)
         else:
             player1body = Rect(-100, -100, 1, 1)
 
         if player2.getPlayerState("ghost_counter") > 300 or player2.getPlayerState("ghost_counter") == -1:
-            player2body = Rect(player2.rect.x + 127, player2.rect.y - 16, 15, 140)
+            if player2.getPlayerState("ducking") == False:
+                player2body = Rect(player2.rect.x + 127, player2.rect.y - 16, 15, 140)
+            else:
+                player2body = Rect(player2.rect.x + 127, player2.rect.y + 54, 15, 70)
         else:
             player2body = Rect(-100, -100, 1, 1)
 
         while getSwordLine(player1).colliderect(getSwordLine(player2)):
-            #print("Clash!")
             player1.setPlayerState("x_velocity", 0)
             player2.setPlayerState("x_velocity", 0)
-            if player1.getDirection() == "left":
-                player1.moveRight()
-                player2.moveLeft()
-                player1.move(entities)
-                player2.move(entities)
+            if player1.getPlayerState("sword_moving") and player2.getPlayerState("thrusting"):
+                print("player 1 disarmed player 2")
+                player2.setPlayerState("sword", False)
+            elif player2.getPlayerState("sword_moving") and player1.getPlayerState("thrusting"):
+                print("player 2 disarmed player 1")
+                player1.setPlayerState("sword", False)
             else:
-                player1.moveLeft()
-                player2.moveRight()
-                player1.move(entities)
-                player2.move(entities)
+                if player1.getDirection() == "left":
+                    player1.moveRight()
+                    player2.moveLeft()
+                    player1.move(entities)
+                    player2.move(entities)
+                else:
+                    player1.moveLeft()
+                    player2.moveRight()
+                    player1.move(entities)
+                    player2.move(entities)
         else:
             if player1body.colliderect(getSwordLine(player2)) and player2body.colliderect(getSwordLine(player1)):
                 print("players both died")
@@ -244,6 +278,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                 player2.setPlayerState("ghost", False)
                 camera.setActive(True)
                 camera.setTarget(player2)
+                player1.setPlayerState("sword", True)
                 #screen follows player 2
             elif player2body.colliderect(getSwordLine(player1)):
                 print("player 2 had an ouchie")
@@ -252,7 +287,14 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2):
                 player1.setPlayerState("ghost", False)
                 camera.setActive(True)
                 camera.setTarget(player1)
+                player2.setPlayerState("sword", True)
                 #screen follows player 1
+
+        #Just died
+        if player1.getPlayerState("ghost_counter") == 0:
+            player1.setPlayerState("ducking", False)
+        if player2.getPlayerState("ghost_counter") == 0:
+            player2.setPlayerState("ducking", False)
 
         if player1.getPlayerState("ghost_counter") > -1:
             #print("woooooowie")
