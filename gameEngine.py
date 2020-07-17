@@ -72,10 +72,11 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
 
     player1 = Player(-50, 100, 1, 2, False, True, getSkin(skin_selection1))  # Initializes player1
     player2 = Player(675, 100, 1, 2, False, False, getSkin(skin_selection2))  # Initializes player2
-
     testSword = Sword(50, 50, 0)
 
-    draw_buffer, my_sprites = gameFrame.init(player1, player2, current_map, entities, pause_buttons)
+    #draw_buffer, my_sprites = gameFrame.init(player1, player2, current_map, entities, pause_buttons)
+    display, camera = gameFrame.initTwo(current_map)
+
 
     clock = pygame.time.Clock()
 
@@ -266,6 +267,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
                 print("players both died")
                 player1.setPlayerState("ghost_counter", 0)
                 player2.setPlayerState("ghost_counter", 0)
+                camera.setActive(False)
                 
 
                 #screen locked in place
@@ -274,6 +276,8 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
                 player1.setPlayerState("ghost_counter", 0) #Should start a counter for each frame of death animation, followed by a respawn delay, followed by drawing them as a ghost in that spot
                 player2.setPlayerState("ghost_counter", -1)
                 player2.setPlayerState("ghost", False)
+                camera.setActive(True)
+                camera.setTarget(player2)
                 player1.setPlayerState("sword", True)
                 #screen follows player 2
             elif player2body.colliderect(getSwordLine(player1)):
@@ -281,6 +285,8 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
                 player2.setPlayerState("ghost_counter", 0) #Should start a counter for each frame of death animation, followed by a respawn delay, followed by drawing them as a ghost in that spot
                 player1.setPlayerState("ghost_counter", -1)
                 player1.setPlayerState("ghost", False)
+                camera.setActive(True)
+                camera.setTarget(player1)
                 player2.setPlayerState("sword", True)
                 #screen follows player 1
 
@@ -308,6 +314,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
 
 
         #render
-        gameFrame.render(my_sprites, draw_buffer)
+        #gameFrame.render(my_sprites, draw_buffer)
+        gameFrame.render(display, screen, player1, player2, entities, camera)
 
 #if player1.getPlayerState("ghost_counter") >= 0 and player1.getPlayerState("ghost_counter") < 11:

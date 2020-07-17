@@ -2,17 +2,21 @@ import pygame
 
 #camera object allows for scrolling and centering on one player
 class Camera:
-    def __init__(self, cameraMovement, width, height):
-        self.state = pygame.Rect(0, 0, width, height)
-        self.cameraMovement = cameraMovement
-		
-    
-	
-    def apply(self, target):
-	    return target.rect.move(self.state.topleft)
+   def __init__(self):
+      self._offset = [0,0]
+      self._active = False
 
-    def update(self, target):
-	    self.state = self.cameraMovement(self.state, target.rect)
+   def getOffset(self):
+      self._offset[0] += (self._target.rect.x - self._offset[0] - 370)/20
+      return self._offset
+
+   def setTarget(self, target):
+      self._target = target
+
+   def setActive(self, active):
+      self._active = active
+   
+   def getActive(self):
+      return self._active
 	
-	
-#Source: https://stackoverflow.com/questions/14354171/add-scrolling-to-a-platformer-in-pygame
+#Source: https://www.youtube.com/watch?v=5q7tmIlXROg&t=262s
