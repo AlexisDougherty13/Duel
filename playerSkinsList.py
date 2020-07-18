@@ -23,8 +23,14 @@ def getSkin(character_type):
     images_dictionary = dict()
     if character_type == "Montoya":
         images_dictionary = {
-            "run_l": "Resources/Images/MontoyaRunL.png",
-            "run_r": "Resources/Images/MontoyaRunR.png",
+            "run_l": "Resources/Images/MontoyaRun1L.png",
+            "run_r": "Resources/Images/MontoyaRun1R.png",
+            "run_l_1": "Resources/Images/MontoyaRun1L.png",
+            "run_r_1": "Resources/Images/MontoyaRun1R.png",
+            "run_l_2": "Resources/Images/MontoyaRun1L.png",
+            "run_r_2": "Resources/Images/MontoyaRun1R.png",
+            "run_l_3": "Resources/Images/MontoyaRun1L.png",
+            "run_r_3": "Resources/Images/MontoyaRun1R.png",
             "sword_high_l": "Resources/Images/MontoyaHighL.png",
             "sword_high_r": "Resources/Images/MontoyaHighR.png",
             "sword_med_l": "Resources/Images/MontoyaMedL.png",
@@ -71,8 +77,14 @@ def getSkin(character_type):
     else:
         # set a default skin
         images_dictionary = {
-            "run_l": "Resources/Images/MontoyaRunL.png",
-            "run_r": "Resources/Images/MontoyaRunR.png",
+            "run_l": "Resources/Images/MontoyaRun1L.png",
+            "run_r": "Resources/Images/MontoyaRun1R.png",
+            "run_l_1": "Resources/Images/MontoyaRun1L.png",
+            "run_r_1": "Resources/Images/MontoyaRun1R.png",
+            "run_l_2": "Resources/Images/MontoyaRun1L.png",
+            "run_r_2": "Resources/Images/MontoyaRun1R.png",
+            "run_l_3": "Resources/Images/MontoyaRun1L.png",
+            "run_r_3": "Resources/Images/MontoyaRun1R.png",
             "sword_high_l": "Resources/Images/MontoyaHighL.png",
             "sword_high_r": "Resources/Images/MontoyaHighR.png",
             "sword_med_l": "Resources/Images/MontoyaMedL.png",
