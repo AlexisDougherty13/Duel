@@ -72,6 +72,8 @@ def mainMenu(screen, audio):
         #Event loop
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                audio.closeAudioEngine()
+                pygame.mixer.quit()
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -79,6 +81,8 @@ def mainMenu(screen, audio):
                     m1_clicked = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
+                    audio.closeAudioEngine()
+                    pygame.mixer.quit()
                     pygame.quit()
                     sys.exit()
 
@@ -137,21 +141,21 @@ def mainMenu(screen, audio):
         if game_state["tutorial"]:
             pygame.time.delay(400)
             game_state["tutorial"] = False
-            tutorialMenu(screen)
+            tutorialMenu(screen, audio)
         if game_state["credits"]:
             pygame.time.delay(400)
-            creditsMenu(screen)
+            creditsMenu(screen, audio)
         if game_state["settings"]:
             pygame.time.delay(400)
             game_state["settings"] = False
-            settingsMenu(screen)
+            settingsMenu(screen, audio)
         if game_state["exit"]:
             pygame.time.delay(400)
             audio.closeAudioEngine()
             pygame.quit()
             sys.exit()
 
-def tutorialMenu(screen):
+def tutorialMenu(screen, audio):
 
     while True:
         screen.fill((0,0,0))
@@ -161,6 +165,8 @@ def tutorialMenu(screen):
         #Event loop
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                audio.closeAudioEngine()
+                pygame.mixer.quit()
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -186,9 +192,9 @@ def tutorialMenu(screen):
         if game_state["back"]:
             pygame.time.delay(400)
             game_state["back"] = False
-            mainMenu(screen)
+            mainMenu(screen, audio)
 
-def creditsMenu(screen):
+def creditsMenu(screen, audio):
 
     while True:
         screen.fill((0,0,0))
@@ -198,6 +204,8 @@ def creditsMenu(screen):
         #Event loop
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                audio.closeAudioEngine()
+                pygame.mixer.quit()
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -224,9 +232,9 @@ def creditsMenu(screen):
             pygame.time.delay(400)
             game_state["back"] = False
             game_state["credits"] = False
-            mainMenu(screen)
+            mainMenu(screen, audio)
 
-def settingsMenu(screen):
+def settingsMenu(screen, audio):
 
     #Menu loop
     while True:
@@ -237,6 +245,8 @@ def settingsMenu(screen):
         #Event loop
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                audio.closeAudioEngine()
+                pygame.mixer.quit()
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -265,14 +275,9 @@ def settingsMenu(screen):
             if game_state["paused"]:
                 pauseMenu(screen)
             else:
-                mainMenu(screen)
+                mainMenu(screen, audio)
 
-def pauseMenu(screen, p1_meta_info, p2_meta_info, pause_buttons, draw_buffer, my_sprites): #Only can be brought up once in game
-
-    #Make dirty sprite pause buttons visible
-    pause_buttons["play_button"].visible = 1
-    pause_buttons["restart_button"].visible = 1
-    pause_buttons["exit_button"].visible = 1
+def pauseMenu(screen, p1_meta_info, p2_meta_info, audio):
 
     #Reset Player meta info to prevent infinite movement after unpausing.
     p1_meta_info["left"] = False
@@ -294,6 +299,8 @@ def pauseMenu(screen, p1_meta_info, p2_meta_info, pause_buttons, draw_buffer, my
         #Event loop
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                audio.closeAudioEngine()
+                pygame.mixer.quit()
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -304,50 +311,44 @@ def pauseMenu(screen, p1_meta_info, p2_meta_info, pause_buttons, draw_buffer, my
                     game_state["resume"] = True
 
 
-        if pause_buttons["play_button"].rect.collidepoint(mx, my):
-            pause_buttons["play_button"].updateState("Highlighted")
+        if menu_buttons["play_button"].button_rect.collidepoint(mx, my):
+            menu_buttons["play_button"].sprite = button_sprites["play_highl"]
             if m1_clicked: #Mouse click inside of the button's sprite
                 game_state["resume"] = True
-                pause_buttons["play_button"].updateState("Clicked")
+                menu_buttons["play_button"].sprite = button_sprites["play_clicked"]
         else:
-            pause_buttons["play_button"].updateState("Unhighlighted")
+            menu_buttons["play_button"].sprite = button_sprites["play_unhighl"]
 
-        if pause_buttons["exit_button"].rect.collidepoint(mx, my):
-            pause_buttons["exit_button"].updateState("Highlighted")
+        if menu_buttons["exit_button"].button_rect.collidepoint(mx, my):
+            menu_buttons["exit_button"].sprite = button_sprites["exit_highl"]
             if m1_clicked: #Mouse click inside of the button's sprite
                 game_state["exit"] = True
-                pause_buttons["exit_button"].updateState("Clicked")
+                menu_buttons["exit_button"].sprite = button_sprites["exit_clicked"]
         else:
-            pause_buttons["exit_button"].updateState("Unhighlighted")
+            menu_buttons["exit_button"].sprite = button_sprites["exit_unhighl"]
 
-        if pause_buttons["restart_button"].rect.collidepoint(mx, my):
-            pause_buttons["restart_button"].updateState("Highlighted")
+        if menu_buttons["restart_button"].button_rect.collidepoint(mx, my):
+            menu_buttons["restart_button"].sprite = button_sprites["restart_highl"]
             if m1_clicked:  # Mouse click inside of the button's sprite
                 game_state["restart"] = True
-                pause_buttons["restart_button"].updateState("Clicked")
+                menu_buttons["restart_button"].sprite = button_sprites["restart_clicked"]
         else:
-            pause_buttons["restart_button"].updateState("Unhighlighted")
+            menu_buttons["restart_button"].sprite = button_sprites["restart_unhighl"]
 
-        pause_buttons["play_button"].update()
-        pause_buttons["restart_button"].update()
-        pause_buttons["exit_button"].update()
-
-        gameFrame.render(my_sprites, draw_buffer)
+        renderMenuButtons("Pause", screen, menu_buttons)
+        pygame.display.update()
 
         if game_state["resume"]:
             pygame.time.delay(400)
             game_state["paused"] = False
             game_state["resume"] = False
-            pause_buttons["play_button"].visible = 0
-            pause_buttons["restart_button"].visible = 0
-            pause_buttons["exit_button"].visible = 0
             break
 
         if game_state["restart"]:
             pygame.time.delay(400)
             game_state["restart"] = False
             game_state["paused"] = False
-            gameEngine.startGame(screen, 1, "Montoya", "Montoya")
+            gameEngine.startGame(screen, 1, "Montoya", "Montoya", audio)
         #if game_state["settings"]:
             #pygame.time.delay(400)
             #game_state["settings"] = False
@@ -357,7 +358,7 @@ def pauseMenu(screen, p1_meta_info, p2_meta_info, pause_buttons, draw_buffer, my
             pygame.time.delay(400)
             game_state["exit"] = False
             game_state["paused"] = False
-            mainMenu(screen)
+            mainMenu(screen, audio)
 
 
 
@@ -385,11 +386,10 @@ def renderMenuButtons(menu_name, screen, buttons):
         #blit credits screen here
         drawButton(buttons, screen, "back_button", 140, 555)
 
-    #elif menu_name == "Pause":
-        #drawButton(buttons, screen, "play_button", 500, 300)
-        #drawButton(buttons, screen, "restart_button", 500, 350)
-        #drawButton(buttons,screen, "settings_button", 500, 400)
-        #drawButton(buttons, screen, "exit_button", 500, 400)
+    elif menu_name == "Pause":
+        drawButton(buttons, screen, "play_button", 500, 300)
+        drawButton(buttons, screen, "restart_button", 500, 350)
+        drawButton(buttons, screen, "exit_button", 500, 400)
 
 
 

@@ -1,3 +1,14 @@
+
+
+##NOTE: This class is no longer required for the pause menu to work. If we ever revert back to dirty sprites at any point
+#we will need to use it again and modify the pauseMenu() function. -Zach
+#Put this at the top of gameEngine to setup pauseButtons for dirty sprite.
+#pause_buttons = {
+#    "play_button": pauseButtons.PauseButton("Play"),
+#    "restart_button": pauseButtons.PauseButton("Restart"),
+#    "exit_button": pauseButtons.PauseButton("Exit")
+#}
+
 import pygame
 
 class PauseButton(pygame.sprite.DirtySprite):
