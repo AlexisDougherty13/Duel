@@ -85,6 +85,8 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
     current_map = mapSelectionList.selectMap(map_selection)  # returns a child of the map class
 
     entities = current_map.getCollidableEntities()
+    left_wall = Rect(-20, 0, 20, 1000)
+    right_wall = Rect(-20, 0, 20, 1000)
 
     swords = []
 
@@ -185,8 +187,6 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
 
         # NON EVENT BASED ACTIONS
         # Player 1 Sprite/Movement
-
-
         player1.setPlayerState("running", False)
         player2.setPlayerState("running", False)
         

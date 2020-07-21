@@ -238,8 +238,12 @@ class Player(pygame.sprite.DirtySprite):
         if self.getPlayerState("ducking"):
         	self.setPlayerState("running", False)
 
+        ghost_multiplier = 1
+        if self.getPlayerState("ghost"):
+        	ghost_multiplier = 1.5
+
         collision_list = self.test_collision_X(entities)  # Test all entities on the map for collision with player
-        self.rect.x += (self.getPlayerState("x_velocity"))
+        self.rect.x += (self.getPlayerState("x_velocity")) * ghost_multiplier
         for objects in collision_list:
             if self.getPlayerState("x_velocity") < 0:  # Moving left
                 self.rect.left = objects.right - image_shift_amount_x

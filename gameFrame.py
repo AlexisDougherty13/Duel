@@ -22,9 +22,11 @@ def render(display, screen, player1, player2, entities, camera, swords):
 
     count = 0
     for rec in entities:
-        newRect = pygame.Rect(rec.left - offset[0], rec.top - offset[1], rec.width, rec.height)
-        if count > 0 and count < 3:
+        if count >= 1:
+            newRect = pygame.Rect(rec.left - offset[0], rec.top - offset[1], rec.width, rec.height)
             pygame.draw.rect(display, (139,69,19), newRect)
+        else:
+            newRect = pygame.Rect(rec.left, rec.top, rec.width, rec.height)
         count = count + 1
     for sword in swords:
         display.blit(pygame.transform.rotate(sword.image, sword.getState("current_r")), (sword.rect.x - offset[0], sword.rect.y - offset[1]))
