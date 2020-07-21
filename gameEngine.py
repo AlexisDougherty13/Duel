@@ -43,13 +43,6 @@ p2_meta_info = {
     "attack_count": 0
 }
 
-
-pause_buttons = {
-    "play_button": pauseButtons.PauseButton("Play"),
-    "restart_button": pauseButtons.PauseButton("Restart"),
-    "exit_button": pauseButtons.PauseButton("Exit")
-}
-
 def mainMenu(screen , audio):  # TODO Call Main Menu Frame instead and have it call startGame
     audio.changeSong("Main Menu")
     mainMenuFrame.mainMenu(screen, audio)
@@ -117,6 +110,8 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
         for event in pygame.event.get():
             # What to do on quit
             if event.type == pygame.QUIT:
+                audio.closeAudioEngine()
+                pygame.mixer.quit()
                 pygame.quit()
                 sys.exit()
 
@@ -163,7 +158,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
                         adjustPlayer(2, "attack_count", 30)
                         player2.setPlayerState("attacking", True)
                 if event.key == pygame.K_ESCAPE:
-                    mainMenuFrame.pauseMenu(screen, p1_meta_info, p2_meta_info, pause_buttons, draw_buffer, my_sprites)
+                    mainMenuFrame.pauseMenu(screen, p1_meta_info, p2_meta_info, audio)
 
 
             # Let go of key so stop performing said action

@@ -7,6 +7,7 @@ class AudioEngine:
         self.currentSong = "Main Menu"
         self.songChange = True
         self.Active = True
+        pygame.mixer.music.set_volume(1)
         try:
             self.thread = Thread(target=self.driver, args=())
             self.thread.start()
@@ -27,10 +28,10 @@ class AudioEngine:
 
 
     def changeVolume(self, volume):
-        pygame.mixer.set_volume(volume)
+        pygame.mixer.music.set_volume(volume)
 
     def getVolume(self):
-        return pygame.mixer.get_volume()
+        return pygame.mixer.music.get_volume()
 
     def changeSong(self, song):
         print("Wow?")
@@ -44,3 +45,4 @@ class AudioEngine:
         self.Active = False
 
     song = property(getSong, changeSong)
+    volume = property(getVolume, changeVolume)

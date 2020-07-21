@@ -39,6 +39,12 @@ def initTwo(current_map):
     camera = Camera()
     return display, camera
     
+def getImage(path, _image_library):
+    if path not in _image_library:
+        canonicalized_path = path.replace('/', os.sep).replace('\\', os.sep)
+        image = pygame.image.load(canonicalized_path).convert_alpha()
+        _image_library[path] = image
+    return _image_library[path]
 
 #OLD INIT
 # def init(player1, player2, current_map, entities, pause_buttons):
@@ -60,17 +66,11 @@ def initTwo(current_map):
 
 #     return draw_buffer, my_sprites
 
-def getImage(path, _image_library):
-    if path not in _image_library:
-        canonicalized_path = path.replace('/', os.sep).replace('\\', os.sep)
-        image = pygame.image.load(canonicalized_path).convert_alpha()
-        _image_library[path] = image
-    return _image_library[path]
-
-def initializePauseButtons(pause_buttons):
-    pause_buttons["play_button"].visible = 0
-    pause_buttons["restart_button"].visible = 0
-    pause_buttons["exit_button"].visible = 0
-    pause_buttons["play_button"].initializeRect()
-    pause_buttons["restart_button"].initializeRect()
-    pause_buttons["exit_button"].initializeRect()
+#Old pause menu implementations. Not going to be needed unless we revert back to dirty sprites at any point.
+#def initializePauseButtons(pause_buttons):
+#    pause_buttons["play_button"].visible = 0
+#   pause_buttons["restart_button"].visible = 0
+#    pause_buttons["exit_button"].visible = 0
+#   pause_buttons["play_button"].initializeRect()
+#   pause_buttons["restart_button"].initializeRect()
+#   pause_buttons["exit_button"].initializeRect()
