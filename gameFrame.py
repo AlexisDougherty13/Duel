@@ -7,23 +7,28 @@ from camera import Camera
     #rects = my_sprites.draw(draw_buffer)
     #pygame.display.update(rects)  # copy rects from buffer to screen
 
-def render(display, screen, player1, player2, entities, camera):
-    #imagesDict = dict()
+def render(display, screen, player1, player2, entities, camera, swords):
+    imagesDict = dict()
     if camera.getActive() == True:
         offset = camera.getOffset()
     else:
         offset = [0,0]
    
-    display.fill((146,244,255))
-    #display.blit(getImage("Resources/Images/ScaledBackgroundAutumnForest.png", imagesDict), (0, 0))
+    #display.fill((146,244,255))
+    display.blit(getImage("Resources/Images/ScaledBackgroundAutumnForest.png", imagesDict), (0, 0))
 
     display.blit(player1.image, (player1.rect.x - offset[0], player1.rect.y - offset[1]))
     display.blit(player2.image, (player2.rect.x - offset[0], player2.rect.y - offset[1]))
 
+    count = 0
     for rec in entities:
         newRect = pygame.Rect(rec.left - offset[0], rec.top - offset[1], rec.width, rec.height)
-        pygame.draw.rect(display, (255,255,255), newRect)
-
+        if count > 0 and count < 3:
+            pygame.draw.rect(display, (139,69,19), newRect)
+        count = count + 1
+    for sword in swords:
+        display.blit(pygame.transform.rotate(sword.image, sword.getState("current_r")), (sword.rect.x - offset[0], sword.rect.y - offset[1]))
+        #display.blit(pygame.transform.rotate(sword.image, 25), (sword.rect.x - offset[0], sword.rect.y - offset[1]))
     screen.blit(display, (0,0))
     pygame.display.update()
 

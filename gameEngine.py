@@ -60,6 +60,22 @@ def adjustPlayer(player, aspect, value):
     elif player == 2:
         p2_meta_info[aspect] = value
 
+def getSwordDisarm(player): 
+    point1 = -1
+    height = -1
+    if player.getDirection() == "left":
+        point1 = player.rect.x + 41
+    else:
+        point1 = player.rect.x + 171
+    if player.getPlayerState("sword_height") == 1:
+        height = player.rect.y + 61
+    elif player.getPlayerState("sword_height") == 2:
+        height = player.rect.y + 37
+    elif player.getPlayerState("sword_height") == 3:
+        height = player.rect.y + 13
+
+    return [point1, height]
+
 # :param Requires a Screen Objects (Created in the main passed to main menu),
 #  an int map_selection to determine what map to put on,
 # and 2 string skin_selection to determine what skins the players choose
@@ -70,9 +86,11 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
 
     entities = current_map.getCollidableEntities()
 
+    swords = []
+
     player1 = Player(-50, 100, 1, 2, False, True, getSkin(skin_selection1))  # Initializes player1
     player2 = Player(675, 100, 1, 2, False, False, getSkin(skin_selection2))  # Initializes player2
-    testSword = Sword(50, 50, 0)
+    
 
     #draw_buffer, my_sprites = gameFrame.init(player1, player2, current_map, entities, pause_buttons)
     display, camera = gameFrame.initTwo(current_map)
@@ -248,9 +266,13 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
             if player1.getPlayerState("sword_moving") and player2.getPlayerState("thrusting"):
                 print("player 1 disarmed player 2")
                 player2.setPlayerState("sword", False)
+                swordInfo = getSwordDisarm(player2)
+                swords.append(Sword(swordInfo[0], swordInfo[1], 0, player2.getPlayerState("direction_facing")))
             elif player2.getPlayerState("sword_moving") and player1.getPlayerState("thrusting"):
                 print("player 2 disarmed player 1")
                 player1.setPlayerState("sword", False)
+                swordInfo = getSwordDisarm(player1)
+                swords.append(Sword(swordInfo[0], swordInfo[1], 0, player1.getPlayerState("direction_facing")))                
             else:
                 if player1.getDirection() == "left":
                     player1.moveRight()
@@ -290,6 +312,19 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
                 player2.setPlayerState("sword", True)
                 #screen follows player 1
 
+        #sword pickups
+        if player1.getPlayerState("ducking") and not player1.getPlayerState("sword"):
+            for sword in swords:
+                if player1body.colliderect(sword.rect):
+                    player1.setPlayerState("sword", True)
+                    swords.remove(sword)
+        if player2.getPlayerState("ducking") and not player2.getPlayerState("sword"):
+            for sword in swords:
+                if player2body.colliderect(sword.rect):
+                    player2.setPlayerState("sword", True)
+                    swords.remove(sword)
+
+
         #Just died
         if player1.getPlayerState("ghost_counter") == 0:
             player1.setPlayerState("ducking", False)
@@ -312,9 +347,14 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
         player1.move(entities)
         player2.move(entities)
 
+        for sword in swords:
+            if not sword.getState("on_ground"):
+                sword.calculateGravity(time())
+            sword.move(entities)
+
 
         #render
         #gameFrame.render(my_sprites, draw_buffer)
-        gameFrame.render(display, screen, player1, player2, entities, camera)
+        gameFrame.render(display, screen, player1, player2, entities, camera, swords)
 
 #if player1.getPlayerState("ghost_counter") >= 0 and player1.getPlayerState("ghost_counter") < 11:
