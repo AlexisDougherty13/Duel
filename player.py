@@ -179,6 +179,8 @@ class Player(pygame.sprite.DirtySprite):
             append = "_l"
         else:
             append = "_r"
+        if not self._player_state["sword"]:
+        	append = append + "_nosword"
         if self._player_state["ghost_counter"] >= 0 and self._player_state["ghost_counter"] < 100:
             return self._image_dict[front + "dead" + append + "_1"]
         elif self._player_state["ghost_counter"] >= 100 and self._player_state["ghost_counter"] < 200:

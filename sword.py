@@ -21,7 +21,7 @@ class Sword(pygame.sprite.DirtySprite):
             "air_time": 0,
         }
         self.image = pygame.image.load("Resources/Images/MontoyaSword.png").convert_alpha()
-        self.rect = Rect(x_pos, y_pos, 251, 35)
+        self.rect = Rect(x_pos, y_pos, 67, 9)
 
     def getXPos(self):
         return self.rect.x
