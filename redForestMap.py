@@ -16,7 +16,7 @@ class RedForestMap(Map):
         self.songName = "Red Forest"
 
     def setCollidableEntities(self):
-        floor_rect = Rect(-400, 500, 1600, 50)
+        floor_rect = Rect(-2400, 500, 5600, 50)
         self._collidable_entities.append(floor_rect)
         
         block_rect = Rect(100, 400, 100, 100)

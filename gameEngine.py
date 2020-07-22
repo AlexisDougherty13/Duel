@@ -83,8 +83,8 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
 
     swords = []
 
-    player1 = Player(-50, 100, 1, 2, False, True, getSkin(skin_selection1))  # Initializes player1
-    player2 = Player(675, 100, 1, 2, False, False, getSkin(skin_selection2))  # Initializes player2
+    player1 = Player(-50, 100, 1, 2, False, True, getSkin(skin_selection1), 1)  # Initializes player1
+    player2 = Player(675, 100, 1, 2, False, False, getSkin(skin_selection2), -1)  # Initializes player2
     
 
     #draw_buffer, my_sprites = gameFrame.init(player1, player2, current_map, entities, pause_buttons)
@@ -334,10 +334,10 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
             player2.setPlayerState("ghost_counter", player2.getPlayerState("ghost_counter") + 1)
         if player1.getPlayerState("ghost_counter") == 300:
             #print("woooooowie")
-            player1.respawn()
+            player1.respawn(player2.getXPos())
         if player2.getPlayerState("ghost_counter") == 300:
             #print("woooooowie 2")
-            player2.respawn()
+            player2.respawn(player1.getXPos())
 
         player1.move(entities)
         player2.move(entities)

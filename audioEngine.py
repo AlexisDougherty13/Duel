@@ -7,7 +7,6 @@ class AudioEngine:
         self.currentSong = "Main Menu"
         self.songChange = True
         self.Active = True
-        pygame.mixer.music.set_volume(1)
         try:
             self.thread = Thread(target=self.driver, args=())
             self.thread.start()
@@ -16,13 +15,23 @@ class AudioEngine:
 
     def driver(self):
         pygame.mixer.init()
+        pygame.mixer.music.set_volume(1)
+        print("here")
         while self.Active:
             if self.songChange:
                 if self.currentSong == "Main Menu":
-                    pygame.mixer.music.load("RedForestMap.wav")
+                    path = "RedForestMap.wav"
+                    canonicalized_path = path.replace('/', os.sep).replace('\\', os.sep)
+                    music_path =  os.path.join(os.path.dirname(os.path.realpath(__file__)), canonicalized_path)
+                    print(music_path)
+                    pygame.mixer.music.load(music_path)
                     pygame.mixer.music.play(-1)
                 elif self.currentSong == "Red Forest":
-                    pygame.mixer.music.load("RedForestMap.wav")
+                    path = "RedForestMap.wav"
+                    canonicalized_path = path.replace('/', os.sep).replace('\\', os.sep)
+                    music_path =  os.path.join(os.path.dirname(os.path.realpath(__file__)), canonicalized_path)
+                    print(music_path)
+                    pygame.mixer.music.load(music_path)
                     pygame.mixer.music.play(-1)
                 self.songChange = False
 

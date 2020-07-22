@@ -32,7 +32,7 @@ class Player(pygame.sprite.DirtySprite):
        :param sprite: the image name for the player's current motion
        :param image_dict: a dictionary of image file names for each motion
     """
-    def __init__(self, x_pos, y_pos, direction_facing, sword_height, is_ghost, is_locked_on, image_dict):
+    def __init__(self, x_pos, y_pos, direction_facing, sword_height, is_ghost, is_locked_on, image_dict, win_direction):
         pygame.sprite.DirtySprite.__init__(self)
         self._player_state = {
             "running": False,
@@ -52,7 +52,8 @@ class Player(pygame.sprite.DirtySprite):
             "y_velocity": 0,
             "count_until_turn_around" : 0,
             "sword": True,
-            "sword_moving": True
+            "sword_moving": True,
+            "win_direction": win_direction #-1 left, 1 right
         }
         self._image_dict = image_dict
         self.image = pygame.image.load(self.getSprite()).convert_alpha()
@@ -163,11 +164,11 @@ class Player(pygame.sprite.DirtySprite):
         elif self._player_state["sword_height"] > 3:
             self._player_state["sword_height"] = 3
 
-    def respawn(self):
-        if self._player_state["direction_facing"] == 1:
-            self.rect.x += 50
+    def respawn(self, start):
+        if self._player_state["win_direction"] == -1:
+            self.rect.x = start + 314
         else:
-            self.rect.x -= 50
+            self.rect.x = start - 386
 
     def getSprite(self):
         #print(self._player_state["ghost_counter"])
