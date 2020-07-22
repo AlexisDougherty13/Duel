@@ -2,23 +2,25 @@ import pygame
 import os
 from camera import Camera
 
+
 #OLD RENDER
 #def render(my_sprites, draw_buffer):
     #rects = my_sprites.draw(draw_buffer)
     #pygame.display.update(rects)  # copy rects from buffer to screen
 
 def render(display, screen, player1, player2, entities, camera):
-    #imagesDict = dict()
+    imagesDict = dict()
     if camera.getActive() == True:
         offset = camera.getOffset()
     else:
         offset = [0,0]
    
     display.fill((146,244,255))
-    #display.blit(getImage("Resources/Images/ScaledBackgroundAutumnForest.png", imagesDict), (0, 0))
+    display.blit(getImage("Resources/Images/ScaledBackgroundAutumnForest.png", imagesDict), (0, 0))
 
     display.blit(player1.image, (player1.rect.x - offset[0], player1.rect.y - offset[1]))
     display.blit(player2.image, (player2.rect.x - offset[0], player2.rect.y - offset[1]))
+
 
     for rec in entities:
         newRect = pygame.Rect(rec.left - offset[0], rec.top - offset[1], rec.width, rec.height)

@@ -63,8 +63,8 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
 
     entities = current_map.getCollidableEntities()
 
-    player1 = Player(-50, 100, 1, 2, False, True, getSkin(skin_selection1))  # Initializes player1
-    player2 = Player(675, 100, 1, 2, False, False, getSkin(skin_selection2))  # Initializes player2
+    player1 = Player(-115, 172, 1, 2, False, True, getSkin(skin_selection1))  # Initializes player1
+    player2 = Player(686, 172, 1, 2, False, False, getSkin(skin_selection2))  # Initializes player2
     testSword = Sword(50, 50, 0)
 
     #draw_buffer, my_sprites = gameFrame.init(player1, player2, current_map, entities, pause_buttons)

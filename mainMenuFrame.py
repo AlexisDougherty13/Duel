@@ -38,10 +38,24 @@ button_sprites = {
     "plus_unhighl": "Resources/Images/Buttons/PlusButtonUnhighlighted.png",
     "plus_highl": "Resources/Images/Buttons/PlusButtonHighlighted.png",
     "plus_clicked": "Resources/Images/Buttons/PlusButtonClicked.png",
+    "left_unhighl": "Resources/Images/Buttons/LeftArrowUnhighlighted.png",
+    "left_highl": "Resources/Images/Buttons/LeftArrowHighlighted.png",
+    "left_clicked": "Resources/Images/Buttons/LeftArrowClicked.png",
+    "right_unhighl": "Resources/Images/Buttons/RightArrowUnhighlighted.png",
+    "right_highl": "Resources/Images/Buttons/RightArrowHighlighted.png",
+    "right_clicked": "Resources/Images/Buttons/RightArrowClicked.png",
+    "small_right_unhighl": "Resources/Images/Buttons/SmallRightArrowUnhighlighted.png",
+    "small_right_highl": "Resources/Images/Buttons/SmallRightArrowHighlighted.png",
+    "small_right_clicked": "Resources/Images/Buttons/SmallRightArrowClicked.png",
+    "small_left_unhighl": "Resources/Images/Buttons/SmallLeftArrowUnhighlighted.png",
+    "small_left_highl": "Resources/Images/Buttons/SmallLeftArrowHighlighted.png",
+    "small_left_clicked": "Resources/Images/Buttons/SmallLeftArrowClicked.png",
+
 }
 
 menu_buttons = {
     "play_button": menuButtons.Button(button_sprites["play_unhighl"], 400, 300, 220, 50),
+    "pregame_play_button": menuButtons.Button(button_sprites["play_unhighl"], 400, 300, 220, 50),
     "settings_button": menuButtons.Button(button_sprites["settings_unhighl"], 400, 400, 50, 50),
     "exit_button": menuButtons.Button(button_sprites["exit_unhighl"], 400, 500, 220, 50),
     "back_button": menuButtons.Button(button_sprites["back_unhighl"], 400, 500, 220, 50),
@@ -49,7 +63,15 @@ menu_buttons = {
     "tutorial_button": menuButtons.Button(button_sprites["tutorial_unhighl"], 0, 0, 220, 50),
     "credits_button": menuButtons.Button(button_sprites["credits_unhighl"], 0, 0, 220, 50),
     "minus_button": menuButtons.Button(button_sprites["minus_unhighl"], 0, 0, 50, 50),
-    "plus_button": menuButtons.Button(button_sprites["plus_unhighl"], 0, 0, 50, 50)
+    "plus_button": menuButtons.Button(button_sprites["plus_unhighl"], 0, 0, 50, 50),
+    "p1_left_button": menuButtons.Button(button_sprites["small_left_unhighl"], 0, 0, 35, 35),
+    "p1_right_button": menuButtons.Button(button_sprites["small_right_unhighl"], 0, 0, 35, 35),
+    "p2_left_button": menuButtons.Button(button_sprites["small_left_unhighl"], 0, 0, 35, 35),
+    "p2_right_button": menuButtons.Button(button_sprites["small_right_unhighl"], 0, 0, 35, 35),
+    "map_left_button": menuButtons.Button(button_sprites["left_unhighl"], 0, 0, 51, 51),
+    "map_right_button": menuButtons.Button(button_sprites["right_unhighl"], 0, 0, 51, 51),
+    "p1_preview": menuButtons.Button("Resources/Images/MontoyaMedR.png", 0, 0, 269, 140),
+    "p2_preview": menuButtons.Button("Resources/Images/MontoyaMedL.png", 0, 0, 269, 140),
 }
 
 #Remember to change game state booleans when going between menus.
@@ -65,7 +87,13 @@ game_state = {
     "tutorial": False,
     "credits": False,
     "increase_volume": False,
-    "decrease_volume": False
+    "decrease_volume": False,
+    "p1_left": False,
+    "p1_right": False,
+    "p2_left": False,
+    "p2_right": False,
+    "map_left": False,
+    "map_right": False
 }
 
 player_skins = list(["Montoya",
@@ -74,8 +102,9 @@ player_skins = list(["Montoya",
 
 images_dictionary = dict()
 pygame.font.init()
-volume_font = pygame.font.Font("Resources/Lobster.ttf", 32)
-settings_label_font = pygame.font.Font("Resources/Lobster.ttf", 42)
+p1_skin_selection = player_skins[0]
+p2_skin_selection = player_skins[0]
+map_selection = 1
 
 def mainMenu(screen, audio):
     #Menu loop
@@ -140,6 +169,7 @@ def pregameMenu(screen, audio):
     p1_skin_selection = player_skins[0]
     p2_skin_selection = player_skins[0]
     map_selection = 1
+    map_title = pygame.font.Font("Resources/Lobster.ttf", 42)
 
     while True:
         screen.fill((0, 0, 0))
@@ -161,14 +191,26 @@ def pregameMenu(screen, audio):
                     game_state["back"] = True
 
         # Button sprite changing with mouse interaction:
-        checkCollision("play_button", "play", "start", mx, my, m1_clicked)
+        checkCollision("pregame_play_button", "play", "start", mx, my, m1_clicked)
         checkCollision("back_button", "back", "back", mx, my, m1_clicked)
         #Add arrow buttons that check for collisions.
+        arrowCollision("p1_left_button", "small_left", "p1_left", mx, my, m1_clicked)
+        arrowCollision("p1_right_button", "small_right", "p1_right", mx, my, m1_clicked)
+        arrowCollision("p2_left_button", "small_left", "p2_left", mx, my, m1_clicked)
+        arrowCollision("p2_right_button", "small_right", "p2_right", mx, my, m1_clicked)
+        arrowCollision("map_left_button", "left", "map_left", mx, my, m1_clicked)
+        arrowCollision("map_right_button", "right", "map_right", mx, my, m1_clicked)
 
-        #Using arrow buttons, change the p1 r p2 skin string that is passed to the startGame() function. Same for map.
+        displayMap(screen, map_selection)
+        printMapTitle(screen, map_selection, map_title)
+        displayPlayer(screen, p1_skin_selection, 1)
+        displayPlayer(screen, p2_skin_selection, 2)
 
         renderMenuButtons("Pregame", screen)
         pygame.display.update()
+
+        #All in one function that checks arrow state and changes selections accordingly.
+        p1_skin_selection, p2_skin_selection, map_selection = checkArrowStates(p1_skin_selection, p2_skin_selection, map_selection)
 
         if game_state["start"]:
             pygame.time.delay(400)
@@ -248,6 +290,8 @@ def creditsMenu(screen, audio):
             mainMenu(screen, audio)
 
 def settingsMenu(screen, audio):
+    volume_font = pygame.font.Font("Resources/Lobster.ttf", 32)
+    settings_label_font = pygame.font.Font("Resources/Lobster.ttf", 42)
 
     #Menu loop
     while True:
@@ -351,7 +395,7 @@ def pauseMenu(screen, p1_meta_info, p2_meta_info, audio):
             pygame.time.delay(400)
             game_state["restart"] = False
             game_state["paused"] = False
-            gameEngine.startGame(screen, 1, "Montoya", "Montoya", audio)
+            gameEngine.startGame(screen, map_selection, p1_skin_selection, p2_skin_selection, audio)
         #if game_state["settings"]:
             #pygame.time.delay(400)
             #game_state["settings"] = False
@@ -378,7 +422,13 @@ def renderMenuButtons(menu_name, screen):
         screen.blit(gameFrame.getImage("Resources/Images/MenuTitle.png", images_dictionary), (0,0))
 
     elif menu_name == "Pregame":
-        drawButton(screen, "play_button", 850, 555)
+        drawButton(screen, "p1_left_button", 50, 225)
+        drawButton(screen, "p1_right_button", 150, 225)
+        drawButton(screen, "p2_left_button", 850, 225)
+        drawButton(screen, "p2_right_button", 950, 225)
+        drawButton(screen, "map_left_button", 300, 50)
+        drawButton(screen, "map_right_button", 700, 50)
+        drawButton(screen, "pregame_play_button", 850, 555)
         drawButton(screen, "back_button", 150, 555)
 
     elif menu_name == "Settings":
@@ -418,3 +468,67 @@ def checkCollision(button_name,short_name, state, mx, my, m1_clicked):
             menu_buttons[button_name].sprite = button_sprites[short_name + "_clicked"]
     else:
         menu_buttons[button_name].sprite = button_sprites[short_name + "_unhighl"]
+
+#        arrowCollision("p1_right_button", "small_right", "p1_right", mx, my, m1_clicked)
+def arrowCollision(button_name, short_name, state, mx, my, m1_clicked):
+    pos_in_mask = (mx - menu_buttons[button_name].button_rect.x, my - menu_buttons[button_name].button_rect.y)
+    if menu_buttons[button_name].button_rect.collidepoint(mx,my) and menu_buttons[button_name].sprite_mask.get_at(pos_in_mask):
+        menu_buttons[button_name].sprite = button_sprites[short_name + "_highl"]
+        if m1_clicked:  # Mouse click inside of the button's sprite
+            game_state[state] = True
+            menu_buttons[button_name].sprite = button_sprites[short_name + "_clicked"]
+    else:
+        menu_buttons[button_name].sprite = button_sprites[short_name + "_unhighl"]
+
+def checkArrowStates(p1_skin_selection, p2_skin_selection, map_selection):
+    if game_state["p1_left"]:
+        game_state["p1_left"] = False
+    if game_state["p1_right"]:
+        game_state["p1_right"] = False
+    if game_state["p2_left"]:
+        game_state["p2_left"] = False
+    if game_state["p2_right"]:
+        game_state["p2_right"] = False
+    if game_state["map_left"]:
+        if map_selection == 1:
+            map_selection = 2
+        else:
+            map_selection = 1
+        game_state["map_left"] = False
+    if game_state["map_right"]:
+        if map_selection == 1:
+            map_selection = 2
+        else:
+            map_selection = 1
+        game_state["map_right"] = False
+
+    return p1_skin_selection, p2_skin_selection, map_selection
+
+def displayMap(screen, map_selection):
+    if map_selection == 1:
+        screen.blit(gameFrame.getImage("Resources/Images/UF_Background.png", images_dictionary), (0,0))
+    elif map_selection == 2:
+        screen.blit(gameFrame.getImage("Resources/Images/DesertMap.png", images_dictionary), (0, 0))
+
+def displayPlayer(screen, skin_selection, player_number):
+    if player_number == 1:
+        image_path = "Resources/Images/" + skin_selection + "MedR.png"
+        menu_buttons["p1_preview"].sprite = image_path
+        menu_buttons["p1_preview"].button_rect.center = (100, 225)
+        screen.blit(gameFrame.getImage(image_path, images_dictionary), (menu_buttons["p1_preview"].button_rect.x, menu_buttons["p1_preview"].button_rect.y))
+    else:
+        image_path = "Resources/Images/" + skin_selection + "MedL.png"
+        menu_buttons["p2_preview"].sprite = image_path
+        menu_buttons["p2_preview"].button_rect.center = (900, 225)
+        screen.blit(gameFrame.getImage(image_path, images_dictionary), (menu_buttons["p2_preview"].button_rect.x, menu_buttons["p2_preview"].button_rect.y))
+
+def printMapTitle(screen, map_selection, map_title):
+    if map_selection == 1:
+        map_name = "Red Forest"
+    elif map_selection == 2:
+        map_name = "Desert"
+
+    map_text = map_title.render(map_name, True, (255, 255, 255))
+    map_text_rect = map_text.get_rect()
+    map_text_rect.center = (500, 50)
+    screen.blit(map_text, map_text_rect)
