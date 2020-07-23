@@ -81,11 +81,13 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
     left_wall = Rect(-20, 0, 20, 1000)
     right_wall = Rect(-20, 0, 20, 1000)
 
+
     swords = []
 
     player1 = Player(-50, 100, 1, 2, False, True, getSkin(skin_selection1), 1)  # Initializes player1
     player2 = Player(675, 100, 1, 2, False, False, getSkin(skin_selection2), -1)  # Initializes player2
     
+
 
     #draw_buffer, my_sprites = gameFrame.init(player1, player2, current_map, entities, pause_buttons)
     display, camera = gameFrame.initTwo(current_map)

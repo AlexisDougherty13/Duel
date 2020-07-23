@@ -45,7 +45,7 @@ class Player(pygame.sprite.DirtySprite):
             "locked_on": False,
             "ghost": False,
             "ghost_counter": -1,
-            "sword_height": 1,
+            "sword_height": 2,
             "direction_facing": direction_facing,
             "air_time": 0,
             "x_velocity": 0,
