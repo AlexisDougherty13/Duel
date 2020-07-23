@@ -78,12 +78,14 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
     current_map = mapSelectionList.selectMap(map_selection)  # returns a child of the map class
 
     entities = current_map.getCollidableEntities()
+    left_wall = Rect(-20, 0, 20, 1000)
+    right_wall = Rect(-20, 0, 20, 1000)
 
 
     swords = []
 
-    player1 = Player(-50, 100, 1, 2, False, True, getSkin(skin_selection1))  # Initializes player1
-    player2 = Player(675, 100, 1, 2, False, False, getSkin(skin_selection2))  # Initializes player2
+    player1 = Player(-50, 100, 1, 2, False, True, getSkin(skin_selection1), 1)  # Initializes player1
+    player2 = Player(675, 100, 1, 2, False, False, getSkin(skin_selection2), -1)  # Initializes player2
     
 
 
@@ -182,8 +184,6 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
 
         # NON EVENT BASED ACTIONS
         # Player 1 Sprite/Movement
-
-
         player1.setPlayerState("running", False)
         player2.setPlayerState("running", False)
         
@@ -336,10 +336,10 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
             player2.setPlayerState("ghost_counter", player2.getPlayerState("ghost_counter") + 1)
         if player1.getPlayerState("ghost_counter") == 300:
             #print("woooooowie")
-            player1.respawn()
+            player1.respawn(player2.getXPos())
         if player2.getPlayerState("ghost_counter") == 300:
             #print("woooooowie 2")
-            player2.respawn()
+            player2.respawn(player1.getXPos())
 
         player1.move(entities)
         player2.move(entities)
