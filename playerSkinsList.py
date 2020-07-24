@@ -30,8 +30,8 @@ def getSkin(character_type):
     if character_type == "Montoya":
         images_dictionary = {
             "sword": "Resources/Images/MontoyaSword.png",
-            "run_l": "Resources/Images/MontoyaRunL.png",
-            "run_r": "Resources/Images/MontoyaRunR.png",
+            "run_l": "Resources/Images/MontoyaRun1L.png",
+            "run_r": "Resources/Images/MontoyaRun1R.png",
             "run_l_1": "Resources/Images/MontoyaRun1L.png",
             "run_r_1": "Resources/Images/MontoyaRun1R.png",
             "run_l_2": "Resources/Images/MontoyaRun2L.png",
