@@ -135,6 +135,7 @@ class Player(pygame.sprite.DirtySprite):
         self.setPlayerState("on_ground", False)
 
     def update(self):
+        print(self.getSprite())
         self.image = pygame.image.load(self.getSprite())
         self.dirty = 1  # force redraw from image, since we moved the sprite rect
 
