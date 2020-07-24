@@ -6,20 +6,30 @@ from map import Map
 from pygame import Rect
 
 
-class desolateDesertMap(Map):
+class DesolateDesertMap(Map):
     """Class representing a Specific Map
         """
     def __init__(self):
-        Map.__init__(self, 1000, 600, 450, 300, 550, 300, "Resources/Images/UF_Background.png", "assets_dict") #TODO: implement Assets Dict
+        assets_dict = {
+            "Tile": "Resources/Images/DesolateDesertTile.png",
+            "Background": "Resources/Images/DesolateDesertBG.png"
+        }
+        Map.__init__(self, 1000, 600, 450, 300, 550, 300, "Resources/Images/DesolateDesertBG.png",
+                     assets_dict)  # TODO: implement Assets Dict
         self.setCollidableEntities()
         self.songName = "Desolate Desert"
-
     def setCollidableEntities(self):
-        floor_rect = Rect(-400, 400, 1600, 200)
+        floor_rect = Rect(-5000, 500, 11000, 50)
         self._collidable_entities.append(floor_rect)
-        block_rect = Rect(100, 300, 100, 100)
+
+        block_rect = Rect(100, 400, 100, 100)
         self._collidable_entities.append(block_rect)
-        block2_rect = Rect(800, 300, 100, 100)
+        block2_rect = Rect(800, 400, 100, 100)
         self._collidable_entities.append(block2_rect)
+
+        player2_flag = Rect(-1000, 275, 225, 225)
+        self._collidable_entities.append(player2_flag)
+        player1_flag = Rect(2000, 275, 225, 225)
+        self._collidable_entities.append(player1_flag)
 
    # collidable_entities = property(getCollidableEntities, setCollidableEntities)

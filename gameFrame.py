@@ -9,7 +9,7 @@ from camera import Camera
     #pygame.display.update(rects)  # copy rects from buffer to screen
 
 
-def render(display, screen, player1, player2, entities, camera, swords):
+def render(display, screen, player1, player2, entities, camera, swords, assets):
 
     imagesDict = dict()
     if camera.getActive() == True:
@@ -19,7 +19,7 @@ def render(display, screen, player1, player2, entities, camera, swords):
    
     #display.fill((146,244,255))
 
-    display.blit(getImage("Resources/Images/ScaledBackgroundAutumnForest.png", imagesDict), (0, 0))
+    display.blit(getImage(assets["Background"], imagesDict), (0, 0))
 
     display.blit(player1.image, (player1.rect.x - offset[0], player1.rect.y - offset[1]))
     display.blit(player2.image, (player2.rect.x - offset[0], player2.rect.y - offset[1]))
