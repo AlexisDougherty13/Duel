@@ -9,7 +9,11 @@ class RedForestMap(Map):
     """Class representing a Specific Map
         """
     def __init__(self):
-        Map.__init__(self, 1000, 600, 450, 300, 550, 300, "Resources/Images/ScaledBackgroundAutumnForest.png", "assets_dict") #TODO: implement Assets Dict
+        assets_dict = {
+            "Tile": "Resources/Images/RedForestTile.png",
+            "Background": "Resources/Images/ScaledBackgroundAutumnForest.png"
+        }
+        Map.__init__(self, 1000, 600, 450, 300, 550, 300, "Resources/Images/ScaledBackgroundAutumnForest.png", assets_dict) #TODO: implement Assets Dict
         self.setCollidableEntities()
         self.songName = "Red Forest"
 
