@@ -44,6 +44,7 @@ class Player(pygame.sprite.DirtySprite):
             "on_ground": False,
             "locked_on": False,
             "ghost": False,
+            "ghost_counter": -1,
             "sword_height": 1,
             "direction_facing": direction_facing,
             "air_time": 0,
@@ -52,7 +53,7 @@ class Player(pygame.sprite.DirtySprite):
             "count_until_turn_around" :0
         }
         self._image_dict = image_dict
-        self.image = pygame.image.load(self.getSprite())
+        self.image = pygame.image.load(self.getSprite()).convert_alpha()
         self.rect = Rect(x_pos + image_shift_amount_x, y_pos - image_shift_amount_y, 73, 140)
 
     def getXPos(self):
@@ -62,33 +63,41 @@ class Player(pygame.sprite.DirtySprite):
         return self.rect.y
 
     def moveLeft(self):
-        self.setPlayerState("x_velocity", self.getPlayerState("x_velocity") - 1)
-        if abs(self.getPlayerState("x_velocity")) > 5:
-            self._player_state["count_until_turn_around"] += 1
+        if (self.getPlayerState("ghost_counter") > 300 or self.getPlayerState("ghost_counter") == -1):
+            self.setPlayerState("x_velocity", self.getPlayerState("x_velocity") - 1)
+            if abs(self.getPlayerState("x_velocity")) > 5:
+                self._player_state["count_until_turn_around"] += 1
+            else:
+                self._player_state["count_until_turn_around"] -= 4
+            if self._player_state["count_until_turn_around"] > 15:
+                self.setDirection("left")
+                self._player_state["count_until_turn_around"] = 20
+                self.setPlayerState("running", True)
+            elif self._player_state["count_until_turn_around"] < 0:
+                self._player_state["count_until_turn_around"] = 0
+            if self.getPlayerState("x_velocity") < -10:
+                self.setPlayerState("x_velocity", -10)
         else:
-            self._player_state["count_until_turn_around"] -= 4
-        if self._player_state["count_until_turn_around"] > 15:
-            self.setDirection("left")
-            self._player_state["count_until_turn_around"] = 20
-        elif self._player_state["count_until_turn_around"] < 0:
-            self._player_state["count_until_turn_around"] = 0
-        if self.getPlayerState("x_velocity") < -10:
-            self.setPlayerState("x_velocity", -10)
+            self.setPlayerState("x_velocity", 0)
 
     def moveRight(self):
-        self.setPlayerState("x_velocity", self.getPlayerState("x_velocity") + 1)
-        if abs(self.getPlayerState("x_velocity")) > 5:
-            self._player_state["count_until_turn_around"] += 1
-        else:
-            self._player_state["count_until_turn_around"] -= 4
-        if self._player_state["count_until_turn_around"] > 15:
-            self.setDirection("right")
-            self._player_state["count_until_turn_around"] = 20
-        elif self._player_state["count_until_turn_around"] < 0:
-            self._player_state["count_until_turn_around"] = 0
+        if (self.getPlayerState("ghost_counter") > 300 or self.getPlayerState("ghost_counter") == -1):
+            self.setPlayerState("x_velocity", self.getPlayerState("x_velocity") + 1)
+            if abs(self.getPlayerState("x_velocity")) > 5:
+                self._player_state["count_until_turn_around"] += 1
+            else:
+                self._player_state["count_until_turn_around"] -= 4
+            if self._player_state["count_until_turn_around"] > 15:
+                self.setDirection("right")
+                self._player_state["count_until_turn_around"] = 20
+                self.setPlayerState("running", True)
+            elif self._player_state["count_until_turn_around"] < 0:
+                self._player_state["count_until_turn_around"] = 0
 
-        if self.getPlayerState("x_velocity") > 10:
-            self.setPlayerState("x_velocity", 10)
+            if self.getPlayerState("x_velocity") > 10:
+                self.setPlayerState("x_velocity", 10)
+        else:
+            self.setPlayerState("x_velocity", 0)
 
     def standingStill(self):
         if self.getPlayerState("x_velocity") > 0:
@@ -129,10 +138,11 @@ class Player(pygame.sprite.DirtySprite):
         self._player_state[type] = value
 
     def setDirection(self, direction):
-        if direction == "left":
-            self._player_state["direction_facing"] = 1
-        else:
-            self._player_state["direction_facing"] = 0
+        if (self.getPlayerState("ghost_counter") > 300 or self.getPlayerState("ghost_counter") == -1):
+            if direction == "left":
+                self._player_state["direction_facing"] = 1
+            else:
+                self._player_state["direction_facing"] = 0
 
     def getDirection(self):
         if self._player_state["direction_facing"] == 1:
@@ -147,27 +157,48 @@ class Player(pygame.sprite.DirtySprite):
         elif self._player_state["sword_height"] > 3:
             self._player_state["sword_height"] = 3
 
+    def respawn(self):
+        if self._player_state["direction_facing"] == 1:
+            self.rect.x += 50
+        else:
+            self.rect.x -= 50
+
     def getSprite(self):
+        #print(self._player_state["ghost_counter"])
+        if self._player_state["ghost"]:
+            front = "ghost_"
+        else:
+            front = ""
         if self._player_state["direction_facing"] == 1:
             append = "_l"
         else:
             append = "_r"
-        if self._player_state["running"]:
-            return self._image_dict["run" + append]
-        if self._player_state["jumping"]:
-            return self._image_dict["jump" + append]
-        if self._player_state["ducking"]:
-            return self._image_dict["duck" + append]
-        if self._player_state["sword_height"] == 1:
-            append = "_low"+append
-        elif self._player_state["sword_height"] == 2:
-            append = "_med" + append
+        if self._player_state["ghost_counter"] >= 0 and self._player_state["ghost_counter"] < 100:
+            return self._image_dict[front + "dead" + append + "_1"]
+        elif self._player_state["ghost_counter"] >= 100 and self._player_state["ghost_counter"] < 200:
+            return self._image_dict[front + "dead" + append + "_2"]
+        elif self._player_state["ghost_counter"] >= 200 and self._player_state["ghost_counter"] < 300:    
+            return self._image_dict[front + "dead" + append + "_3"]
+
         else:
-            append = "_high" + append
-        if self._player_state["thrusting"]:
-            return self._image_dict["thrust" + append]
-        else:
-            return self._image_dict["sword" + append]
+            if self._player_state["ghost_counter"] == 301:
+                self._player_state["ghost"] = True
+            if self._player_state["running"]:
+                return self._image_dict[front + "run" + append]
+            if self._player_state["jumping"]:
+                return self._image_dict[front + "jump" + append]
+            if self._player_state["ducking"]:
+                return self._image_dict[front + "duck" + append]
+            if self._player_state["sword_height"] == 1:
+                append = "_low"+append
+            elif self._player_state["sword_height"] == 2:
+                append = "_med" + append
+            else:
+                append = "_high" + append
+            if self._player_state["thrusting"]:
+                return self._image_dict[front + "thrust" + append]
+            else:
+                return self._image_dict[front + "sword" + append]
 
     def getImageDict(self):
         return self._image_dict
