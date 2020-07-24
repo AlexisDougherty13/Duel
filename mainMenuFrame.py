@@ -443,7 +443,8 @@ def renderMenuButtons(menu_name, screen):
 
     elif  menu_name == "Credits":
         #blit credits screen here
-        drawButton(screen, "back_button", 140, 555)
+        screen.blit(gameFrame.getImage("Resources/Images/CreditsSplashScreen.png", images_dictionary), (0, 0))
+        drawButton(screen, "back_button", 130, 560)
 
     elif menu_name == "Pause":
         drawButton(screen, "play_button", 500, 300)
