@@ -27,7 +27,10 @@ def render(display, screen, player1, player2, entities, camera, swords):
     count = 0
 
     for rec in entities:
-        if count >= 1:
+        if count >=3: # this should be adjusted to account for only the last two objects, being the flags
+            newRect = pygame.Rect(rec.left - offset[0], rec.top - offset[1], rec.width, rec.height)
+            #display.blit(getImage("Resources/Images/tempFlag.jpg", imagesDict), (newRect.x - offset[0], newRect.y - offset[1]))
+        elif count >= 1:
             newRect = pygame.Rect(rec.left - offset[0], rec.top - offset[1], rec.width, rec.height)
             pygame.draw.rect(display, (139,69,19), newRect)
         else:
