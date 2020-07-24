@@ -16,7 +16,7 @@ class AudioEngine:
 
     def driver(self):
         pygame.mixer.init()
-        pygame.mixer.music.set_volume(1)
+        pygame.mixer.music.set_volume(0.8)
         while self.Active:
             if self.songChange:
                 if self.currentSong == "Main Menu":
