@@ -78,27 +78,21 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
     current_map = mapSelectionList.selectMap(map_selection)  # returns a child of the map class
 
     entities = current_map.getCollidableEntities()
+    entity_colors = current_map.color_list
     left_wall = Rect(-20, 0, 20, 1000)
     right_wall = Rect(-20, 0, 20, 1000)
 
 
     swords = []
 
-    player1 = Player(-50, 100, 1, 2, False, True, getSkin(skin_selection1), 1)  # Initializes player1
-    player2 = Player(675, 100, 1, 2, False, False, getSkin(skin_selection2), -1)  # Initializes player2
+    player1 = Player(-50, 100, 1, 2, False, True, getSkin(skin_selection1), 1)  # Initializes player1 -50, 100
+    player2 = Player(675, 100, 1, 2, False, False, getSkin(skin_selection2), -1)  # Initializes player2 675, 100
+
+    display, camera = gameFrame.init(current_map)
     
-
-
-    #draw_buffer, my_sprites = gameFrame.init(player1, player2, current_map, entities, pause_buttons)
-    display, camera = gameFrame.initTwo(current_map)
-
-
     clock = pygame.time.Clock()
 
     print("starting")
-
-    player1_y_vel = 0 #temp will be altered soon
-    player2_y_vel = 0  # temp will be altered soon
 
     active_match = True
 
@@ -352,6 +346,8 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
 
         #render
         #gameFrame.render(my_sprites, draw_buffer)
-        gameFrame.render(display, screen, player1, player2, entities, camera, swords)
+
+        gameFrame.render(display, screen, player1, player2, entities, camera, swords, current_map._assets_dict, entity_colors)
+
 
 #if player1.getPlayerState("ghost_counter") >= 0 and player1.getPlayerState("ghost_counter") < 11:
