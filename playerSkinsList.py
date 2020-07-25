@@ -57,6 +57,9 @@ def getSkin(character_type):
             "dead_r_2": "Resources/Images/MontoyaDeath2R.png",
             "dead_l_3": "Resources/Images/MontoyaDeath3L.png",
             "dead_r_3": "Resources/Images/MontoyaDeath3R.png",
+            "ghost_run_l": "Resources/Images/MontoyaGhostRunL.png",
+            "ghost_run_r": "Resources/Images/MontoyaGhostRunR.png",
+
             "ghost_run_l_1": "Resources/Images/MontoyaGhostRun1L.png",
             "ghost_run_r_1": "Resources/Images/MontoyaGhostRun1R.png",
             "ghost_run_l_2": "Resources/Images/MontoyaGhostRun2L.png",
@@ -84,12 +87,16 @@ def getSkin(character_type):
             "ghost_dead_l_3": "Resources/Images/MontoyaGhostDeath3L.png",
             "ghost_dead_r_3": "Resources/Images/MontoyaGhostDeath3R.png",
             
-            "run_l_1_nosword": "Resources/Images/MontoyaRun1L_nosword.png",
-            "run_r_1_nosword": "Resources/Images/MontoyaRun1R_nosword.png",
-            "run_l_2_nosword": "Resources/Images/MontoyaRun2L_nosword.png",
-            "run_r_2_nosword": "Resources/Images/MontoyaRun2R_nosword.png",
-            "run_l_3_nosword": "Resources/Images/MontoyaRun3L_nosword.png",
-            "run_r_3_nosword": "Resources/Images/MontoyaRun3R_nosword.png",
+
+            "run_l_nosword": "Resources/Images/MontoyaRun1L_nosword.png",
+            "run_r_nosword": "Resources/Images/MontoyaRun1R_nosword.png",
+            "run_l_nosword_1": "Resources/Images/MontoyaRun1L_nosword.png",
+            "run_r_nosword_1": "Resources/Images/MontoyaRun1R_nosword.png",
+            "run_l_nosword_2": "Resources/Images/MontoyaRun2L_nosword.png",
+            "run_r_nosword_2": "Resources/Images/MontoyaRun2R_nosword.png",
+            "run_l_nosword_3": "Resources/Images/MontoyaRun3L_nosword.png",
+            "run_r_nosword_3": "Resources/Images/MontoyaRun3R_nosword.png",
+
             "sword_high_l_nosword": "Resources/Images/MontoyaHighL_nosword.png",
             "sword_high_r_nosword": "Resources/Images/MontoyaHighR_nosword.png",
             "sword_med_l_nosword": "Resources/Images/MontoyaMedL_nosword.png",

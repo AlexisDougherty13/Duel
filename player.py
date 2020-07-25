@@ -53,6 +53,7 @@ class Player(pygame.sprite.DirtySprite):
             "count_until_turn_around" : 0,
             "sword": True,
             "sword_moving": True,
+            "run_counter": 0,
             "win_direction": win_direction #-1 left, 1 right
         }
         self._image_dict = image_dict
@@ -135,7 +136,7 @@ class Player(pygame.sprite.DirtySprite):
         self.setPlayerState("on_ground", False)
 
     def update(self):
-        print(self.getSprite())
+        #print(self.getSprite())
         self.image = pygame.image.load(self.getSprite())
         self.dirty = 1  # force redraw from image, since we moved the sprite rect
 
@@ -194,7 +195,16 @@ class Player(pygame.sprite.DirtySprite):
             if self._player_state["ghost_counter"] == 301:
                 self._player_state["ghost"] = True
             if self._player_state["running"]:
-                return self._image_dict[front + "run" + append]
+                self._player_state["run_counter"] = self._player_state["run_counter"] + 1
+                if self._player_state["run_counter"] == 22:
+                    self._player_state["run_counter"] = 1
+                if self._player_state["run_counter"] > 14:
+                    run = "_1"
+                elif self._player_state["run_counter"] > 7:
+                    run = "_2"
+                else:
+                    run = "_3"
+                return self._image_dict[front + "run" + append + run]
             if self._player_state["jumping"]:
                 return self._image_dict[front + "jump" + append]
             if self._player_state["ducking"]:
