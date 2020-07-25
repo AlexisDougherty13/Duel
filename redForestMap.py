@@ -9,7 +9,12 @@ class RedForestMap(Map):
     """Class representing a Specific Map
         """
     def __init__(self):
-        Map.__init__(self, 1000, 600, -50, 100, 675, 100, "Resources/Images/UF_Background.png", "assets_dict") #TODO: implement Assets Dict
+
+        assets_dict = {
+            "Tile": "Resources/Images/RedForestTile.png",
+            "Background": "Resources/Images/ScaledBackgroundAutumnForest.png"
+        }
+        Map.__init__(self, 1000, 600, -50, 100, 675, 100, "Resources/Images/ScaledBackgroundAutumnForest.png", assets_dict) #TODO: implement Assets Dict
         self.setCollidableEntities()
         self.songName = "Red Forest"
 
@@ -30,9 +35,18 @@ class RedForestMap(Map):
                 x = x + 1
             y = y + 1
         file.close()
+
+       # floor_rect = Rect(-5000, 500, 11000, 50)
+       # self._collidable_entities.append(floor_rect)
+
         
         self.color_list = color_list
         self._collidable_entities = entities
        
+
+        player2_flag = Rect(-1000, 275, 225, 225)
+        self._collidable_entities.append(player2_flag)
+        player1_flag = Rect(2000, 275, 225, 225)
+        self._collidable_entities.append(player1_flag)
 
    # collidable_entities = property(getCollidableEntities, setCollidableEntities)

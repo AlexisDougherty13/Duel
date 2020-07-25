@@ -135,6 +135,7 @@ class Player(pygame.sprite.DirtySprite):
         self.setPlayerState("on_ground", False)
 
     def update(self):
+        print(self.getSprite())
         self.image = pygame.image.load(self.getSprite())
         self.dirty = 1  # force redraw from image, since we moved the sprite rect
 
@@ -268,18 +269,32 @@ class Player(pygame.sprite.DirtySprite):
     def test_collision_Y(self, entities):
         collision_list = []
         self.rect.y += (self.getPlayerState("y_velocity"))
+        length = len(entities)
         for objects in entities:
             if self.getCollisionRect().colliderect(objects):
-                collision_list.append(objects)
+                if length <= 2:
+                    pass
+                else:
+                    collision_list.append(objects)
+            length = length - 1
         self.rect.y -= (self.getPlayerState("y_velocity"))
         return collision_list
 
     def test_collision_X(self, entities):
         collision_list = []
         self.rect.x += (self.getPlayerState("x_velocity"))
+        length = len(entities)
         for objects in entities:
             if self.getCollisionRect().colliderect(objects):
-                collision_list.append(objects)
+                if length == 2:
+                    if self.getPlayerState("win_direction") == -1 and not self.getPlayerState("ghost"): #if this is the second to last object (being player 2s flag) and you are player 2
+                        print("Player Two Wins!")
+                elif length == 1:
+                    if self.getPlayerState("win_direction") == 1 and not self.getPlayerState("ghost"): #if this is the last object (being player 1s flag) and you are player 1
+                        print("Player One Wins!")
+                else:
+                    collision_list.append(objects)
+            length = length - 1
         self.rect.x -= (self.getPlayerState("x_velocity"))
         return collision_list
 

@@ -346,6 +346,8 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
 
         #render
         #gameFrame.render(my_sprites, draw_buffer)
-        gameFrame.render(display, screen, player1, player2, entities, camera, swords, entity_colors)
+
+        gameFrame.render(display, screen, player1, player2, entities, camera, swords, current_map._assets_dict, entity_colors)
+
 
 #if player1.getPlayerState("ghost_counter") >= 0 and player1.getPlayerState("ghost_counter") < 11:

@@ -2,11 +2,14 @@ import pygame
 import os
 from camera import Camera
 
-def render(display, screen, player1, player2, entities, camera, swords, entity_color):
+def render(display, screen, player1, player2, entities, camera, swords, assets, entity_color):
     imagesDict = dict()
+
 
     brown = (139,69,19)
     sandy = (255, 255, 255)
+def render(display, screen, player1, player2, entities, camera, swords, assets):
+
 
     if camera.getActive() == True:
         offset = camera.getOffset()
@@ -15,17 +18,24 @@ def render(display, screen, player1, player2, entities, camera, swords, entity_c
    
     #display.fill((146,244,255))
 
-    display.blit(getImage("Resources/Images/ScaledBackgroundAutumnForest.png", imagesDict), (0, 0))
+    display.blit(getImage(assets["Background"], imagesDict), (0, 0))
 
     display.blit(player1.image, (player1.rect.x - offset[0], player1.rect.y - offset[1]))
     display.blit(player2.image, (player2.rect.x - offset[0], player2.rect.y - offset[1]))
 
     i = 0
     for rec in entities:
+
         if entity_color[i] == 2:
             newRect = pygame.Rect(rec.left - offset[0], rec.top - offset[1], rec.width, rec.height)
             pygame.draw.rect(display, brown, newRect)
         if entity_color[i] == 3:
+
+      #  if count >=3: # this should be adjusted to account for only the last two objects, being the flags
+      #      newRect = pygame.Rect(rec.left - offset[0], rec.top - offset[1], rec.width, rec.height)
+            #display.blit(getImage("Resources/Images/tempFlag.jpg", imagesDict), (newRect.x - offset[0], newRect.y - offset[1]))
+       # elif count >= 1:
+
             newRect = pygame.Rect(rec.left - offset[0], rec.top - offset[1], rec.width, rec.height)
             pygame.draw.rect(display, sandy, newRect)
         

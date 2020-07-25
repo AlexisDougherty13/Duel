@@ -1,15 +1,26 @@
+
+"""
+.. module:: map
+.. synopsis: module for a map object
+"""
 from map import Map
 from pygame import Rect
 
-class RedForestMap(Map):
+
+class DesolateDesertMap(Map):
     """Class representing a Specific Map
         """
     def __init__(self):
-        Map.__init__(self, 1000, 600, -50, 100, 675, 100, "Resources/Images/UF_Background.png", "assets_dict") #TODO: implement Assets Dict
+        assets_dict = {
+            "Tile": "Resources/Images/DesolateDesertTile.png",
+            "Background": "Resources/Images/DesolateDesertBG.png"
+        }
+        Map.__init__(self, 1000, 600, 450, 300, 550, 300, "Resources/Images/DesolateDesertBG.png",
+                     assets_dict)  # TODO: implement Assets Dict
         self.setCollidableEntities()
-        #self.songName = "Red Forest"
-
-    def setCollidableEntities(self):
+        self.songName = "Desolate Desert"
+        
+     def setCollidableEntities(self):
         color_list = []
         entities = []
         file = open("redForestMap.txt")
@@ -29,6 +40,5 @@ class RedForestMap(Map):
         
         self.color_list = color_list
         self._collidable_entities = entities
-       
 
    # collidable_entities = property(getCollidableEntities, setCollidableEntities)
