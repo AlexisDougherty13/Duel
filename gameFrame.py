@@ -3,18 +3,19 @@ import os
 from camera import Camera
 
 def render(display, screen, player1, player2, entities, camera, swords, entity_color):
-    #imagesDict = dict()
+    imagesDict = dict()
 
     brown = (139,69,19)
+    sandy = (255, 255, 255)
 
     if camera.getActive() == True:
         offset = camera.getOffset()
     else:
         offset = [0,0]
    
-    display.fill((146,244,255))
+    #display.fill((146,244,255))
 
-    #display.blit(getImage("Resources/Images/ScaledBackgroundAutumnForest.png", imagesDict), (0, 0))
+    display.blit(getImage("Resources/Images/ScaledBackgroundAutumnForest.png", imagesDict), (0, 0))
 
     display.blit(player1.image, (player1.rect.x - offset[0], player1.rect.y - offset[1]))
     display.blit(player2.image, (player2.rect.x - offset[0], player2.rect.y - offset[1]))
@@ -24,6 +25,10 @@ def render(display, screen, player1, player2, entities, camera, swords, entity_c
         if entity_color[i] == 2:
             newRect = pygame.Rect(rec.left - offset[0], rec.top - offset[1], rec.width, rec.height)
             pygame.draw.rect(display, brown, newRect)
+        if entity_color[i] == 3:
+            newRect = pygame.Rect(rec.left - offset[0], rec.top - offset[1], rec.width, rec.height)
+            pygame.draw.rect(display, sandy, newRect)
+        
         i = i + 1
        
     for sword in swords:
