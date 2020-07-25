@@ -9,22 +9,40 @@ class RedForestMap(Map):
     """Class representing a Specific Map
         """
     def __init__(self):
+
         assets_dict = {
             "Tile": "Resources/Images/RedForestTile.png",
             "Background": "Resources/Images/ScaledBackgroundAutumnForest.png"
         }
-        Map.__init__(self, 1000, 600, 450, 300, 550, 300, "Resources/Images/ScaledBackgroundAutumnForest.png", assets_dict) #TODO: implement Assets Dict
+        Map.__init__(self, 1000, 600, -50, 100, 675, 100, "Resources/Images/ScaledBackgroundAutumnForest.png", assets_dict) #TODO: implement Assets Dict
         self.setCollidableEntities()
         self.songName = "Red Forest"
 
     def setCollidableEntities(self):
-        floor_rect = Rect(-5000, 500, 11000, 50)
-        self._collidable_entities.append(floor_rect)
+        color_list = []
+        entities = []
+        file = open("redForestMap.txt")
+        y = 0
+        for line in file:
+            x = 0
+            for num in line:
+                if num == "1":
+                    entities.append(Rect((x * 50) - 6000, y * 50, 50, 50))
+                    color_list.append(1)
+                elif num == "2":
+                    entities.append(Rect((x * 50) - 6000, y * 50, 50, 50))
+                    color_list.append(2)
+                x = x + 1
+            y = y + 1
+        file.close()
+
+       # floor_rect = Rect(-5000, 500, 11000, 50)
+       # self._collidable_entities.append(floor_rect)
+
         
-        block_rect = Rect(100, 400, 100, 100)
-        self._collidable_entities.append(block_rect)
-        block2_rect = Rect(800, 400, 100, 100)
-        self._collidable_entities.append(block2_rect)
+        self.color_list = color_list
+        self._collidable_entities = entities
+       
 
         player2_flag = Rect(-1000, 275, 225, 225)
         self._collidable_entities.append(player2_flag)
