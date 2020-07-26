@@ -230,7 +230,7 @@ def getSkin(character_type):
             "ghost_thrust_low_l_nosword": "Resources/Images/ZorroGhostLowThrustL_nosword.png",
             "ghost_thrust_low_r_nosword": "Resources/Images/ZorroGhostLowThrustR_nosword.png"
         }
-    elif character_type == "King Arthur":
+    elif character_type == "KingArthur":
         images_dictionary = {
             "flag": "Resources/Images/KingArthurFlag.png",
             "sword": "Resources/Images/KingArthurSword.png",

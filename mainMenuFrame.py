@@ -74,6 +74,12 @@ menu_buttons = {
     "p2_preview": menuButtons.Button("Resources/Images/MontoyaMedL.png", 0, 0, 269, 140),
 }
 
+
+player_skins = list(["Montoya",
+                   "Zorro",
+                   "KingArthur"
+                   ])
+
 #Remember to change game state booleans when going between menus.
 game_state = {
     "start": False,
@@ -93,18 +99,16 @@ game_state = {
     "p2_left": False,
     "p2_right": False,
     "map_left": False,
-    "map_right": False
+    "map_right": False,
+    "p1_skin": player_skins[0],
+    "p2_skin": player_skins[0],
+    "map_selection": 1
 }
 
-player_skins = list(["Montoya",
-                   "Zoro"
-                   ])
 
 images_dictionary = dict()
 pygame.font.init()
-p1_skin_selection = player_skins[0]
-p2_skin_selection = player_skins[0]
-map_selection = 1
+
 
 def mainMenu(screen, audio):
     #Menu loop
@@ -168,8 +172,11 @@ def pregameMenu(screen, audio):
     #String values to change based on user selection. Default values initially.
     p1_skin_selection = player_skins[0]
     p2_skin_selection = player_skins[0]
+    skin_count_1 = 0
+    skin_count_2 = 0
     map_selection = 1
     map_title = pygame.font.Font("Resources/Lobster.ttf", 42)
+    player_title = pygame.font.Font("Resources/Lobster.ttf", 36)
 
     while True:
         screen.fill((0, 0, 0))
@@ -203,19 +210,22 @@ def pregameMenu(screen, audio):
 
         displayMap(screen, map_selection)
         printMapTitle(screen, map_selection, map_title)
-        displayPlayer(screen, p1_skin_selection, 1)
-        displayPlayer(screen, p2_skin_selection, 2)
+        displayPlayer(screen, p1_skin_selection, 1, player_title)
+        displayPlayer(screen, p2_skin_selection, 2, player_title)
 
         renderMenuButtons("Pregame", screen)
         pygame.display.update()
 
         #All in one function that checks arrow state and changes selections accordingly.
-        p1_skin_selection, p2_skin_selection, map_selection = checkArrowStates(p1_skin_selection, p2_skin_selection, map_selection)
+        p1_skin_selection, p2_skin_selection, map_selection, skin_count_1, skin_count_2 = checkArrowStates(p1_skin_selection, p2_skin_selection, map_selection, skin_count_1, skin_count_2)
 
         if game_state["start"]:
             pygame.time.delay(400)
             game_state["start"] = False
             game_state["pregame"] = False  # Reset game states to false.
+            game_state["p1_skin"] = p1_skin_selection
+            game_state["p2_skin"] = p2_skin_selection
+            game_state["map_selection"] = map_selection
             gameEngine.startGame(screen, map_selection, p1_skin_selection, p2_skin_selection, audio)
         if game_state["back"]:
             pygame.time.delay(400)
@@ -395,7 +405,7 @@ def pauseMenu(screen, p1_meta_info, p2_meta_info, audio):
             pygame.time.delay(400)
             game_state["restart"] = False
             game_state["paused"] = False
-            gameEngine.startGame(screen, map_selection, p1_skin_selection, p2_skin_selection, audio)
+            gameEngine.startGame(screen, game_state["map_selection"], game_state["p1_skin"], game_state["p2_skin"], audio)
         #if game_state["settings"]:
             #pygame.time.delay(400)
             #game_state["settings"] = False
@@ -470,7 +480,7 @@ def checkCollision(button_name,short_name, state, mx, my, m1_clicked):
     else:
         menu_buttons[button_name].sprite = button_sprites[short_name + "_unhighl"]
 
-#        arrowCollision("p1_right_button", "small_right", "p1_right", mx, my, m1_clicked)
+#A function that utilizes sprite masks in order to ignore the transparent spaces around the arrow when checking for collision.
 def arrowCollision(button_name, short_name, state, mx, my, m1_clicked):
     pos_in_mask = (mx - menu_buttons[button_name].button_rect.x, my - menu_buttons[button_name].button_rect.y)
     if menu_buttons[button_name].button_rect.collidepoint(mx,my) and menu_buttons[button_name].sprite_mask.get_at(pos_in_mask):
@@ -480,29 +490,40 @@ def arrowCollision(button_name, short_name, state, mx, my, m1_clicked):
             menu_buttons[button_name].sprite = button_sprites[short_name + "_clicked"]
     else:
         menu_buttons[button_name].sprite = button_sprites[short_name + "_unhighl"]
-
-def checkArrowStates(p1_skin_selection, p2_skin_selection, map_selection):
+#Function for editing game_state when players interact with any of the arrows on the pregame screen. Built using input, modifying input, then returning it to pregame loop.
+def checkArrowStates(p1_skin_selection, p2_skin_selection, map_selection, skin_count_1, skin_count_2):
     if game_state["p1_left"]:
+        pygame.time.delay(350)
+        p1_skin_selection, skin_count_1 = changeSkin(p1_skin_selection, skin_count_1, "left")
         game_state["p1_left"] = False
     if game_state["p1_right"]:
+        pygame.time.delay(350)
+        p1_skin_selection, skin_count_1 = changeSkin(p1_skin_selection, skin_count_1, "right")
         game_state["p1_right"] = False
     if game_state["p2_left"]:
+        pygame.time.delay(350)
+        p2_skin_selection, skin_count_2 = changeSkin(p2_skin_selection, skin_count_2, "left")
         game_state["p2_left"] = False
     if game_state["p2_right"]:
+        pygame.time.delay(350)
+        p2_skin_selection, skin_count_2 = changeSkin(p2_skin_selection, skin_count_2, "right")
         game_state["p2_right"] = False
     if game_state["map_left"]:
+        pygame.time.delay(350)
         map_selection -= 1
         if map_selection == -1:
             map_selection = 2
         game_state["map_left"] = False
     if game_state["map_right"]:
+        pygame.time.delay(350)
         map_selection += 1
         if map_selection == 3:
             map_selection = 0
         game_state["map_right"] = False
 
-    return p1_skin_selection, p2_skin_selection, map_selection
+    return p1_skin_selection, p2_skin_selection, map_selection, skin_count_1, skin_count_2
 
+#Method for changing the background displayed on the pregame menu when map arrows are clicked.
 def displayMap(screen, map_selection):
     if map_selection == 1:
         screen.blit(gameFrame.getImage("Resources/Images/UF_Background.png", images_dictionary), (0,0))
@@ -511,18 +532,27 @@ def displayMap(screen, map_selection):
     elif map_selection == 0:
         screen.blit(gameFrame.getImage("Resources/Images/Random.png", images_dictionary), (60, 0))
 
-
-def displayPlayer(screen, skin_selection, player_number):
+#A method used to center the player sprites and display them on the pregame screen
+def displayPlayer(screen, skin_selection, player_number, player_title):
     if player_number == 1:
         image_path = "Resources/Images/" + skin_selection + "MedR.png"
         menu_buttons["p1_preview"].sprite = image_path
         menu_buttons["p1_preview"].button_rect.center = (100, 225)
         screen.blit(gameFrame.getImage(image_path, images_dictionary), (menu_buttons["p1_preview"].button_rect.x, menu_buttons["p1_preview"].button_rect.y))
+        player_text = player_title.render("Player 1", True, (255,255,255))
+        player_text_rect = player_text.get_rect()
+        player_text_rect.center = (100, 320)
+        screen.blit(player_text,player_text_rect)
+
     else:
         image_path = "Resources/Images/" + skin_selection + "MedL.png"
         menu_buttons["p2_preview"].sprite = image_path
         menu_buttons["p2_preview"].button_rect.center = (900, 225)
         screen.blit(gameFrame.getImage(image_path, images_dictionary), (menu_buttons["p2_preview"].button_rect.x, menu_buttons["p2_preview"].button_rect.y))
+        player_text = player_title.render("Player 2", True, (255,255,255))
+        player_text_rect = player_text.get_rect()
+        player_text_rect.center = (900, 320)
+        screen.blit(player_text,player_text_rect)
 
 def printMapTitle(screen, map_selection, map_title):
     if map_selection == 1:
@@ -535,3 +565,24 @@ def printMapTitle(screen, map_selection, map_title):
     map_text_rect = map_text.get_rect()
     map_text_rect.center = (500, 50)
     screen.blit(map_text, map_text_rect)
+
+#This method ensures the player can infinitely swap skins using either left or right arrow.
+def changeSkin(current_skin, skin_count, arrow_direction):
+    if arrow_direction == "left":
+        if skin_count > 0:
+            skin_count -= 1
+        elif skin_count == 0:
+            skin_count = len(player_skins) - 1
+    elif arrow_direction == "right":
+        if skin_count < 2:
+            skin_count += 1
+        elif skin_count == 2:
+            skin_count = 0
+
+
+    current_skin = player_skins[skin_count]
+
+    return current_skin, skin_count
+
+
+
