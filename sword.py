@@ -82,8 +82,8 @@ class Sword(pygame.sprite.DirtySprite):
         collision_list = []
         self.rect.y += (self.getState("y_velocity"))
         for objects in entities:
-            if self.getCollisionRect().colliderect(objects):
-                collision_list.append(objects)
+            if self.getCollisionRect().colliderect(objects.getRect()) and not objects.getEffects()["Invisible"]:
+                collision_list.append(objects.getRect())
         self.rect.y -= (self.getState("y_velocity"))
         return collision_list
 
@@ -91,8 +91,8 @@ class Sword(pygame.sprite.DirtySprite):
         collision_list = []
         self.rect.x += (self.getState("x_velocity"))
         for objects in entities:
-            if self.getCollisionRect().colliderect(objects):
-                collision_list.append(objects)
+            if self.getCollisionRect().colliderect(objects.getRect()) and not objects.getEffects()["Invisible"]:
+                collision_list.append(objects.getRect())
         self.rect.x -= (self.getState("x_velocity"))
         return collision_list
 

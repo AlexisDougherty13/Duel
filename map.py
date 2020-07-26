@@ -3,7 +3,7 @@
 .. synopsis: module for a map object
 """
 from pygame import Rect
-
+from tile import Tile
 
 class Map():
     """Class representing a General Map's attributes, this is applied to all maps, this is an abstract class
@@ -18,7 +18,7 @@ class Map():
            :param floor_height: a set height for the floor
         """
 
-    def __init__(self, x_length, y_length, p1_init_x_pos, p1_init_y_pos, p2_init_x_pos, p2_init_y_pos, background, assets_dict):
+    def __init__(self, x_length, y_length, p1_init_x_pos, p1_init_y_pos, p2_init_x_pos, p2_init_y_pos, assets_dict, TxtFileName):
         self._x_length = x_length
         self._y_length = y_length
         self._p1_init_pos = {
@@ -29,9 +29,9 @@ class Map():
             "X": p2_init_x_pos,
             "Y": p2_init_y_pos
         }
-        self._background = background
-        self._assets_dict = assets_dict
+        self.assets_dict = assets_dict
         self._collidable_entities = []
+        self.setCollidableEntities(TxtFileName)
 
     # abstract method
     ##@abstractmethod
@@ -72,14 +72,50 @@ class Map():
         }
 
     def getBackground(self):
-        return self._background
+        return self._assets_dict["Background"]
 
-    def setBackground(self, new_background):
-        self._background = new_background
+    def setCollidableEntities(self, TxtFileName):
+        entities = []
+        file = open(TxtFileName)
+        y = 0
+        for line in file:
+            x = 0
+            for num in line:
+                effects = {
+                    "Kill": False,
+                    "Invisible": False,
+                    "Slow": False,
+                    "Jump": False,
+                    "Platform": False,
+                    "Speed": False
+                }
+                if num == "1": # Map Floor Tile
+                    entities.append(Tile((x * 50) - 6000, y * 50, 50, 50, self.assets_dict["Tile"], effects))
 
-    #collidable_entities = property(getCollidableEntities, setCollidableEntities)
+                elif num == "2": # Invisible Tile
+                    effects["Invisible"] = True
+                    entities.append(Tile((x * 50) - 6000, y * 50, 50, 50, self.assets_dict["Tile"], effects))
+
+                elif num == "3": # Invisible Kill Tile
+                    effects["Invisible"] = True
+                    effects["Kill"] = True
+                    entities.append(Tile((x * 50) - 6000, y * 50, 50, 50, self.assets_dict["Tile"], effects))
+
+                elif num == "4": # Spike  Tile
+                    effects["Kill"] = True
+                    entities.append(Tile((x * 50) - 6000, y * 50, 50, 50, self.assets_dict["Spike"], effects))
+
+                elif num == "5": # Platform
+                    effects["Platform"] = True
+                    entities.append(Tile((x * 50) - 6000, y * 50, 50, 50, self.assets_dict["Tile"], effects))
+
+                x = x + 1
+            y = y + 1
+        file.close()
+        self._collidable_entities = entities
+
+
     x_length = property(getXLength, setXLength)
     y_length = property(getYLength, setYLength)
     p1_init_pos = property(getP1InitialPosition, setP1InitialPosition)
     p2_init_pos = property(getP2InitialPosition, setP2InitialPosition)
-    background = property(getBackground, setBackground)
