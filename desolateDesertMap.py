@@ -20,7 +20,7 @@ class DesolateDesertMap(Map):
         self.setCollidableEntities()
         self.songName = "Desolate Desert"
         
-     def setCollidableEntities(self):
+    def setCollidableEntities(self):
         color_list = []
         entities = []
         file = open("redForestMap.txt")

@@ -2,14 +2,12 @@ import pygame
 import os
 from camera import Camera
 
+
 def render(display, screen, player1, player2, entities, camera, swords, assets, entity_color):
     imagesDict = dict()
 
-
-    brown = (139,69,19)
+    brown = (139, 69, 19)
     sandy = (255, 255, 255)
-def render(display, screen, player1, player2, entities, camera, swords, assets):
-
 
     if camera.getActive() == True:
         offset = camera.getOffset()
