@@ -107,6 +107,7 @@ p2_skin_selection = player_skins[0]
 map_selection = 1
 
 def mainMenu(screen, audio):
+    audio.changeSong("Main Menu")
     #Menu loop
     while True:
         screen.fill((0,0,0)) #Temporary black background

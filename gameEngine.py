@@ -44,7 +44,6 @@ p2_meta_info = {
 }
 
 def mainMenu(screen , audio):  # TODO Call Main Menu Frame instead and have it call startGame
-    audio.changeSong("Main Menu")
     mainMenuFrame.mainMenu(screen, audio)
 
 def adjustPlayer(player, aspect, value):
@@ -78,10 +77,8 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
     current_map = mapSelectionList.selectMap(map_selection)  # returns a child of the map class
 
     entities = current_map.getCollidableEntities()
-    entity_colors = current_map.color_list
     left_wall = Rect(-20, 0, 20, 1000)
     right_wall = Rect(-20, 0, 20, 1000)
-
 
     swords = []
 
@@ -91,8 +88,6 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
     display, camera = gameFrame.init(current_map)
     
     clock = pygame.time.Clock()
-
-    print("starting")
 
     active_match = True
 
@@ -255,12 +250,10 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
             player1.setPlayerState("x_velocity", 0)
             player2.setPlayerState("x_velocity", 0)
             if player1.getPlayerState("sword_moving") and player2.getPlayerState("thrusting"):
-                print("player 1 disarmed player 2")
                 player2.setPlayerState("sword", False)
                 swordInfo = getSwordDisarm(player2)
                 swords.append(Sword(swordInfo[0], swordInfo[1], 0, player2.getPlayerState("direction_facing")))
             elif player2.getPlayerState("sword_moving") and player1.getPlayerState("thrusting"):
-                print("player 2 disarmed player 1")
                 player1.setPlayerState("sword", False)
                 swordInfo = getSwordDisarm(player1)
                 swords.append(Sword(swordInfo[0], swordInfo[1], 0, player1.getPlayerState("direction_facing")))                
@@ -268,16 +261,15 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
                 if player1.getDirection() == "left":
                     player1.moveRight()
                     player2.moveLeft()
-                    player1.move(entities)
-                    player2.move(entities)
+                    player1.move(entities, camera)
+                    player2.move(entities, camera)
                 else:
                     player1.moveLeft()
                     player2.moveRight()
-                    player1.move(entities)
-                    player2.move(entities)
+                    player1.move(entities, camera)
+                    player2.move(entities, camera)
         else:
             if player1body.colliderect(getSwordLine(player2)) and player2body.colliderect(getSwordLine(player1)):
-                print("players both died")
                 player1.setPlayerState("ghost_counter", 0)
                 player2.setPlayerState("ghost_counter", 0)
                 camera.setActive(False)
@@ -285,13 +277,13 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
 
                 #screen locked in place
             elif player1body.colliderect(getSwordLine(player2)):
-                print("player 1 had an ouchie")
                 player1.setPlayerState("ghost_counter", 0) #Should start a counter for each frame of death animation, followed by a respawn delay, followed by drawing them as a ghost in that spot
                 player2.setPlayerState("ghost_counter", -1)
                 player2.setPlayerState("ghost", False)
                 camera.setActive(True)
                 camera.setTarget(player2)
                 player1.setPlayerState("sword", True)
+
                 #screen follows player 2
             elif player2body.colliderect(getSwordLine(player1)):
                 print("player 2 had an ouchie")
@@ -335,8 +327,8 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
             #print("woooooowie 2")
             player2.respawn(player1.getXPos())
 
-        player1.move(entities)
-        player2.move(entities)
+        player1.move(entities, camera)
+        player2.move(entities, camera)
 
         for sword in swords:
             if not sword.getState("on_ground"):
@@ -347,7 +339,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
         #render
         #gameFrame.render(my_sprites, draw_buffer)
 
-        gameFrame.render(display, screen, player1, player2, entities, camera, swords, current_map._assets_dict, entity_colors)
+        gameFrame.render(display, screen, player1, player2, entities, camera, swords, current_map.assets_dict)
 
 
 #if player1.getPlayerState("ghost_counter") >= 0 and player1.getPlayerState("ghost_counter") < 11:

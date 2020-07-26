@@ -1,18 +1,15 @@
 import pygame
 import os
 from camera import Camera
+from tile import Tile
 
 
-def render(display, screen, player1, player2, entities, camera, swords, assets, entity_color):
+def render(display, screen, player1, player2, entities, camera, swords, assets):
     imagesDict = dict()
 
-    brown = (139, 69, 19)
-    sandy = (255, 255, 255)
 
-    if camera.getActive() == True:
-        offset = camera.getOffset()
-    else:
-        offset = [0,0]
+    offset = camera.getOffset()
+
    
     #display.fill((146,244,255))
 
@@ -21,23 +18,9 @@ def render(display, screen, player1, player2, entities, camera, swords, assets, 
     display.blit(player1.image, (player1.rect.x - offset[0], player1.rect.y - offset[1]))
     display.blit(player2.image, (player2.rect.x - offset[0], player2.rect.y - offset[1]))
 
-    i = 0
-    for rec in entities:
-
-        if entity_color[i] == 2:
-            newRect = pygame.Rect(rec.left - offset[0], rec.top - offset[1], rec.width, rec.height)
-            pygame.draw.rect(display, brown, newRect)
-        if entity_color[i] == 3:
-
-      #  if count >=3: # this should be adjusted to account for only the last two objects, being the flags
-      #      newRect = pygame.Rect(rec.left - offset[0], rec.top - offset[1], rec.width, rec.height)
-            #display.blit(getImage("Resources/Images/tempFlag.jpg", imagesDict), (newRect.x - offset[0], newRect.y - offset[1]))
-       # elif count >= 1:
-
-            newRect = pygame.Rect(rec.left - offset[0], rec.top - offset[1], rec.width, rec.height)
-            pygame.draw.rect(display, sandy, newRect)
-        
-        i = i + 1
+    for entity in entities:
+        if not entity.getEffects()["Invisible"]:
+            display.blit(getImage(entity.getImagePath(), imagesDict), (entity.getRect().left - offset[0], entity.getRect().top - offset[1]))
        
     for sword in swords:
         display.blit(pygame.transform.rotate(sword.image, sword.getState("current_r")), (sword.rect.x - offset[0], sword.rect.y - offset[1]))
