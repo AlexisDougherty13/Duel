@@ -7,7 +7,8 @@ class Camera:
       self._active = False
 
    def getOffset(self):
-      self._offset[0] += (self._target.rect.x - self._offset[0] - 370)/20
+      if(self._active):
+         self._offset[0] += (self._target.rect.x - self._offset[0] - 370)/20
       return self._offset
 
    def setTarget(self, target):
@@ -18,5 +19,8 @@ class Camera:
    
    def getActive(self):
       return self._active
+
+   def getTarget(self):
+      return self._target
 	
 #Source: https://www.youtube.com/watch?v=5q7tmIlXROg&t=262s

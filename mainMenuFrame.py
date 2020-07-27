@@ -111,6 +111,7 @@ pygame.font.init()
 
 
 def mainMenu(screen, audio):
+    audio.changeSong("Main Menu")
     #Menu loop
     while True:
         screen.fill((0,0,0)) #Temporary black background
