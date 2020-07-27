@@ -5,12 +5,13 @@
 import pygame
 from pygame import Rect
 import time
+from tile import Tile
 
 # change these
 hit_box_width = 102
 hit_box_height = 140
-image_shift_amount_x = 80  # This variable represents the amount of pixels of whitespace in the X dirrection from the left side of the player
-image_shift_amount_y = 16  # This variable represents the amount of pixels of whitespace in the Y dirrection from the left side of the player
+image_shift_amount_x = 90  # This variable represents the amount of pixels of whitespace in the X dirrection from the left side of the player
+image_shift_amount_y = 12  # This variable represents the amount of pixels of whitespace in the Y dirrection from the left side of the player
 
 
 # 102x203
@@ -53,6 +54,7 @@ class Player(pygame.sprite.DirtySprite):
             "count_until_turn_around" : 0,
             "sword": True,
             "sword_moving": True,
+            "run_counter": 0,
             "win_direction": win_direction #-1 left, 1 right
         }
         self._image_dict = image_dict
@@ -135,6 +137,7 @@ class Player(pygame.sprite.DirtySprite):
         self.setPlayerState("on_ground", False)
 
     def update(self):
+        #print(self.getSprite())
         self.image = pygame.image.load(self.getSprite())
         self.dirty = 1  # force redraw from image, since we moved the sprite rect
 
@@ -193,7 +196,16 @@ class Player(pygame.sprite.DirtySprite):
             if self._player_state["ghost_counter"] == 301:
                 self._player_state["ghost"] = True
             if self._player_state["running"]:
-                return self._image_dict[front + "run" + append]
+                self._player_state["run_counter"] = self._player_state["run_counter"] + 1
+                if self._player_state["run_counter"] == 22:
+                    self._player_state["run_counter"] = 1
+                if self._player_state["run_counter"] > 14:
+                    run = "_1"
+                elif self._player_state["run_counter"] > 7:
+                    run = "_2"
+                else:
+                    run = "_3"
+                return self._image_dict[front + "run" + append + run]
             if self._player_state["jumping"]:
                 return self._image_dict[front + "jump" + append]
             if self._player_state["ducking"]:
@@ -230,7 +242,7 @@ class Player(pygame.sprite.DirtySprite):
         print("count: ", end="")
         print(self.getPlayerState("count_until_turn_around"))
 
-    def move(self, entities): #TODO Check for being stabbed in this method
+    def move(self, entities, camera): #TODO Check for being stabbed in this method
 
         self.setPlayerState("on_ground", False)
         self.setPlayerState("on_right_wall", False)
@@ -243,7 +255,7 @@ class Player(pygame.sprite.DirtySprite):
         if self.getPlayerState("ghost"):
         	ghost_multiplier = 1.5
 
-        collision_list = self.test_collision_X(entities)  # Test all entities on the map for collision with player
+        collision_list = self.test_collision_X(entities,camera)  # Test all entities on the map for collision with player
         self.rect.x += (self.getPlayerState("x_velocity")) * ghost_multiplier
         for objects in collision_list:
             if self.getPlayerState("x_velocity") < 0:  # Moving left
@@ -255,7 +267,7 @@ class Player(pygame.sprite.DirtySprite):
         # Lock player to look at other player when standing still or moving short time.
         # Flip player if they have been moving a certain amount of time.
 
-        collision_list = self.test_collision_Y(entities)
+        collision_list = self.test_collision_Y(entities,camera)
         self.rect.y += (self.getPlayerState("y_velocity"))
         for objects in collision_list:
             if self.getPlayerState("y_velocity") < 0:  # Moving up
@@ -265,21 +277,45 @@ class Player(pygame.sprite.DirtySprite):
                 self.setPlayerState("on_ground", True)
         self.update()  # updates players position
 
-    def test_collision_Y(self, entities):
+    def test_collision_Y(self, entities, camera):
         collision_list = []
         self.rect.y += (self.getPlayerState("y_velocity"))
+        length = len(entities)
         for objects in entities:
-            if self.getCollisionRect().colliderect(objects):
-                collision_list.append(objects)
+            if self.getCollisionRect().colliderect(objects.getRect()):
+                if objects.getEffects()["Kill"] and (self.getPlayerState("ghost_counter")== -1 or self.getPlayerState("ghost_counter")> 301):
+                    if self.getPlayerState("win_direction") == camera.getTarget().getPlayerState("win_direction"):
+                        camera.setActive(False)
+                    self.setPlayerState("ghost_counter", 0)
+                    self.setPlayerState("sword", True)
+                if length <= 2:
+                    pass
+                else:
+                    collision_list.append(objects.getRect())
+            length = length - 1
         self.rect.y -= (self.getPlayerState("y_velocity"))
         return collision_list
 
-    def test_collision_X(self, entities):
+    def test_collision_X(self, entities, camera):
         collision_list = []
         self.rect.x += (self.getPlayerState("x_velocity"))
+        length = len(entities)
         for objects in entities:
-            if self.getCollisionRect().colliderect(objects):
-                collision_list.append(objects)
+            if self.getCollisionRect().colliderect(objects.getRect()):
+                if objects.getEffects()["Kill"]:
+                    if self.getPlayerState("win_direction") == camera.getActive().getPlayerState("win_direction"):
+                        camera.setActive(False)
+                    self.setPlayerState("ghost_counter", 0)
+                    self.setPlayerState("sword", True)
+                if length == 2:
+                    if self.getPlayerState("win_direction") == -1 and not self.getPlayerState("ghost"): #if this is the second to last object (being player 2s flag) and you are player 2
+                        print("Player Two Wins!")
+                elif length == 1:
+                    if self.getPlayerState("win_direction") == 1 and not self.getPlayerState("ghost"): #if this is the last object (being player 1s flag) and you are player 1
+                        print("Player One Wins!")
+                else:
+                    collision_list.append(objects.getRect())
+            length = length - 1
         self.rect.x -= (self.getPlayerState("x_velocity"))
         return collision_list
 

@@ -107,6 +107,7 @@ p2_skin_selection = player_skins[0]
 map_selection = 1
 
 def mainMenu(screen, audio):
+    audio.changeSong("Main Menu")
     #Menu loop
     while True:
         screen.fill((0,0,0)) #Temporary black background
@@ -443,7 +444,8 @@ def renderMenuButtons(menu_name, screen):
 
     elif  menu_name == "Credits":
         #blit credits screen here
-        drawButton(screen, "back_button", 140, 555)
+        screen.blit(gameFrame.getImage("Resources/Images/CreditsSplashScreen.png", images_dictionary), (0, 0))
+        drawButton(screen, "back_button", 130, 560)
 
     elif menu_name == "Pause":
         drawButton(screen, "play_button", 500, 300)
@@ -490,16 +492,14 @@ def checkArrowStates(p1_skin_selection, p2_skin_selection, map_selection):
     if game_state["p2_right"]:
         game_state["p2_right"] = False
     if game_state["map_left"]:
-        if map_selection == 1:
+        map_selection -= 1
+        if map_selection == -1:
             map_selection = 2
-        else:
-            map_selection = 1
         game_state["map_left"] = False
     if game_state["map_right"]:
-        if map_selection == 1:
-            map_selection = 2
-        else:
-            map_selection = 1
+        map_selection += 1
+        if map_selection == 3:
+            map_selection = 0
         game_state["map_right"] = False
 
     return p1_skin_selection, p2_skin_selection, map_selection
@@ -508,7 +508,10 @@ def displayMap(screen, map_selection):
     if map_selection == 1:
         screen.blit(gameFrame.getImage("Resources/Images/UF_Background.png", images_dictionary), (0,0))
     elif map_selection == 2:
-        screen.blit(gameFrame.getImage("Resources/Images/DesertMap.png", images_dictionary), (0, 0))
+        screen.blit(gameFrame.getImage("Resources/Images/DesolateDesertBG.png", images_dictionary), (0, 0))
+    elif map_selection == 0:
+        screen.blit(gameFrame.getImage("Resources/Images/Random.png", images_dictionary), (60, 0))
+
 
 def displayPlayer(screen, skin_selection, player_number):
     if player_number == 1:
@@ -526,8 +529,9 @@ def printMapTitle(screen, map_selection, map_title):
     if map_selection == 1:
         map_name = "Red Forest"
     elif map_selection == 2:
-        map_name = "Desert"
-
+        map_name = "Desolate Desert"
+    elif map_selection == 0:
+        map_name = "Random"
     map_text = map_title.render(map_name, True, (255, 255, 255))
     map_text_rect = map_text.get_rect()
     map_text_rect.center = (500, 50)
