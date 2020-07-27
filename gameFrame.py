@@ -7,12 +7,9 @@ from tile import Tile
 def render(display, screen, player1, player2, entities, camera, swords, assets):
     imagesDict = dict()
 
-
     offset = camera.getOffset()
 
-   
-    #display.fill((146,244,255))
-
+    display.fill((146,244,255))
     display.blit(getImage(assets["Background"], imagesDict), (0, 0))
 
     display.blit(player1.image, (player1.rect.x - offset[0], player1.rect.y - offset[1]))
