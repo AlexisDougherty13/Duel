@@ -275,6 +275,12 @@ class Player(pygame.sprite.DirtySprite):
             elif self.getPlayerState("y_velocity") > 0:  # Moving down
                 self.rect.bottom = objects.top + image_shift_amount_y
                 self.setPlayerState("on_ground", True)
+
+        screen_rect = camera.getScreenRect()
+        offset = camera.getOffset()
+        screen_rect = pygame.Rect(screen_rect.left + offset[0], 0, 1000, 600)
+        self.rect.clamp_ip(screen_rect) # makes player stay on screen
+        
         self.update()  # updates players position
 
     def test_collision_Y(self, entities, camera):
