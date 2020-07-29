@@ -444,11 +444,21 @@ def endGameMenu(screen, audio, winner):
             checkCollision("endgame_back_button", "back", "back", mx, my, m1_clicked)
             checkCollision("restart_button", "restart", "restart", mx, my, m1_clicked)
 
+            #Blit the map that was being played when the victory occurred for added flavor.
+            if game_state["map_selection"] == 0:
+                screen.blit(gameFrame.getImage("Resources/Images/Random.png", images_dictionary), (0, 0))
+            elif game_state["map_selection"] == 1:
+                screen.blit(gameFrame.getImage("Resources/Images/UF_Background.png", images_dictionary), (0, 0))
+            elif game_state["map_selection"] == 2:
+                screen.blit(gameFrame.getImage("Resources/Images/DesolateDesertBG.png" , images_dictionary), (0, 0))
+
+
             #Blit a victory message for the player that won the previous match.
             if winner == 1:
                 screen.blit(gameFrame.getImage("Resources/Images/Player1Victory.png", images_dictionary), (0,0))
             elif winner == 2:
                 screen.blit(gameFrame.getImage("Resources/Images/Player2Victory.png", images_dictionary), (0,0))
+
 
             renderMenuButtons("End Game Menu", screen)
 
@@ -581,7 +591,7 @@ def displayMap(screen, map_selection):
     elif map_selection == 2:
         screen.blit(gameFrame.getImage("Resources/Images/DesolateDesertBG.png", images_dictionary), (0, 0))
     elif map_selection == 0:
-        screen.blit(gameFrame.getImage("Resources/Images/Random.png", images_dictionary), (60, 0))
+        screen.blit(gameFrame.getImage("Resources/Images/Random.png", images_dictionary), (0, 0))
 
 #A method used to center the player sprites and display them on the pregame screen
 def displayPlayer(screen, skin_selection, player_number, player_title):

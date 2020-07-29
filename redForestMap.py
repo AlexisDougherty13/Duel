@@ -17,5 +17,5 @@ class RedForestMap(Map):
             "ZorroFlag": "Resources/Images/ZorroFlag.png",
             "KingFlag": "Resources/Images/KingArthurFlag.png"
         }
-        Map.__init__(self, 1000, 600, -50, 140, 675, 140, assets_dict, "redForestMap.txt")
+        Map.__init__(self, 1000, 600, -130, 140, 675, 140, assets_dict, "redForestMap.txt")
         self.songName = "Red Forest"
