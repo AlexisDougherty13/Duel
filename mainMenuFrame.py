@@ -59,6 +59,7 @@ menu_buttons = {
     "settings_button": menuButtons.Button(button_sprites["settings_unhighl"], 400, 400, 50, 50),
     "exit_button": menuButtons.Button(button_sprites["exit_unhighl"], 400, 500, 220, 50),
     "back_button": menuButtons.Button(button_sprites["back_unhighl"], 400, 500, 220, 50),
+    "endgame_back_button": menuButtons.Button(button_sprites["back_unhighl"], 400, 500, 220, 50),
     "restart_button": menuButtons.Button(button_sprites["restart_unhighl"], 0, 0, 220, 50),
     "tutorial_button": menuButtons.Button(button_sprites["tutorial_unhighl"], 0, 0, 220, 50),
     "credits_button": menuButtons.Button(button_sprites["credits_unhighl"], 0, 0, 220, 50),
@@ -418,6 +419,55 @@ def pauseMenu(screen, p1_meta_info, p2_meta_info, audio):
             game_state["paused"] = False
             mainMenu(screen, audio)
 
+def endGameMenu(screen, audio, winner):
+    # Menu loop
+    while True:
+        screen.fill((0, 0, 0))
+        mx, my = pygame.mouse.get_pos()
+
+        m1_clicked = False
+        # Event loop
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                audio.closeAudioEngine()
+                pygame.mixer.quit()
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    m1_clicked = True
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    game_state["back"] = True
+
+
+            checkCollision("endgame_back_button", "back", "back", mx, my, m1_clicked)
+            checkCollision("restart_button", "restart", "restart", mx, my, m1_clicked)
+
+            #Blit a victory message for the player that won the previous match.
+            if winner == 1:
+                screen.blit(gameFrame.getImage("Resources/Images/Player1Victory.png", images_dictionary), (0,0))
+            elif winner == 2:
+                screen.blit(gameFrame.getImage("Resources/Images/Player2Victory.png", images_dictionary), (0,0))
+
+            renderMenuButtons("End Game Menu", screen)
+
+            pygame.display.update()
+
+
+            if game_state["restart"]:
+                pygame.time.delay(400)
+                game_state["restart"] = False
+                gameEngine.startGame(screen, game_state["map_selection"], game_state["p1_skin"], game_state["p2_skin"], audio)
+            if game_state["back"]:
+                pygame.time.delay(400)
+                game_state["back"] = False
+                mainMenu(screen, audio)
+
+
+
+
+
 
 
 
@@ -448,12 +498,10 @@ def renderMenuButtons(menu_name, screen):
         drawButton(screen, "back_button", 500, 450)
 
     elif menu_name == "Tutorial":
-        #tutorial sprite draw
         screen.blit(gameFrame.getImage("Resources/Images/TutorialScreen.png", images_dictionary), (0,0))
         drawButton(screen, "back_button", 140, 555)
 
     elif  menu_name == "Credits":
-        #blit credits screen here
         screen.blit(gameFrame.getImage("Resources/Images/CreditsSplashScreen.png", images_dictionary), (0, 0))
         drawButton(screen, "back_button", 130, 560)
 
@@ -462,9 +510,11 @@ def renderMenuButtons(menu_name, screen):
         drawButton(screen, "restart_button", 500, 350)
         drawButton(screen, "exit_button", 500, 400)
 
+    elif menu_name == "End Game Menu":
+        drawButton(screen, "endgame_back_button", 150, 530)
+        drawButton(screen, "restart_button", 850, 530)
 
 
-    #Add new menus by adding elif's and creating a function that holds the menu loop.
 
 def drawButton(screen, button_name, x_pos, y_pos): #This function was not working when I implemented it, need to find a better way to simplify rendering function.
     #Center the button on its x and y coordinates to make it flush with the window.
