@@ -56,6 +56,7 @@ class Player(pygame.sprite.DirtySprite):
             "sword_moving": True,
             "run_counter": 0,
             "ignore_gravity" : False,
+            "player_won": False,
             "win_direction": win_direction #-1 left, 1 right
         }
         self._image_dict = image_dict
@@ -318,10 +319,10 @@ class Player(pygame.sprite.DirtySprite):
                     self.setPlayerState("sword", True)
                 elif objects.getEffects()["P2Flag"]:
                     if self.getPlayerState("win_direction") == -1 and not self.getPlayerState("ghost"):
-                        print("Player Two Wins!")
+                        self.setPlayerState("player_won", True)
                 elif objects.getEffects()["P1Flag"]:
                     if self.getPlayerState("win_direction") == 1 and not self.getPlayerState("ghost"):
-                        print("Player One Wins!")
+                        self.setPlayerState("player_won", True)
                 else:
                     collision_list.append(objects.getRect())
             length = length - 1
