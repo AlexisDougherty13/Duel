@@ -322,10 +322,18 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
             player2.setPlayerState("ghost_counter", player2.getPlayerState("ghost_counter") + 1)
         if player1.getPlayerState("ghost_counter") == 300:
             #print("woooooowie")
-            player1.respawn(player2.getXPos())
+            player1.respawn(player2.getXPos(), player2.getYPos())
         if player2.getPlayerState("ghost_counter") == 300:
             #print("woooooowie 2")
-            player2.respawn(player1.getXPos())
+            player2.respawn(player1.getXPos(), player1.getYPos())
+        if player1.getPlayerState("ghost_counter") == 301:
+            player1.setPlayerState("ignore_gravity", True)
+        if player2.getPlayerState("ghost_counter") == 301:
+            player2.setPlayerState("ignore_gravity", True)
+        if player1.getPlayerState("ghost_counter") == 350:
+            player1.setPlayerState("ignore_gravity", False)
+        if player2.getPlayerState("ghost_counter") == 350:
+            player2.setPlayerState("ignore_gravity", False)
 
         player1.move(entities, camera)
         player2.move(entities, camera)

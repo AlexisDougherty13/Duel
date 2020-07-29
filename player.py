@@ -55,6 +55,7 @@ class Player(pygame.sprite.DirtySprite):
             "sword": True,
             "sword_moving": True,
             "run_counter": 0,
+            "ignore_gravity" : False,
             "win_direction": win_direction #-1 left, 1 right
         }
         self._image_dict = image_dict
@@ -128,7 +129,7 @@ class Player(pygame.sprite.DirtySprite):
         self.setPlayerState("y_velocity", self.getPlayerState("y_velocity") + 5 * (time - self.getPlayerState("air_time")))
         if self.getPlayerState("y_velocity") > 50:
             self.setPlayerState("y_velocity", 50)
-        if self.getPlayerState("on_ground"):
+        if self.getPlayerState("on_ground") or self.getPlayerState("ignore_gravity"):
             self.setPlayerState("y_velocity", 0)
 
     def jump(self, time):
@@ -167,11 +168,13 @@ class Player(pygame.sprite.DirtySprite):
         elif self._player_state["sword_height"] > 3:
             self._player_state["sword_height"] = 3
 
-    def respawn(self, start):
+    def respawn(self, startx, starty):
         if self._player_state["win_direction"] == -1:
-            self.rect.x = start + 314
+            self.rect.x = startx + 314
+            self.rect.y = starty - 95
         else:
-            self.rect.x = start - 386
+            self.rect.x = startx - 386
+            self.rect.y = starty - 95
 
     def getSprite(self):
         #print(self._player_state["ghost_counter"])
@@ -309,15 +312,15 @@ class Player(pygame.sprite.DirtySprite):
         for objects in entities:
             if self.getCollisionRect().colliderect(objects.getRect()):
                 if objects.getEffects()["Kill"]:
-                    if self.getPlayerState("win_direction") == camera.getActive().getPlayerState("win_direction"):
+                    if self.getPlayerState("win_direction") == camera.getTarget().getPlayerState("win_direction"):
                         camera.setActive(False)
                     self.setPlayerState("ghost_counter", 0)
                     self.setPlayerState("sword", True)
-                if length == 2:
-                    if self.getPlayerState("win_direction") == -1 and not self.getPlayerState("ghost"): #if this is the second to last object (being player 2s flag) and you are player 2
+                elif objects.getEffects()["P2Flag"]:
+                    if self.getPlayerState("win_direction") == -1 and not self.getPlayerState("ghost"):
                         print("Player Two Wins!")
-                elif length == 1:
-                    if self.getPlayerState("win_direction") == 1 and not self.getPlayerState("ghost"): #if this is the last object (being player 1s flag) and you are player 1
+                elif objects.getEffects()["P1Flag"]:
+                    if self.getPlayerState("win_direction") == 1 and not self.getPlayerState("ghost"):
                         print("Player One Wins!")
                 else:
                     collision_list.append(objects.getRect())

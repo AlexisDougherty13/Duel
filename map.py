@@ -31,7 +31,7 @@ class Map():
         }
         self.assets_dict = assets_dict
         self._collidable_entities = []
-        self.setCollidableEntities(TxtFileName)
+        self.setCollidableEntities(redForestMap.txt)
 
     # abstract method
     ##@abstractmethod
@@ -87,7 +87,9 @@ class Map():
                     "Slow": False,
                     "Jump": False,
                     "Platform": False,
-                    "Speed": False
+                    "Speed": False,
+                    "P1Flag": False,
+                    "P2Flag": False
                 }
                 if num == "1": # Map Floor Tile
                     entities.append(Tile((x * 50) - 6000, y * 50, 50, 50, self.assets_dict["Tile"], effects))
@@ -109,9 +111,19 @@ class Map():
                     effects["Platform"] = True
                     entities.append(Tile((x * 50) - 6000, y * 50, 50, 50, self.assets_dict["Tile"], effects))
 
+                elif num == "B": # Player Two Flag
+                    effects["P2Flag"] = True
+                    entities.append(Tile((x * 50) - 6000, y * 50, 50, 50, self.assets_dict["KingFlag"], effects))
+
+                elif num == "A": # Player One Flag
+                    effects["P1Flag"] = True
+                    entities.append(Tile((x * 50) - 6000, y * 50, 50, 50, self.assets_dict["KingFlag"], effects))
+                
+
                 x = x + 1
             y = y + 1
         file.close()
+
         self._collidable_entities = entities
 
 

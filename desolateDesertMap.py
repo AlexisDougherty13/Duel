@@ -12,7 +12,10 @@ class DesolateDesertMap(Map):
         assets_dict = {
             "Tile": "Resources/Images/DesolateDesertTile.png",
             "Background": "Resources/Images/DesolateDesertBG.png",
-            "Spike": "Resources/Images/DesolateDesertSpike.png"
+            "Spike": "Resources/Images/DesolateDesertSpike.png",
+            "MontoyaFlag": "Resources/Images/MontoyaFlag.png",
+            "ZorroFlag": "Resources/Images/ZorroFlag.png",
+            "KingFlag":"Resources/Images/KingArthurFlag.png"
         }
         Map.__init__(self, 1000, 600, 450, 300, 550, 300, assets_dict, "desolateDesertMap.txt")
         self.songName = "Desolate Desert"
