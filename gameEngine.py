@@ -344,7 +344,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
 
         player1.move(entities, camera)
         player2.move(entities, camera)
-        print(player2.getPlayerState("ignore_gravity"))
+        #print(player2.getPlayerState("ignore_gravity"))
 
         # shotClock = time()-timer
         # while shotClock - leftover >= Millisec_Goal:
