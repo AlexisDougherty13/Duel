@@ -20,7 +20,7 @@ class AudioEngine:
         while self.Active:
             if self.songChange:
                 if self.currentSong == "Main Menu":
-                    path = "RedForestMap.wav"
+                    path = "MainMenu.wav"
                     canonicalized_path = path.replace('/', os.sep).replace('\\', os.sep)
                     music_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), canonicalized_path)
                     pygame.mixer.music.load(music_path)
@@ -47,7 +47,6 @@ class AudioEngine:
         return pygame.mixer.music.get_volume()
 
     def changeSong(self, song):
-        print("Wow?")
         self.currentSong = song
         self.songChange = True
 

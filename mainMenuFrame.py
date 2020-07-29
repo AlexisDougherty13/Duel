@@ -233,7 +233,7 @@ def pregameMenu(screen, audio):
             pygame.time.delay(400)
             game_state["back"] = False
             game_state["pregame"] = False
-            mainMenu(screen, audio)
+            break
 
 
 
@@ -267,7 +267,7 @@ def tutorialMenu(screen, audio):
         if game_state["back"]:
             pygame.time.delay(400)
             game_state["back"] = False
-            mainMenu(screen, audio)
+            break
 
 def creditsMenu(screen, audio):
 
@@ -299,7 +299,7 @@ def creditsMenu(screen, audio):
             pygame.time.delay(400)
             game_state["back"] = False
             game_state["credits"] = False
-            mainMenu(screen, audio)
+            break
 
 def settingsMenu(screen, audio):
     volume_font = pygame.font.Font("Resources/Lobster.ttf", 32)
@@ -355,7 +355,7 @@ def settingsMenu(screen, audio):
         if game_state["back"]:
             pygame.time.delay(400)
             game_state["back"] = False
-            mainMenu(screen, audio)
+            break
 
 def pauseMenu(screen, p1_meta_info, p2_meta_info, audio):
 
