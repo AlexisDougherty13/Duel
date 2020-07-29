@@ -70,7 +70,7 @@ class Player(pygame.sprite.DirtySprite):
         return self.rect.y
 
     def moveLeft(self):
-        if (self.getPlayerState("ghost_counter") > 300 or self.getPlayerState("ghost_counter") == -1):
+        if (self.getPlayerState("ghost_counter") > 150 or self.getPlayerState("ghost_counter") == -1):
             self.setPlayerState("x_velocity", self.getPlayerState("x_velocity") - 1)
             if abs(self.getPlayerState("x_velocity")) > 5:
                 self._player_state["count_until_turn_around"] += 1
@@ -90,7 +90,7 @@ class Player(pygame.sprite.DirtySprite):
             self.setPlayerState("x_velocity", 0)
 
     def moveRight(self):
-        if (self.getPlayerState("ghost_counter") > 300 or self.getPlayerState("ghost_counter") == -1):
+        if (self.getPlayerState("ghost_counter") > 150 or self.getPlayerState("ghost_counter") == -1):
             self.setPlayerState("x_velocity", self.getPlayerState("x_velocity") + 1)
             if abs(self.getPlayerState("x_velocity")) > 5:
                 self._player_state["count_until_turn_around"] += 1
@@ -132,6 +132,9 @@ class Player(pygame.sprite.DirtySprite):
             self.setPlayerState("y_velocity", 50)
         if self.getPlayerState("on_ground") or self.getPlayerState("ignore_gravity"):
             self.setPlayerState("y_velocity", 0)
+        #if self.getPlayerState("ignore_gravity"):
+        #    self.setPlayerState("y_velocity", 0)
+
 
     def jump(self, time):
         self.setPlayerState("y_velocity", - 12)
@@ -150,7 +153,7 @@ class Player(pygame.sprite.DirtySprite):
         self._player_state[type] = value
 
     def setDirection(self, direction):
-        if (self.getPlayerState("ghost_counter") > 300 or self.getPlayerState("ghost_counter") == -1):
+        if (self.getPlayerState("ghost_counter") > 150 or self.getPlayerState("ghost_counter") == -1):
             if direction == "left":
                 self._player_state["direction_facing"] = 1
             else:
@@ -189,15 +192,15 @@ class Player(pygame.sprite.DirtySprite):
             append = "_r"
         if not self._player_state["sword"]:
         	append = append + "_nosword"
-        if self._player_state["ghost_counter"] >= 0 and self._player_state["ghost_counter"] < 100:
+        if self._player_state["ghost_counter"] >= 0 and self._player_state["ghost_counter"] < 50:
             return self._image_dict[front + "dead" + append + "_1"]
-        elif self._player_state["ghost_counter"] >= 100 and self._player_state["ghost_counter"] < 200:
+        elif self._player_state["ghost_counter"] >= 50 and self._player_state["ghost_counter"] < 100:
             return self._image_dict[front + "dead" + append + "_2"]
-        elif self._player_state["ghost_counter"] >= 200 and self._player_state["ghost_counter"] < 300:    
+        elif self._player_state["ghost_counter"] >= 100 and self._player_state["ghost_counter"] < 150:    
             return self._image_dict[front + "dead" + append + "_3"]
 
         else:
-            if self._player_state["ghost_counter"] == 301:
+            if self._player_state["ghost_counter"] == 151:
                 self._player_state["ghost"] = True
             if self._player_state["running"]:
                 self._player_state["run_counter"] = self._player_state["run_counter"] + 1
@@ -280,7 +283,7 @@ class Player(pygame.sprite.DirtySprite):
                 self.rect.bottom = objects.top + image_shift_amount_y
                 self.setPlayerState("on_ground", True)
 
-        if  self._player_state["ghost_counter"] < 0 or self._player_state["ghost_counter"] >= 300: # if player is not dying
+        if  self._player_state["ghost_counter"] < 0 or self._player_state["ghost_counter"] >= 150: # if player is not dying
             screen_rect = camera.getScreenRect()
             offset = camera.getOffset()
             screen_rect = pygame.Rect(screen_rect.left + offset[0], 0, 1000, 600)
@@ -294,7 +297,7 @@ class Player(pygame.sprite.DirtySprite):
         length = len(entities)
         for objects in entities:
             if self.getCollisionRect().colliderect(objects.getRect()):
-                if objects.getEffects()["Kill"] and (self.getPlayerState("ghost_counter")== -1 or self.getPlayerState("ghost_counter")> 301):
+                if objects.getEffects()["Kill"] and (self.getPlayerState("ghost_counter")== -1 or self.getPlayerState("ghost_counter")> 151):
                     if self.getPlayerState("win_direction") == camera.getTarget().getPlayerState("win_direction"):
                         camera.setActive(False)
                     self.setPlayerState("ghost_counter", 0)
