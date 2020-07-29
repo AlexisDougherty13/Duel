@@ -82,8 +82,8 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
 
     swords = []
 
-    player1 = Player(-50, 100, 1, 2, False, True, getSkin(skin_selection1), 1)  # Initializes player1 -50, 100
-    player2 = Player(675, 100, 1, 2, False, False, getSkin(skin_selection2), -1)  # Initializes player2 675, 100
+    player1 = Player(current_map.getP1InitialPosition()["X"], current_map.getP1InitialPosition()["Y"], 1, 2, False, True, getSkin(skin_selection1), 1)  # Initializes player1 -50, 100
+    player2 = Player(current_map.getP2InitialPosition()["X"], current_map.getP2InitialPosition()["Y"], 1, 2, False, False, getSkin(skin_selection2), -1)  # Initializes player2 675, 100
 
     display, camera = gameFrame.init(current_map)
     
@@ -92,14 +92,14 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
     active_match = True
 
     audio.changeSong(current_map.songName)
-    leftover = 0
+    #leftover = 0
     while active_match:
         # Delta time is implemented to help make sure that player's models will move at the same speed regardless of monitor refresh rate and processor speed.
         # Could use further optimizing and troubleshooting.
 
-        Millisec_Goal = .0166
+        #Millisec_Goal = .0166
 
-        timer = time()
+        #timer = time()
         for event in pygame.event.get():
             # What to do on quit
             if event.type == pygame.QUIT:
@@ -345,23 +345,23 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
         player1.move(entities, camera)
         player2.move(entities, camera)
 
-        shotClock = time()-timer
-        while shotClock - leftover >= Millisec_Goal:
-            for sword in swords:
-                if not sword.getState("on_ground"):
-                    sword.calculateGravity(time())
-                sword.move(entities)
-            player1.move(entities, camera)
-            player2.move(entities, camera)
-            leftover = shotClock % Millisec_Goal
-            shotClock -= Millisec_Goal
-        while shotClock < Millisec_Goal:
-            shotClock = time()-timer
-        timer = time()
+        # shotClock = time()-timer
+        # while shotClock - leftover >= Millisec_Goal:
+        #     for sword in swords:
+        #         if not sword.getState("on_ground"):
+        #             sword.calculateGravity(time())
+        #         sword.move(entities)
+        #     player1.move(entities, camera)
+        #     player2.move(entities, camera)
+        #     leftover = shotClock % Millisec_Goal
+        #     shotClock -= Millisec_Goal
+        # while shotClock < Millisec_Goal:
+        #     shotClock = time()-timer
+        # timer = time()
         #render
         gameFrame.render(display, screen, player1, player2, entities, camera, swords, current_map.assets_dict)
-
-
+        if player1.getPlayerState("player_won") or player2.getPlayerState("player_won"):
+            break
 
 
 #if player1.getPlayerState("ghost_counter") >= 0 and player1.getPlayerState("ghost_counter") < 11:
