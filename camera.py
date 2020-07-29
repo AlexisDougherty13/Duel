@@ -5,7 +5,7 @@ class Camera:
    def __init__(self):
       self._offset = [0,0]
       self._active = False
-      self._screen_rect = pygame.Rect(-100, 0, 1000, 600)
+      self._screen_rect = pygame.Rect(-100, 0, 1000, 2000)
 
    def getOffset(self):
       if(self._active):
