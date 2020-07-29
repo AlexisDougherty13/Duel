@@ -111,7 +111,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
             # Pressed a key so perform said action
             if event.type == pygame.KEYDOWN:
 
-                if player1.getPlayerState("ghost_counter") == -1 or player1.getPlayerState("ghost_counter") > 300:
+                if player1.getPlayerState("ghost_counter") == -1 or player1.getPlayerState("ghost_counter") > 150:
                     if event.key == pygame.K_d:
                         adjustPlayer(1, "right", True)
                     elif event.key == pygame.K_a:
@@ -130,7 +130,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
                         player1.setPlayerState("sword_moving", False)
                     if event.key == pygame.K_f:
                         adjustPlayer(1, "attack_count", 30)
-                if player2.getPlayerState("ghost_counter") == -1 or player2.getPlayerState("ghost_counter") > 300:
+                if player2.getPlayerState("ghost_counter") == -1 or player2.getPlayerState("ghost_counter") > 150:
                     if event.key == pygame.K_LEFT:
                         adjustPlayer(2, "left", True)
                     elif event.key == pygame.K_RIGHT:
@@ -199,7 +199,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
             player1.moveRight()
         elif player1.getPlayerState("x_velocity") != 0:
             player1.standingStill()
-        if p1_meta_info["up"] and player1.getPlayerState("on_ground") and (player1.getPlayerState("ghost_counter") > 300 or player1.getPlayerState("ghost_counter") == -1):
+        if p1_meta_info["up"] and player1.getPlayerState("on_ground") and (player1.getPlayerState("ghost_counter") > 150 or player1.getPlayerState("ghost_counter") == -1):
             player1.jump(time())
         elif not player1.getPlayerState("on_ground"):
             player1.calculateGravity(time())
@@ -226,13 +226,13 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
             player2.moveRight()
         elif player2.getPlayerState("x_velocity") != 0:
             player2.standingStill()
-        if p2_meta_info["up"] and player2.getPlayerState("on_ground") and (player2.getPlayerState("ghost_counter") > 300 or player2.getPlayerState("ghost_counter") == -1):
+        if p2_meta_info["up"] and player2.getPlayerState("on_ground") and (player2.getPlayerState("ghost_counter") > 150 or player2.getPlayerState("ghost_counter") == -1):
             player2.jump(time())
         elif not player2.getPlayerState("on_ground"):
             player2.calculateGravity(time())
 
         #Collision stuffs
-        if player1.getPlayerState("ghost_counter") > 300 or player1.getPlayerState("ghost_counter") == -1:
+        if player1.getPlayerState("ghost_counter") > 150 or player1.getPlayerState("ghost_counter") == -1:
             if player1.getPlayerState("ducking") == False:
                 player1body = Rect(player1.rect.x + 127, player1.rect.y - 16, 15, 140)
             else:
@@ -240,7 +240,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
         else:
             player1body = Rect(-100, -100, 1, 1)
 
-        if player2.getPlayerState("ghost_counter") > 300 or player2.getPlayerState("ghost_counter") == -1:
+        if player2.getPlayerState("ghost_counter") > 150 or player2.getPlayerState("ghost_counter") == -1:
             if player2.getPlayerState("ducking") == False:
                 player2body = Rect(player2.rect.x + 127, player2.rect.y - 16, 15, 140)
             else:
@@ -322,19 +322,19 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
         if player2.getPlayerState("ghost_counter") > -1:
             #print("woooooowie 2")
             player2.setPlayerState("ghost_counter", player2.getPlayerState("ghost_counter") + 1)
-        if player1.getPlayerState("ghost_counter") == 300:
+        if player1.getPlayerState("ghost_counter") == 150:
             #print("woooooowie")
             player1.respawn(player2.getXPos(), player2.getYPos())
-        if player2.getPlayerState("ghost_counter") == 300:
+        if player2.getPlayerState("ghost_counter") == 150:
             #print("woooooowie 2")
             player2.respawn(player1.getXPos(), player1.getYPos())
-        if player1.getPlayerState("ghost_counter") == 301:
+        if player1.getPlayerState("ghost_counter") == 151:
             player1.setPlayerState("ignore_gravity", True)
-        if player2.getPlayerState("ghost_counter") == 301:
+        if player2.getPlayerState("ghost_counter") == 151:
             player2.setPlayerState("ignore_gravity", True)
-        if player1.getPlayerState("ghost_counter") == 350:
+        if player1.getPlayerState("ghost_counter") == 200:
             player1.setPlayerState("ignore_gravity", False)
-        if player2.getPlayerState("ghost_counter") == 350:
+        if player2.getPlayerState("ghost_counter") == 200:
             player2.setPlayerState("ignore_gravity", False)
 
         for sword in swords:
