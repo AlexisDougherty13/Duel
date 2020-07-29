@@ -35,5 +35,5 @@ def getSwordLine(player):
 				point1 = player.rect.x + 171
 				point2 = player.rect.x + 173
 			height = player.rect.y + 17
-	return Rect(point1, height, point2-point1, 9)
+	return Rect(point1, height, point2-point1, 6)
 
