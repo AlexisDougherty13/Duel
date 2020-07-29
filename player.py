@@ -175,10 +175,10 @@ class Player(pygame.sprite.DirtySprite):
     def respawn(self, startx, starty):
         if self._player_state["win_direction"] == -1:
             self.rect.x = startx + 314
-            self.rect.y = starty - 95
+            self.rect.y = starty - 150
         else:
             self.rect.x = startx - 386
-            self.rect.y = starty - 95
+            self.rect.y = starty - 150
 
     def getSprite(self):
         #print(self._player_state["ghost_counter"])

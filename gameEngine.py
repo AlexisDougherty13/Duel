@@ -332,9 +332,9 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
             player1.setPlayerState("ignore_gravity", True)
         if player2.getPlayerState("ghost_counter") == 151:
             player2.setPlayerState("ignore_gravity", True)
-        if player1.getPlayerState("ghost_counter") == 200:
+        if player1.getPlayerState("ghost_counter") == 200 or player1.getPlayerState("ghost_counter") == -1:
             player1.setPlayerState("ignore_gravity", False)
-        if player2.getPlayerState("ghost_counter") == 200:
+        if player2.getPlayerState("ghost_counter") == 200 or player2.getPlayerState("ghost_counter") == -1:
             player2.setPlayerState("ignore_gravity", False)
 
         for sword in swords:
@@ -344,6 +344,7 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
 
         player1.move(entities, camera)
         player2.move(entities, camera)
+        print(player2.getPlayerState("ignore_gravity"))
 
         # shotClock = time()-timer
         # while shotClock - leftover >= Millisec_Goal:
