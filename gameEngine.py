@@ -92,12 +92,14 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
     active_match = True
 
     audio.changeSong(current_map.songName)
-
+    leftover = 0
     while active_match:
         # Delta time is implemented to help make sure that player's models will move at the same speed regardless of monitor refresh rate and processor speed.
         # Could use further optimizing and troubleshooting.
-        clock.tick(90)
 
+        Millisec_Goal = .0166
+
+        timer = time()
         for event in pygame.event.get():
             # What to do on quit
             if event.type == pygame.QUIT:
@@ -335,18 +337,28 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
         if player2.getPlayerState("ghost_counter") == 350:
             player2.setPlayerState("ignore_gravity", False)
 
-        player1.move(entities, camera)
-        player2.move(entities, camera)
-
         for sword in swords:
             if not sword.getState("on_ground"):
                 sword.calculateGravity(time())
             sword.move(entities)
 
+        player1.move(entities, camera)
+        player2.move(entities, camera)
 
+        shotClock = time()-timer
+        while shotClock - leftover >= Millisec_Goal:
+            for sword in swords:
+                if not sword.getState("on_ground"):
+                    sword.calculateGravity(time())
+                sword.move(entities)
+            player1.move(entities, camera)
+            player2.move(entities, camera)
+            leftover = shotClock % Millisec_Goal
+            shotClock -= Millisec_Goal
+        while shotClock < Millisec_Goal:
+            shotClock = time()-timer
+        timer = time()
         #render
-        #gameFrame.render(my_sprites, draw_buffer)
-
         gameFrame.render(display, screen, player1, player2, entities, camera, swords, current_map.assets_dict)
 
 

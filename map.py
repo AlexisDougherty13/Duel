@@ -31,7 +31,7 @@ class Map():
         }
         self.assets_dict = assets_dict
         self._collidable_entities = []
-        self.setCollidableEntities(redForestMap.txt)
+        self.setCollidableEntities(TxtFileName)
 
     # abstract method
     ##@abstractmethod
