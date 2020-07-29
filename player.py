@@ -71,7 +71,7 @@ class Player(pygame.sprite.DirtySprite):
 
     def moveLeft(self):
         if (self.getPlayerState("ghost_counter") > 150 or self.getPlayerState("ghost_counter") == -1):
-            self.setPlayerState("x_velocity", self.getPlayerState("x_velocity") - 1)
+            self.setPlayerState("x_velocity", self.getPlayerState("x_velocity") - 1.25)
             if abs(self.getPlayerState("x_velocity")) > 5:
                 self._player_state["count_until_turn_around"] += 1
             else:
@@ -82,8 +82,8 @@ class Player(pygame.sprite.DirtySprite):
                 self.setPlayerState("running", True)
             elif self._player_state["count_until_turn_around"] < 0:
                 self._player_state["count_until_turn_around"] = 0
-            if self.getPlayerState("x_velocity") < -10:
-                self.setPlayerState("x_velocity", -10)
+            if self.getPlayerState("x_velocity") < -12:
+                self.setPlayerState("x_velocity", -12)
             if self.getPlayerState("ducking") and self.getPlayerState("x_velocity") < -3:
             	self.setPlayerState("x_velocity", -3)
         else:
@@ -91,7 +91,7 @@ class Player(pygame.sprite.DirtySprite):
 
     def moveRight(self):
         if (self.getPlayerState("ghost_counter") > 150 or self.getPlayerState("ghost_counter") == -1):
-            self.setPlayerState("x_velocity", self.getPlayerState("x_velocity") + 1)
+            self.setPlayerState("x_velocity", self.getPlayerState("x_velocity") + 1.25)
             if abs(self.getPlayerState("x_velocity")) > 5:
                 self._player_state["count_until_turn_around"] += 1
             else:
@@ -103,8 +103,8 @@ class Player(pygame.sprite.DirtySprite):
             elif self._player_state["count_until_turn_around"] < 0:
                 self._player_state["count_until_turn_around"] = 0
 
-            if self.getPlayerState("x_velocity") > 10:
-                self.setPlayerState("x_velocity", 10)
+            if self.getPlayerState("x_velocity") > 12:
+                self.setPlayerState("x_velocity", 12)
             if self.getPlayerState("ducking") and self.getPlayerState("x_velocity") > 3:
             	self.setPlayerState("x_velocity", 3)
         else:
@@ -137,7 +137,7 @@ class Player(pygame.sprite.DirtySprite):
 
 
     def jump(self, time):
-        self.setPlayerState("y_velocity", - 12)
+        self.setPlayerState("y_velocity", - 14)
         self.setPlayerState("air_time", time)
         self.setPlayerState("on_ground", False)
 
