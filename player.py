@@ -265,6 +265,8 @@ class Player(pygame.sprite.DirtySprite):
         collision_list = self.test_collision_X(entities,camera)  # Test all entities on the map for collision with player
         self.rect.x += (self.getPlayerState("x_velocity")) * ghost_multiplier
         for objects in collision_list:
+            if self.getPlayerState("x_velocity") == 0 and (self._player_state["ghost_counter"] < 0 or self._player_state["ghost_counter"] > 150):
+                self._player_state["ghost_counter"] = 0
             if self.getPlayerState("x_velocity") < 0:  # Moving left
                 self.rect.left = objects.right - image_shift_amount_x
                 self.setPlayerState("on_left_wall", True)
