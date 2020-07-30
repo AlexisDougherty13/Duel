@@ -283,11 +283,17 @@ class Player(pygame.sprite.DirtySprite):
                 self.rect.bottom = objects.top + image_shift_amount_y
                 self.setPlayerState("on_ground", True)
 
+      #screen border keeps player on screens
         if  self._player_state["ghost_counter"] < 0 or self._player_state["ghost_counter"] >= 150: # if player is not dying
             screen_rect = camera.getScreenRect()
             offset = camera.getOffset()
             screen_rect = pygame.Rect(screen_rect.left + offset[0], 0, 1000, 600)
-            self.rect.clamp_ip(screen_rect) # makes player stay on screen
+
+            if not screen_rect.contains(self.rect):
+                if (self._player_state["on_right_wall"] or self._player_state["on_left_wall"]):
+                    self._player_state["ghost_counter"] = 0
+                else:
+                    self.rect.clamp_ip(screen_rect) # makes player stay on screen
         
         self.update()  # updates players position
 
