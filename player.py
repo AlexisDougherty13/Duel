@@ -310,6 +310,12 @@ class Player(pygame.sprite.DirtySprite):
                         camera.setActive(False)
                     self.setPlayerState("ghost_counter", 0)
                     self.setPlayerState("sword", True)
+                elif objects.getEffects()["P2Flag"]:
+                    if self.getPlayerState("win_direction") == -1 and not self.getPlayerState("ghost"):
+                        self.setPlayerState("player_won", True)
+                elif objects.getEffects()["P1Flag"]:
+                    if self.getPlayerState("win_direction") == 1 and not self.getPlayerState("ghost"):
+                        self.setPlayerState("player_won", True)
                 if length <= 2:
                     pass
                 else:

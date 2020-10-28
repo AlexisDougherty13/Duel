@@ -43,6 +43,19 @@ p2_meta_info = {
     "attack_count": 0
 }
 
+#Restore both players' meta data to default values in the event of a game restart or restart from the end game screen (This is because player is reinitialized but meta data was not)
+def resetMetaData(meta_info):
+    meta_info["up"] = False
+    meta_info["left"] = False
+    meta_info["right"] = False
+    meta_info["down"] = False
+    meta_info["sword_movement"] = 0
+    meta_info["sword_down"] = False
+    meta_info["movement_clock"] = False
+    meta_info["attack_count"] = False
+
+
+
 def mainMenu(screen , audio):  # TODO Call Main Menu Frame instead and have it call startGame
     mainMenuFrame.mainMenu(screen, audio)
 
@@ -73,7 +86,8 @@ def getSwordDisarm(player):
 # and 2 string skin_selection to determine what skins the players choose
 def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
     paused = False
-
+    resetMetaData(p1_meta_info)
+    resetMetaData(p2_meta_info)
     current_map = mapSelectionList.selectMap(map_selection)  # returns a child of the map class
 
     entities = current_map.getCollidableEntities()
@@ -364,5 +378,9 @@ def startGame(screen, map_selection, skin_selection1, skin_selection2 , audio):
         if player1.getPlayerState("player_won") or player2.getPlayerState("player_won"):
             break
 
+    if player1.getPlayerState("player_won"):
+        mainMenuFrame.endGameMenu(screen, audio, 1)
+    elif player2.getPlayerState("player_won"):
+        mainMenuFrame.endGameMenu(screen, audio, 2)
 
 #if player1.getPlayerState("ghost_counter") >= 0 and player1.getPlayerState("ghost_counter") < 11:
